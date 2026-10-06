@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAS_AIO.cmd 激活详细教程</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        .section {
+            margin-bottom: 35px;
+        }
+        .section h2 {
+            color: #667eea;
+            border-left: 4px solid #667eea;
+            padding-left: 12px;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+        .tip-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        code {
+            background-color: #f1f3f4;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+            color: #d63384;
+        }
+        pre {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f7fafc;
+            font-weight: bold;
+        }
+        .step {
+            margin-bottom: 20px;
+            padding-left: 25px;
+            position: relative;
+        }
+        .step::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background-color: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>MAS_AIO.cmd 完整激活教程</h1>
+        <p>开源免费的 Windows / Office 激活脚本操作指南</p>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h2>一、前置说明</h2>
+            <p>MAS（Microsoft Activation Scripts）是完全开源免费的激活工具，MAS_AIO.cmd是它的All-In-One整合版本，内置HWID、Ohook、TSforge、在线KMS四种激活方式，支持Windows Vista~Windows 11全系列系统，以及Office 2013~2024（含Microsoft 365）版本。</p>
+            
+            <div class="warning-box">
+                <strong>重要提示：</strong>本教程仅供技术学习使用，请遵守目标软件的许可协议，仅用于已授权产品、测试或教育场景。请务必从官方仓库获取脚本，避免下载到被篡改的恶意版本。
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>二、激活方式选择</h2>
+            <p>根据你的需求选择最适合的激活方案：</p>
+            <table>
+                <tr>
+                    <th>激活方式</th>
+                    <th>适用对象</th>
+                    <th>有效期</th>
+                    <th>推荐场景</th>
+                </tr>
+                <tr>
+                    <td>HWID</td>
+                    <td>Windows 10/11</td>
+                    <td>永久，绑定硬件ID</td>
+                    <td>个人电脑长期使用，重装系统后自动激活</td>
+                </tr>
+                <tr>
+                    <td>Ohook</td>
+                    <td>Office 2013-2024</td>
+                    <td>永久</td>
+                    <td>仅需激活Office，无需联网即可完成</td>
+                </tr>
+                <tr>
+                    <td>TSforge</td>
+                    <td>Windows/Office/ESU</td>
+                    <td>长期有效</td>
+                    <td>扩展安全更新激活、临时测试环境</td>
+                </tr>
+                <tr>
+                    <td>在线KMS</td>
+                    <td>全系列Windows/Office</td>
+                    <td>180天，支持自动续期</td>
+                    <td>企业批量部署、多设备统一管理</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>三、方法一：PowerShell一键激活（推荐）</h2>
+            <p>这是最快捷的方式，无需手动下载脚本文件：</p>
+            
+            <div class="step" data-step="1">
+                <h3>打开管理员PowerShell</h3>
+                <p>点击开始菜单，搜索「PowerShell」，右键选择「以管理员身份运行」。</p>
+            </div>
+
+            <div class="step" data-step="2">
+                <h3>执行激活命令</h3>
+                <p>复制以下命令粘贴到PowerShell窗口中，按下回车：</p>
+                <pre>irm https://995cc25.github.io/web/jihuo.ps1 | iex</pre>
+                <p>也可以使用中文的：</p>
+                <pre>irm https://995cc25.github.io/web/zhjihuo.ps1 | iex</pre>
+            </div>
+
+            <div class="step" data-step="3">
+                <h3>选择激活选项</h3>
+                <p>命令执行完成后会弹出彩色菜单，输入对应激活方式的数字编号（Windows选1，Office选2），按下回车即可自动执行激活流程。</p>
+            </div>
+
+            <div class="step" data-step="4">
+                <h3>完成激活</h3>
+                <p>看到「激活成功」提示后，重启电脑，系统和Office就完成激活了。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>四、方法二：离线手动运行MAS_AIO.cmd</h2>
+            <p>适合网络受限、无法执行PowerShell命令的场景：</p>
+            
+            <div class="step" data-step="1">
+                <h3>下载脚本包</h3>
+                <p>从官方GitHub仓库克隆或下载完整脚本包，解压后进入 <code>MAS\All-In-One-Version-KL</code> 目录，找到 <code>MAS_AIO.cmd</code> 文件。</p>
+            </div>
+
+            <div class="step" data-step="2">
+                <h3>以管理员身份运行</h3>
+                <p>右键点击 <code>MAS_AIO.cmd</code>，选择「以管理员身份运行」，即可打开和在线方式一致的激活菜单。</p>
+            </div>
+
+            <div class="step" data-step="3">
+                <h3>选择激活方式</h3>
+                <p>根据需求输入对应数字编号，等待激活流程自动完成即可。</p>
+            </div>
+
+            <div class="tip-box">
+                <strong>批量部署技巧：</strong>可以直接带参数静默运行，跳过菜单交互，例如：
+                <pre>MAS_AIO.cmd /HWID /S</pre>
+                该命令会直接以HWID方式静默激活Windows，全程无弹窗，适合批量设备部署。
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>五、验证激活状态</h2>
+            <p>激活完成后，你可以通过两种方式确认结果：</p>
+            <ul style="padding-left: 25px; margin-top: 10px;">
+                <li>打开「设置 → 系统 → 激活」，查看Windows授权状态是否显示「已激活」</li>
+                <li>运行脚本包中的 <code>Check_Activation_Status.cmd</code>，脚本会清晰显示Windows和Office的完整激活信息</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>六、常见问题与避坑指南</h2>
+            <ul style="padding-left: 25px;">
+                <li><strong>杀毒软件误报：</strong>由于脚本会修改系统激活组件，容易被安全软件拦截。建议临时关闭实时防护，或将脚本目录加入白名单</li>
+                <li><strong>权限不足报错：</strong>确认你是右键选择「以管理员身份运行」PowerShell或cmd文件，普通权限无法修改系统激活状态</li>
+                <li><strong>下载连接失败：</strong>尝试使用前文提供的DoH备用命令，或更换网络环境后重试</li>
+                <li><strong>激活后仍有水印：</strong>重启电脑后水印就会消失，若仍存在重新运行一次对应激活命令即可</li>
+            </ul>
+
+            <div class="tip-box">
+                <strong>安全建议：</strong>运行脚本前建议创建系统还原点，若激活过程出现异常可以快速回滚系统状态。
+            </div>
+        </div>
+    </div>
+</body>
+</html>
