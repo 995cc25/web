@@ -1,0 +1,72 @@
+分支保护?：如果 GitHub 仓库开启了“Branch Protection Rules”（分支保护规则），强制推送会被拒绝。你需要先在 GitHub 网页端设置中暂时关闭保护，或拥有管理员权限绕过。
+团队协作?：如果是多人协作项目，强制推送会导致其他成员的本地仓库与远程严重冲突，务必提前通知团队。
+不可逆性?：被覆盖的远程提交记录在 GitHub 上通常无法直接恢复（除非联系支持或使用 Reflog，但非常困难）。
+第一步：拉取仓库到本地
+如果你还没有本地副本：
+# 全局禁用自动换行符转换
+git config --global core.autocrlf false
+
+# 可选：禁用安全检查（避免 Git 因为换行符问题拒绝提交混合换行符的文件）
+git config --global core.safecrlf false
+
+
+bash
+# 克隆仓库
+git clone <你的仓库地址.git>
+# 进入目录
+cd <仓库文件夹名>
+如果你已经有本地副本，建议先同步最新状态以防万一：
+
+bash
+# 切换到 master 分支
+git checkout master
+# 拉取远程最新代码（可选，用于对比差异）
+git pull origin master
+第二步：本地修改并提交
+在本地进行代码修改、添加或删除文件后，执行以下命令将更改提交到本地仓库：
+
+bash
+# 查看所有文件状态
+git status
+
+# 添加所有修改到暂存区
+git add .
+
+# 提交更改到本地仓库
+git commit -m "描述你的修改内容"
+注意?：此时修改仅存在于你的?本地仓库?，远程 GitHub 上的 master 分支尚未改变。
+
+第三步：强制覆盖远程 Master 分支
+这是最关键的一步。由于本地历史可能与远程不一致（或者你希望完全用本地替换远程），需要使用强制推送。
+
+推荐方式：使用 --force-with-lease（更安全）
+这个命令会检查远程分支是否在你上次拉取后被其他人修改过。如果有人推送了新代码，它会阻止推送，防止意外覆盖他人的工作。
+
+bash
+# 先更新本地对远程引用的认知（必须执行，否则 lease 校验可能失效）
+git fetch origin
+
+# 安全强制推送
+git push --force-with-lease origin master
+传统方式：使用 -f 或 --force（高风险）
+如果你确定要无条件覆盖，不管远程是否有新提交：
+
+bash
+git push -f origin master
+常见问题与处理
+1. 提示 “src refspec master does not match any”
+这通常意味着本地没有名为 master 的分支，或者当前分支为空。
+
+解决?：检查当前分支名 git branch。现在许多新仓库默认主分支名为 main。如果是 main，命令应改为：
+bash
+git push -f origin main
+2. 提示 “protected branch” 或 “remote rejected”
+这意味着 GitHub 开启了分支保护。
+
+解决?：
+登录 GitHub 网页端。
+进入仓库 -> ?Settings? -> ?Branches?。
+找到 master 分支的保护规则，暂时禁用 “Require pull request reviews before merging” 或 “Include administrators” 等相关限制，或者直接删除保护规则。
+再次执行推送命令。
+重要?：推送完成后，建议重新开启保护规则。
+

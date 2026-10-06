@@ -1,0 +1,17 @@
+/**包月2022-12-25至2023-1-25*****2430161971********/
+function ad_750x60_top(){
+//document.write('<img style="display:block;margin:5px auto 0 auto;height:60px;width:760px;" src="https://image.suning.cn/uimg/ZR/share_order/168254928093030715.jpg">');
+document.write('<p align="center;" class="STYLE1"><a href="https://www.kekexc.com/dp/quanmin11" target="_blank"><img src="https://image.suning.cn/uimg/ZR/share_order/168254928093030715.jpg" width="100%" height="100%"></a></p><div style="width: 100%;   height: 30px;   border:1px solid red;   border-radius: 5px;   -moz-border-radius: 5px;   -webkit-border-radius: 5px;" align="center">广&nbsp;&nbsp;告&nbsp;&nbsp;位&nbsp;&nbsp;招&nbsp;&nbsp;租&nbsp;&nbsp; 微&nbsp;&nbsp;信：cmovcn</div>');
+}
+/**包月2023-7-22至2023-8-22*****weixin A1106780********/
+function ad_750x60_top1(){
+//document.write('<img style="display:block;margin:5px auto 0 auto;height:60px;width:760px;" src="https://image.suning.cn/uimg/ZR/share_order/168254928093030715.jpg">');
+document.write('<p align="center;" class="STYLE1"><a href="https://vip.inspichu.cn/?mod=article&id=14" target="_blank"><img src="https://pic.rmb.bdstatic.com/bjh/ea59a9ae1d7773347795036fff5b8caa.png" width="100%" height="100%"></a></p>');
+}
+
+//https://image.suning.cn/uimg/ZR/share_order/168255071189738421.jpg
+function ad_750x60_f(){
+
+document.write('<div class="pc_acmsd"><p align="center;" class="STYLE1"><a href="https://docs.qq.com/doc/DZEJqREdvYUVleWVE" target="_blank"><img src="https://image.suning.cn/uimg/ZR/share_order/168254928093030715.jpg" width="100%" height="100%"></a></p></div><div class="m_acmsd"><p align="center;" class="STYLE1"><a href="https://shimo.im/docs/w8CDfsMoWystFkaL/" target="_blank"><img src="https://image.suning.cn/uimg/ZR/share_order/168254928093030715.jpg" width="100%" height="100%"></a></p></div>');
+}
+document.write('');
