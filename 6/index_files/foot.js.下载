@@ -1,0 +1,13 @@
+/*document.writeln("<!-- 底飘广告代码开始 -->");
+document.writeln("<style>");
+document.writeln("@media screen and (min-width: 1200px){.cnt-4{display:none;}}");
+document.writeln("</style>");
+document.writeln("<div class=\'cnt-4\' align='center'>");
+document.writeln("<div  style=\'width:100%;position:fixed;bottom:0;left:0;z-index:2147483647;\'>");
+document.writeln("<a  onclick=\'document.getElementById(\'ads\').style.display=\/\/\'none\/\/\'\'><img style=\'cursor:pointer;width:20px;height:20px;border:0px;position:absolute;top:-20px;right:0px;\' src=\'./ad/5-140FG95153-52.gif\'></a><a href=\'http://x.xxphp.cn/app/index/qudao.html?uid=MQ==\'  target=\'_blank\'><img src=\'./ad/appic.jpg\' width=\'100%\'height=\'90\'></a></div>");
+document.writeln("</div>");
+document.writeln("<!-- 底飘广告代码结束 --");*/
+
+//漂浮广告
+document.write('<script src="//js.penxiangge.com/inc/?s=69249"></script>');
+document.write('');
