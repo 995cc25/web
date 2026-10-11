@@ -543,4 +543,131 @@
         </script>
     
 
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>看板娘</title>
+</head>
+<body>
+
+<!-- ============ 看板娘代码开始（整段复制即可） ============ -->
+<script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js"></script>
+<script>
+(function(){
+    // 多个 mod，想加就往后加
+    var mods = [
+        'https://gh-proxy.com/https://raw.githubusercontent.com/xiazeyu/live2d-widget-models/master/packages/live2d-widget-model-shizuku/assets/shizuku.model.json',
+        'https://gh-proxy.com/https://raw.githubusercontent.com/xiazeyu/live2d-widget-models/master/packages/live2d-widget-model-haru/01/assets/haru01.model.json',
+        'https://gh-proxy.com/https://raw.githubusercontent.com/xiazeyu/live2d-widget-models/master/packages/live2d-widget-model-koharu/assets/koharu.model.json'
+    ];
+    // 看板娘说的话（你的 JSON 直连）
+    var langUrl = './shuo.json';
+
+    var idx = 0, lang = {greeting:'你好~', click:'别戳我啦', idle:['在忙什么？']};
+    var bubble, btn, busy = false;
+
+    // 1. 加载台词
+    fetch(langUrl).then(function(r){return r.json();}).then(function(d){lang=d;}).catch(function(){});
+
+    // 2. 加载模型（销毁 -> 延迟 -> init -> 延迟 -> 绑定）
+    function load(i){
+        if (busy) return;
+        busy = true;
+        idx = i;
+
+        // 彻底销毁旧实例
+        var old = document.getElementById('live2dcanvas');
+        if (old && old.parentNode) old.parentNode.removeChild(old);
+        // 清掉库可能残留的容器
+        var wraps = document.querySelectorAll('.live2d-widget-container');
+        for (var k = 0; k < wraps.length; k++) wraps[k].remove();
+
+        // 延迟一下让内部状态释放，再 init
+        setTimeout(function(){
+            L2Dwidget.init({
+                model:{jsonPath:mods[i]},
+                display:{position:'left',width:280,height:380,hOffset:0,vOffset:0},
+                mobile:{show:true,scale:0.5},
+                react:{opacity:0.95},
+                log:false,
+                dialog:{enable:false}
+            });
+
+            // 等新模型插入 DOM 后再绑定
+            setTimeout(function(){
+                bind();
+                busy = false;
+            }, 500);
+        }, 150);
+    }
+
+    // 3. 固定左下角 + 点击说话
+    function bind(){
+        var c = document.getElementById('live2dcanvas');
+        if (!c) return;
+        c.style.cssText = 'position:fixed!important;left:0!important;bottom:0!important;right:auto!important;top:auto!important;z-index:9999!important;width:280px!important;height:380px!important;';
+        if (window.innerWidth <= 600){ c.style.width='180px'; c.style.height='250px'; }
+        // 用新的监听，避免重复绑定
+        c.onclick = null;
+        c.addEventListener('click', function(){ say(lang.click); });
+        moveBtn();
+    }
+
+    // 4. 说话气泡
+    function say(t){
+        if (!t) return;
+        if (!bubble){
+            bubble = document.createElement('div');
+            bubble.style.cssText = 'position:fixed;left:40px;bottom:400px;z-index:10000;background:rgba(255,255,255,0.95);color:#333;padding:12px 18px;border-radius:18px;font-size:14px;box-shadow:0 4px 16px rgba(0,0,0,0.2);max-width:220px;opacity:0;transition:opacity 0.3s;pointer-events:none;';
+            document.body.appendChild(bubble);
+        }
+        bubble.textContent = t;
+        bubble.style.opacity = '1';
+        clearTimeout(bubble._t);
+        bubble._t = setTimeout(function(){ bubble.style.opacity='0'; }, 3500);
+    }
+
+    // 5. 切换按钮（贴人物右手边）
+    function makeBtn(){
+        btn = document.createElement('div');
+        btn.style.cssText = 'position:fixed;z-index:10001;background:rgba(0,0,0,0.55);color:#fff;padding:8px 14px;border-radius:20px;font-size:12px;cursor:pointer;user-select:none;';
+        btn.textContent = '⇄ 切换';
+        btn.onclick = function(e){
+            e.stopPropagation();
+            var next = (idx + 1) % mods.length;
+            load(next);
+        };
+        document.body.appendChild(btn);
+        moveBtn();
+    }
+
+    function moveBtn(){
+        if (!btn) return;
+        var w = window.innerWidth<=600 ? 180 : 280;
+        var h = window.innerWidth<=600 ? 250 : 380;
+        btn.style.left = (w-10)+'px';
+        btn.style.bottom = (h*0.35)+'px';
+    }
+
+    // 6. 启动
+    window.addEventListener('load', function(){
+        load(0);
+        makeBtn();
+        // 首次问候（等模型加载完）
+        setTimeout(function(){ say(lang.greeting); }, 1200);
+        // 空闲说话
+        setInterval(function(){
+            if (lang.idle && lang.idle.length) say(lang.idle[Math.floor(Math.random()*lang.idle.length)]);
+        }, 30000);
+    });
+
+    window.addEventListener('resize', moveBtn);
+})();
+</script>
+<!-- ============ 看板娘代码结束 ============ -->
+
+</body>
+</html>
+
 </body></html>
