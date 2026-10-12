@@ -1,4 +1,4 @@
-# This script is hosted on https://get.activated.win for https://995cc25.github.io/web/w7jihuo.ps1
+# This script is hosted on https://get.activated.win for https://get.activated.win
 
 # Having trouble launching this script? Check https://massgrave.dev for help.
 
@@ -89,7 +89,7 @@ if (-not $args) {
     }
 
     # Verify script integrity
-    $releaseHash = '1BFF6DABCCC075B52B449625E8F2FD64AAC33EE8F8D0A185B37DEEEEA4B665C9'
+    $releaseHash = '850F979665FB93999ACAE93F4790C1FF8ED2041532060B7966A121C2D29A0BFA'
     $stream = New-Object IO.MemoryStream
     $writer = New-Object IO.StreamWriter $stream
     $writer.Write($response)
