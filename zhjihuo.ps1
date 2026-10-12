@@ -22,9 +22,7 @@ if ($CurrentScriptPath -match "^https?://") {
 # 如果上面的动态地址失败，或者你是本地运行，脚本会按顺序尝试下面的地址
 $FallbackServers = @(
 
-"https://gh-proxy.org/https://raw.githubusercontent.com/995cc25/web/refs/heads/master/MAS_AIO.cmd",
-
-    "https://地址1/MAS_AIO.cmd",   # 地址 1
+"https://gh-proxy.org/https://raw.githubusercontent.com/995cc25/Microsoft-Activation-Scripts/refs/heads/master/MAS_AIO.cmd",
     "https://地址2/MAS_AIO.cmd",
     "https://地址3/MAS_AIO.cmd",
     "https://地址4/MAS_AIO.cmd",
