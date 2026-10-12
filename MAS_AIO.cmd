@@ -3,7 +3,7 @@
 @::Is a real person even the one deciding to flag this or is it Copilot told to flag anything it decides not to like?
 @::If a campaign is using this script as a cover, please flag parts of the campaign instead of the script. This isn't the first time we experienced collateral damage due to campaigns completely unrelated to us.
 @::If you disagree that MAS is not malicious, we would appreciate if you contacted us to explain what constitutes MAS as "Sonbokli" and we'll look into it. Thank you. 
-@set masver=3.11
+@set masver=3.12
 @setlocal DisableDelayedExpansion
 @echo off
 
@@ -17,7 +17,7 @@
 ::============================================================================
 ::
 ::   Homepage: m{}assgrave{dot}dev
-::
+::		
 ::============================================================================
 
 
@@ -41,9 +41,20 @@ set "Path=%SystemRoot%\Sysnative;%SystemRoot%;%SystemRoot%\Sysnative\Wbem;%Syste
 set "ComSpec=%SysPath%\cmd.exe"
 set "PSModulePath=%ProgramFiles%\WindowsPowerShell\Modules;%SysPath%\WindowsPowerShell\v1.0\Modules"
 
+cd /d "%SysPath%"
+
+:: Workaround for https://github.com/microsoft/terminal/issues/15212, when %0 starts with a quote %0 parameter expansion is not specialcased.
+:: Changing %0 to something that is not quoted bypasses the issue.
+goto arg_workaround_end
+:arg_workaround
+set "_cmdf=%~f0"
+exit /b
+:arg_workaround_end
+
+call :arg_workaround
+
 set re1=
 set re2=
-set "_cmdf=%~f0"
 for %%# in (%*) do (
 if /i "%%#"=="re1" set re1=1
 if /i "%%#"=="re2" set re2=1
@@ -70,9 +81,9 @@ exit /b
 ::========================================================================================================================================
 
 set "blank="
-set "mas=htt%blank%ps://git%blank%hub%blank%.%blank%com/mas%blank%sgravel/Micro%blank%soft-Activati%blank%on-Scripts"
-set "github=htt%blank%ps://%blank%gith%blank%ub%blank%.co%blank%m/massgr%blank%avel/Micros%blank%oft-Activation-S%blank%cripts"
-set "selfgit=ht%blank%tps://gith%blank%ub%blank%.%blank%com/massgra%blank%vel/Microsoft-A%blank%ctivation-Scripts"
+set "mas=ht%blank%tps%blank%://m%blank%ass%blank%grave.dev/"
+set "github=ht%blank%tps%blank%://github.com/m%blank%assgra%blank%vel/Micro%blank%soft-Acti%blank%vation-Scripts"
+set "selfgit=ht%blank%tps%blank%://git.acti%blank%vated.win/Micr%blank%osoft-Act%blank%ivation-Scripts"
 
 ::  Check if Null service is working, it's important for the batch script
 
@@ -91,26 +102,23 @@ cls
 
 ::  Check LF line ending
 
-pushd "%~dp0"
->nul findstr /v "$" "%~nx0" && (
+>nul findstr /v "$" "%_cmdf%" && (
 echo:
 echo ´íÎó£º½Å±¾´æÔÚ LF ĞĞ½áÎ²ÎÊÌâ£¬»òÕß½Å±¾Ä©Î²È±ÉÙ¿ÕĞĞ¡£
 echo:
 echo:
-echo ²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - %mas%/
+echo ²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - %mas%troubleshoot
 echo:
 echo:
 ping 127.0.0.1 -n 20 >nul
-popd
 exit /b
 )
-popd
 
 ::========================================================================================================================================
 
 cls
 color 07
-title  ÔÚÏß¼¤»î½Å±¾ %masver%
+title  Microsoft_Activation_Scripts %masver%
 
 set _args=
 set _elev=
@@ -139,7 +147,7 @@ call :dk_setvar
 
 if %winbuild% EQU 1 (
 %eline%
-echo ÎŞ·¨¼ì²âµ½ Windows ÄÚ²¿°æ±¾ºÅ¡£
+echo ¼ì²â Windows °æ±¾ºÅÊ§°Ü¡£
 echo:
 setlocal EnableDelayedExpansion
 set fixes=%fixes% %mas%troubleshoot
@@ -150,8 +158,8 @@ goto dk_done
 if exist "%Systemdrive%\Users\WDAGUtilityAccount" (
 sc query gcs | find /i "RUNNING" %nul% && (
 %eline%
-echo ¼ì²âµ½ Windows É³ºĞ;²»Ö§³Ö¼¤»î¡£
-echo ÓÉÓÚÈ±ÉÙĞí¿É×é¼ş£¬½Å±¾ÎŞ·¨ÔËĞĞ¡£ÖĞÖ¹...
+echo ¼ì²âµ½ Windows Sandbox£»²»Ö§³Ö¼¤»î¡£
+echo ÓÉÓÚÈ±ÉÙĞí¿É×é¼ş£¬½Å±¾ÎŞ·¨ÔËĞĞ¡£ÕıÔÚÖĞÖ¹¡­¡­
 echo:
 goto dk_done
 )
@@ -159,12 +167,12 @@ goto dk_done
 
 if %winbuild% LSS 6001 (
 %nceline%
-echo ¼ì²âµ½²»Ö§³ÖµÄ²Ù×÷ÏµÍ³°æ±¾ [%winbuild%]¡£
-echo MAS ½öÖ§³Ö Windows Vista/7/8/8.1/10/11 ¼°ÆäÏàÓ¦µÄ·şÎñÆ÷°æ±¾¡£
+echo ¼ì²âµ½²»ÊÜÖ§³ÖµÄ²Ù×÷ÏµÍ³°æ±¾ [%winbuild%].
+echo MAS ½öÖ§³Ö Windows Vista/7/8/8.1/10/11 ¼°Æä·şÎñÆ÷µÈĞ§°æ±¾¡£
 if %winbuild% EQU 6000 (
 echo:
-echo Windows Vista RTM ²»ÊÜÖ§³Ö£¬ÒòÎªÎŞ·¨°²×° Powershell¡£
-echo ÇëÉı¼¶µ½ Windows Vista SP1 »ò SP2¡£
+echo ²»Ö§³Ö Windows Vista RTM£¬ÒòÎªÎŞ·¨°²×° Powershell¡£
+echo Éı¼¶µ½ Windows Vista SP1 »ò SP2¡£
 )
 goto dk_done
 )
@@ -174,7 +182,7 @@ if %winbuild% LSS 7600 if not exist "%SysPath%\WindowsPowerShell\v1.0\Modules" (
 if not exist %ps% (
 echo ÄúµÄÏµÍ³ÖĞÎ´°²×° PowerShell¡£
 )
-echo Ê¹ÓÃÒÔÏÂÍøÖ· °²×° PowerShell 2.0¡£
+echo Ê¹ÓÃÒÔÏÂ URL °²×° PowerShell 2.0¡£
 echo:
 echo https://www.catalog.update.microsoft.com/Search.aspx?q=KB968930
 if %_unattended%==0 start https://www.catalog.update.microsoft.com/Search.aspx?q=KB968930
@@ -188,10 +196,9 @@ goto dk_done
 set "_work=%~dp0"
 if "%_work:~-1%"=="\" set "_work=%_work:~0,-1%"
 
-set "_batf=%~f0"
-set "_batp=%_batf:'=''%"
+set "_batp=%_cmdf:'=''%"
 
-set _PSarg="""%~f0""" -el %_args%
+set _PSarg="""%_cmdf%""" -el %_args%
 set _PSarg=%_PSarg:'=''%
 
 set "_ttemp=%userprofile%\AppData\Local\Temp"
@@ -200,13 +207,13 @@ setlocal EnableDelayedExpansion
 
 ::========================================================================================================================================
 
-echo "!_batf!" | find /i "!_ttemp!" %nul1% && (
+echo "!_cmdf!" | find /i "!_ttemp!" %nul1% && (
 if /i not "!_work!"=="!_ttemp!" (
 %eline%
 echo ½Å±¾´ÓÁÙÊ±ÎÄ¼ş¼ĞÆô¶¯£¬
 echo ºÜ¿ÉÄÜÊÇÖ±½Ó´ÓÑ¹Ëõ°üÖĞÔËĞĞ½Å±¾¡£
 echo:
-echo ÌáÈ¡Ñ¹Ëõ°üÖĞµÄ½Å±¾ÎÄ¼şµ½ÎÄ¼ş¼ĞºóÔÙÔËĞĞ½Å±¾¡£
+echo ÌáÈ¡Ñ¹Ëõ°üÖĞµÄ½Å±¾ÎÄ¼şµ½ÎÄ¼ş¼ĞÔÙÆô¶¯½Å±¾¡£
 goto dk_done
 )
 )
@@ -218,8 +225,8 @@ goto dk_done
 %nul1% fltmc || (
 if not defined _elev %psc% "start cmd.exe -arg '/c \"!_PSarg!\"' -verb runas" && exit /b
 %eline%
-echo ´Ë½Å±¾ĞèÒª¹ÜÀíÔ±È¨ÏŞ¡£
-echo ÓÒ¼üµ¥»÷´Ë½Å±¾²¢Ñ¡Ôñ¡°ÒÔ¹ÜÀíÔ±Éí·İÔËĞĞ¡±¡£
+echo ¸Ã½Å±¾ĞèÒª¹ÜÀíÔ±È¨ÏŞ¡£
+echo ÓÒ¼üµ¥»÷¸Ã½Å±¾²¢Ñ¡Ôñ¡°ÒÔ¹ÜÀíÔ±Éí·İÔËĞĞ¡±¡£
 goto dk_done
 )
 
@@ -229,7 +236,7 @@ goto dk_done
 
 ::pstst $ExecutionContext.SessionState.LanguageMode :pstst
 
-for /f "delims=" %%a in ('%psc% "if ($PSVersionTable.PSEdition -ne 'Core') {$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':pstst';. ([scriptblock]::Create($f[1]))}" %nul6%') do (set tstresult=%%a)
+for /f "delims=" %%a in ('%psc% "if ($PSVersionTable.PSEdition -ne 'Core') {$f=[IO.File]::ReadAllText('!_batp!') -split ':pstst';. ([scriptblock]::Create($f[1]))}" %nul6%') do (set tstresult=%%a)
 
 if /i not "%tstresult%"=="FullLanguage" (
 %eline%
@@ -241,8 +248,8 @@ echo:
 REM check LanguageMode
 
 echo: !tstresult2! | findstr /i "ConstrainedLanguage RestrictedLanguage NoLanguage" %nul1% && (
-echo ÔÚ PowerShell ÖĞÎ´ÕÒµ½ÍêÕûÓïÑÔÄ£Ê½¡£ÖĞÖ¹...
-echo Èç¹ûÄú¶Ô Powershell Ó¦ÓÃÁËÏŞÖÆ£¬Çë³·ÏûÕâĞ©¸ü¸Ä¡£
+echo PowerShell ÖĞÎ´ÕÒµ½ FullLanguage Ä£Ê½¡£ÕıÔÚÖĞÖ¹...
+echo Èç¹ûÄúÒÑ¶Ô Powershell Ó¦ÓÃÁËÏŞÖÆ£¬Ôò³·ÏûÕâĞ©¸ü¸Ä¡£
 set fixes=%fixes% %mas%fix_powershell
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%fix_powershell"
 goto dk_done
@@ -251,7 +258,7 @@ goto dk_done
 REM check Powershell core version
 
 cmd /c "%psc% "$PSVersionTable.PSEdition"" | find /i "Core" %nul1% && (
-echo MAS ĞèÒª Windows Powershell£¬µ«ËüËÆºõÒÑ±» Powershell Core È¡´ú¡£ÖĞÖ¹...
+echo MAS ĞèÒª Windows Powershell£¬µ«ËüËÆºõÒÑ±» Powershell ºËĞÄÈ¡´ú¡£ÕıÔÚÖĞÖ¹¡­¡­
 set fixes=%fixes% %mas%in-place_repair_upgrade
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
 goto dk_done
@@ -261,7 +268,7 @@ REM check for Mal-ware that may cause issues with Powershell
 
 for /r "%ProgramFiles%\" %%f in (secureboot.exe) do if exist "%%f" (
 echo "%%f"
-echo ·¢ÏÖ¶ñÒâÈí¼ş£¬PowerShell ÎŞ·¨Õı³£¹¤×÷¡£
+echo  ·¢ÏÖ Mal%blank%ware £¬PowerShell ÎŞ·¨Õı³£¹¤×÷¡£
 set fixes=%fixes% %mas%remove_mal%w%ware
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%remove_mal%w%ware"
 goto dk_done
@@ -272,7 +279,7 @@ REM check if .NET is working properly
 if /i "!tstresult2!"=="FullLanguage" (
 cmd /c "%psc% ""try {[System.AppDomain]::CurrentDomain.GetAssemblies(); [System.Math]::Sqrt(144)} catch {Exit 3}""" %nul%
 if !errorlevel!==3 (
-echo Windows Powershell ÎŞ·¨¼ÓÔØ .NET ÃüÁî¡£ÖĞÖ¹...
+echo Windows Powershell ÎŞ·¨¼ÓÔØ .NET ÃüÁî¡£ÕıÔÚÖĞÖ¹...
 set fixes=%fixes% %mas%in-place_repair_upgrade
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
 goto dk_done
@@ -281,16 +288,16 @@ goto dk_done
 
 REM check antivirus and other errors
 
-echo PowerShell ÎŞ·¨Õı³£¹¤×÷¡£ÖĞÖ¹...
+echo PowerShell ÎŞ·¨Õı³£¹¤×÷¡£ÕıÔÚÖĞÖ¹...
 
 if /i "!tstresult2!"=="FullLanguage" (
 echo:
-echo ÄúµÄ·À²¡¶¾Èí¼ş¿ÉÄÜ×èÖ¹ÁË½Å±¾¡£
+echo ÄúµÄ·À²¡¶¾Èí¼ş¿ÉÄÜ×èÖ¹ÁË¸Ã½Å±¾¡£
 echo:
 sc query sense | find /i "RUNNING" %nul% && (
-echo ÒÑ°²×°µÄÉ±¶¾Èí¼ş - Microsoft Defender for Endpoint
+echo ÒÑ°²×°µÄ·À²¡¶¾Èí¼ş - Microsoft Defender for Endpoint
 )
-cmd /c "%psc% ""$av = Get-WmiObject -Namespace root\SecurityCenter2 -Class AntiVirusProduct; $n = @(); foreach ($i in $av) { $n += $i.displayName }; if ($n) { Write-Host ('ÒÑ°²×°µÄÉ±¶¾Èí¼ş - ' + ($n -join ', '))}"""
+cmd /c "%psc% ""$av = Get-WmiObject -Namespace root\SecurityCenter2 -Class AntiVirusProduct; $n = @(); foreach ($i in $av) { $n += $i.displayName }; if ($n) { Write-Host ('Installed Antivirus - ' + ($n -join ', '))}"""
 )
 
 set fixes=%fixes% %mas%troubleshoot
@@ -330,11 +337,11 @@ reg query HKCU\Console /v QuickEdit %nul2% | find /i "0x0" %nul1% && set resetQE
 reg add HKCU\Console /v QuickEdit /t REG_DWORD /d 0 /f %nul1%
 
 if defined terminal (
-start conhost.exe "!_batf!" %_args% -qedit
+start conhost.exe "!_cmdf!" %_args% -qedit
 start reg add HKCU\Console /v QuickEdit /t REG_DWORD /d %resetQE% /f %nul1%
 exit /b
 ) else if %resetQE% EQU 1 (
-start cmd.exe /c ""!_batf!" %_args% -qedit"
+start cmd.exe /c ""!_cmdf!" %_args% -qedit"
 start reg add HKCU\Console /v QuickEdit /t REG_DWORD /d %resetQE% /f %nul1%
 exit /b
 )
@@ -342,6 +349,42 @@ exit /b
 :skipQE
 
 ::========================================================================================================================================
+
+::  Check for updates
+
+set -=
+set old=
+set pingp=
+set upver=%masver:.=%
+
+for %%A in (
+activ%-%ated.win
+mass%-%grave.dev
+) do if not defined pingp (
+for /f "delims=[] tokens=2" %%B in ('ping -n 1 %%A') do (
+if not "%%B"=="" (set old=1& set pingp=1)
+for /f "delims=[] tokens=2" %%C in ('ping -n 1 updatecheck%upver%.%%A') do (
+if not "%%C"=="" set old=
+)
+)
+)
+
+if defined old (
+echo ________________________________________________
+%eline%
+echo ÄúµÄ MAS [%masver%] °æ±¾ÒÑ¹ıÊ±¡£
+echo ________________________________________________
+echo:
+if not %_unattended%==1 (
+echo [1] ÏÂÔØ×îĞÂ°æ MAS
+echo [0] ÈÔÈ»¼ÌĞø
+echo:
+call :dk_color %_Green% "ÊäÈë²Ëµ¥Ïî [1,0] :"
+choice /C:10 /N
+if !errorlevel!==2 rem
+if !errorlevel!==1 (start %selfgit% & start %github% & start %mas% & exit /b)
+)
+)
 
 ::========================================================================================================================================
 
@@ -384,7 +427,7 @@ goto dk_done
 
 cls
 color 07
-title  ÔÚÏß¼¤»î½Å±¾ %masver%
+title  Microsoft %blank%Activation %blank%Scripts %masver%
 if not defined terminal mode 76, 34
 
 if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-Server*Edition~*.mum" set _serexist=1
@@ -412,7 +455,7 @@ echo:
 echo:
 echo:
 if %winbuild% GEQ 10240 if %winbuild% LEQ 19045 if not defined _serexist if not defined _evalexist if not defined _ltscexist (
-call :dk_color2 %_Green% "       ÌáÊ¾:" %_White% " Èç¹ûÄãÏëÔÚW10½áÊøÖ§³Öºó¼ÌĞøÊ¹ÓÃESU¸üĞÂÏµÍ³,ÇëÑ¡ÔñTSforge¼¤»î."
+call :dk_color2 %_Green% "       Tip:" %_White% " ÒªÔÚ W10 EOL Ö®ºó¼¤»î ESU ¸üĞÂ£¬ÇëÊ¹ÓÃ TSforge Ñ¡Ïî¡£"
 )
 echo:
 echo:
@@ -438,18 +481,18 @@ echo:             [3] TSforge             - Windows / Office / ESU
 echo:             [4] ÔÚÏß KMS            - Windows / Office
 echo:             __________________________________________________ 
 echo:
-echo:             [5] ¼ì²é ¼¤»î×´Ì¬
+echo:             [5] ¼ì²é¼¤»î×´Ì¬
 echo:             [6] ¸ü¸Ä Windows °æ±¾
-echo:             [7] ¸ü¸Ä Office  °æ±¾
+echo:             [7] ¸ü¸Ä Office °æ±¾
 echo:             __________________________________________________      
 echo:
 echo:             [8] ¹ÊÕÏÅÅ³ı
 echo:             [E] ¸½¼Ó²Ëµ¥
-echo:             [H] °ïÖúÎÄµµ
-echo:             [0] ÍË³ö³ÌĞò
+echo:             [H] °ïÖú
+echo:             [0] ÍË³ö
 echo:       ______________________________________________________________
 echo:
-call :dk_color2 %_White% "      " %_Green% "ÊäÈë²Ëµ¥Ïî [1,2,3...E,H,0] :"
+call :dk_color2 %_White% "         " %_Green% "Ê¹ÓÃ¼üÅÌÊäÈëÑ¡Ôñ [1,2,3...E,H,0] :"
 choice /C:12345678EH0 /N
 set _erl=%errorlevel%
 
@@ -534,22 +577,22 @@ echo:
 echo:
 echo:
 echo:                     ÌáÈ¡ $OEM$ ÎÄ¼ş¼Ğµ½×ÀÃæ           
-echo:           ________________________________________________________
+echo:         ____________________________________________________________
 echo:
 echo:            [1] HWID       [Windows]
 echo:            [2] Ohook      [Office]
 echo:            [3] TSforge    [Windows / ESU / Office]
-echo:            [4] ÔÚÏß KMS   [Windows / Office]
+echo:            [4] Online KMS [Windows / Office]
 echo:
 echo:            [5] HWID       [Windows] ^+ Ohook [Office]
 echo:            [6] HWID       [Windows] ^+ Ohook [Office] ^+ TSforge [ESU]
 echo:            [7] TSforge    [Windows / ESU] ^+ Ohook [Office]
 echo:
-call :dk_color2 %_White% "              [R] " %_Green% "°ïÖú"
-echo:              [0] ·µ»Ø
+call :dk_color2 %_White% "            [R] " %_Green% "ÔÄ¶ÁÎÒÃÇµÄÖ¸ÄÏ"
+echo:            [0] ·µ»Ø
 echo:         ____________________________________________________________
 echo:  
-call :dk_color2 %_White% "             " %_Green% "ÊäÈë²Ëµ¥Ïî:"
+2 %_White% "             " %_Green% "ÊäÈë²Ëµ¥Ïî :"
 choice /C:1234567R0 /N
 set _erl=%errorlevel%
 
@@ -558,7 +601,7 @@ if %_erl%==8 start %mas%oem-folder &goto:Extract$OEM$2
 if %_erl%==7 (set "_oem=TSforge [Windows / ESU] + Ohook [Office]" & set "para=/Z-Windows /Z-ESU /Ohook" &goto:Extract$OEM$3)
 if %_erl%==6 (set "_oem=HWID [Windows] + Ohook [Office] + TSforge [ESU]" & set "para=/HWID /Ohook /Z-ESU" &goto:Extract$OEM$3)
 if %_erl%==5 (set "_oem=HWID [Windows] + Ohook [Office]" & set "para=/HWID /Ohook" &goto:Extract$OEM$3)
-if %_erl%==4 (set "_oem=ÔÚÏß KMS" & set "para=/K-WindowsOffice" &goto:Extract$OEM$3)
+if %_erl%==4 (set "_oem=Online KMS" & set "para=/K-WindowsOffice" &goto:Extract$OEM$3)
 if %_erl%==3 (set "_oem=TSforge" & set "para=/Z-WindowsESUOffice" &goto:Extract$OEM$3)
 if %_erl%==2 (set "_oem=Ohook" & set "para=/Ohook" &goto:Extract$OEM$3)
 if %_erl%==1 (set "_oem=HWID" & set "para=/HWID" &goto:Extract$OEM$3)
@@ -573,7 +616,7 @@ set "_dir=!desktop!\$OEM$\$$\Setup\Scripts"
 md "!_dir!\"
 
 :: Add random data on top to create unique file which helps in avoiding AV's detections
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default); [io.file]::WriteAllText('!_pdesk!\$OEM$\$$\Setup\Scripts\MAS_AIO.cmd', '@::RANDOM-' + [Guid]::NewGuid().Guid + [Environment]::NewLine + $f, [Text.Encoding]::Default)"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!'); [io.file]::WriteAllText('!_pdesk!\$OEM$\$$\Setup\Scripts\MAS_AIO.cmd', '@::RANDOM-' + [Guid]::NewGuid().Guid + [Environment]::NewLine + $f, [System.Text.Encoding]::ASCII)"
 
 (
 echo @echo off
@@ -594,7 +637,7 @@ if exist "!desktop!\$OEM$\.*" rmdir /s /q "!desktop!\$OEM$\" %nul%
 ) else (
 echo:
 call :dk_color %Blue% "%_oem%"
-call :dk_color %Green% "³É¹¦ÔÚ×ÀÃæÉÏ´´½¨ $OEM$ ÎÄ¼ş¼Ğ¡£"
+call :dk_color %Green% "$OEM$ ÎÄ¼ş¼Ğ³É¹¦ÔÚ×ÀÃæ´´½¨¡£"
 )
 echo ___________________________________________________________________
 echo:
@@ -674,13 +717,13 @@ ClipUp.exe
 ) do (
 if not exist %SysPath%\%%# (
 %eline%
-echo [%SysPath%\%%#] ÎÄ¼şÈ±Ê§£¬ÕıÔÚÖĞÖ¹...
+echo [%SysPath%\%%#] ÎÄ¼ş¶ªÊ§£¬ÕıÔÚÖĞÖ¹¡­¡­
 echo:
 if not defined results (
-call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡Ôñ¹ÊÕÏÅÅ³ı²¢ÔËĞĞ DISM »¹Ô­ºÍ SFC É¨ÃèÑ¡Ïî¡£"
-call :dk_color %Blue% "Ö®ºó£¬ÖØÆôÏµÍ³²¢ÔÙ´Î³¢ÊÔ¼¤»î¡£"
+call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡ÔñÒÉÄÑ½â´ğ²¢ÔËĞĞ DISM »¹Ô­ºÍ SFC É¨ÃèÑ¡Ïî¡£"
+call :dk_color %Blue% "Ö®ºó£¬ÖØĞÂÆô¶¯ÏµÍ³²¢ÔÙ´Î³¢ÊÔ¼¤»î¡£"
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Èç¹ûÈÔÈ»³öÏÖÍ¬ÑùµÄ´íÎó£¬ÇëÖ´ĞĞÒÔÏÂ²Ù×÷ - " %_Yellow% " %mas%in-place_repair_upgrade"
 )
 goto dk_done
 )
@@ -705,7 +748,7 @@ if defined _perm (
 cls
 echo ___________________________________________________________________________________________
 echo:
-call :dk_color2 %_White% "     " %Green% "%winos% ÒÑÓÀ¾Ã¼¤»î¡£"
+call :dk_color2 %_White% "     " %Green% "¼ì²é: %winos% ÒÑÓÀ¾Ã¼¤»î¡£"
 echo ___________________________________________________________________________________________
 if %_unattended%==1 goto dk_done
 echo:
@@ -748,11 +791,11 @@ for /f "delims=[] tokens=2" %%# in ('ping -n 1 %%a') do (if not "%%#"=="" set _i
 
 if not defined _int (
 %psc% "If([Activator]::CreateInstance([Type]::GetTypeFromCLSID([Guid]'{DCB00C01-570F-4A9B-8D69-199FDBA5723B}')).IsConnectedToInternet){Exit 0}Else{Exit 1}"
-if !errorlevel!==0 (set _int=1&set ping_f= µ« Ping Ê§°Ü)
+if !errorlevel!==0 (set _int=1&set ping_f= But Ping Failed)
 )
 
 if defined _int (
-echo ¼ì²é»¥ÁªÍøÁ¬½Ó                      [ÒÑÁ¬½Ó %ping_f%]
+echo ¼ì²é»¥ÁªÍøÁ¬½Ó                      [ÒÑÁ¬½Ó%ping_f%]
 ) else (
 set error=1
 call :dk_color %Red% "¼ì²é»¥ÁªÍøÁ¬½Ó                      [Î´Á¬½Ó]"
@@ -788,7 +831,7 @@ set notworking=
 call :dk_actids 55c92734-d682-4d71-983e-d6ec3f16059f
 if defined allapps call :hwiddata key
 if not defined key (
-for /f "delims=" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':getactivationid\:.*';. ([scriptblock]::Create($f[1]))"') do (set altapplist=%%a)
+for /f "delims=" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':getactivationid\:.*';. ([scriptblock]::Create($f[1]))"') do (set altapplist=%%a)
 if defined altapplist call :hwiddata key
 )
 
@@ -854,7 +897,7 @@ for %%# in (US CN IN BR DE JP GB FR MX ID IT PK TR KR CA ES AU NG VN PL PH NL EG
 if defined regionchange (
 %psc% "Set-WinHomeLocation -GeoId 244" %nul%
 if !errorlevel! EQU 0 (
-echo ½« Windows ÇøÓò¸ü¸ÄÎªÃÀ¹ú           [³É¹¦]
+echo Changing Windows Region To USA          [Successful] [Script will change it back]
 ) else (
 call :dk_color %Red% "½« Windows ÇøÓò¸ü¸ÄÎªÃÀ¹ú           [Ê§°Ü]"
 )
@@ -896,7 +939,7 @@ set "_xmlexist=if exist "%tdir%\GenuineTicket.xml""
 %_xmlexist% (
 set error=1
 if exist "%tdir%\*.xml" del /f /q "%tdir%\*.xml" %nul%
-call :dk_color %Gray% "°²×° GenuineTicket.xml              [ÖØÆô ClipSVC ·şÎñÊ§°Ü, ÉÔµÈ...]"
+call :dk_color %Red% "°²×° GenuineTicket.xml              [ÖØÆô ClipSVC ·şÎñÊ§°Ü, ÉÔµÈ...]"
 )
 )
 
@@ -962,7 +1005,7 @@ call :dk_checkperm
 reg query "%_ident%" %nul% || (
 set error=1
 echo:
-call :dk_color %Red% "ÕıÔÚÉú³ÉĞÂµÄ IdentityCRL ×¢²á±í         [Ê§°Ü] [%_ident%]"
+call :dk_color %Red% "Éú³ÉĞÂµÄ IdentityCRL ×¢²á±í     [Ê§°Ü] [%_ident%]"
 )
 )
 
@@ -993,9 +1036,9 @@ login.live.com
 purchase.mp.microsoft.com
 licensing.mp.microsoft.com
 ) do (
-findstr /i "%%#" "%SysPath%\drivers\etc\hosts" %nul1% && set "hosfail= [%%# ÔÚ Hosts ÎÄ¼şÖĞ±»×èÖ¹]"
+findstr /i "%%#" "%SysPath%\drivers\etc\hosts" %nul1% && set "hosfail= [%%# Blocked in Hosts]"
 )
-call :dk_color %Red% "¼ì²éÊÚÈ¨·şÎñÆ÷                      [Á¬½ÓÊ§°Ü]!hosfail!"
+call :dk_color %Red% "¼ì²éÊÚÈ¨·şÎñÆ÷                      [Á¬½ÓÊ§°Ü]]!hosfail!"
 set fixes=%fixes% %mas%licensing-servers-issue
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%licensing-servers-issue"
 echo:
@@ -1011,14 +1054,14 @@ reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v DisableWin
 reg query "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v DoNotConnectToWindowsUpdateInternetLocations %nul2% | find /i "0x1" %nul% && set wublock=1
 if defined wublock (
 call :dk_color %Red% "ÕıÔÚ¼ì²é×¢²á±íÖĞµÄ¸üĞÂ×èÖ¹³ÌĞò      [·¢ÏÖ]"
-call :dk_color %Blue% "HWID ¼¤»îĞèÒªÓĞĞ§µÄ Windows ¸üĞÂ£¬Èç¹ûÄúÊ¹ÓÃÈÎºÎ¹¤¾ß×èÖ¹¸üĞÂ£¬Çë³·ÏûËü¡£"
+call :dk_color %Blue% "HWID ¼¤»îĞèÒªÕı³£ÔËĞĞµÄ Windows ¸üĞÂ£¬Èç¹ûÄúÊ¹ÓÃÁËÈÎºÎ¹¤¾ß×èÖ¹¸üĞÂ£¬Çë½«Æä³·Ïû¡£"
 echo:
 )
 
 reg query "HKLM\SOFTWARE\Policies\Microsoft\WindowsStore" /v DisableStoreApps %nul2% | find /i "0x1" %nul% && (
 set storeblock=1
 call :dk_color %Red% "ÕıÔÚ¼ì²é×¢²á±íÖĞµÄÓ¦ÓÃÉÌµê×èÖ¹³ÌĞò  [·¢ÏÖ]"
-call :dk_color %Blue% "Èç¹ûÄúÊ¹ÓÃÈÎºÎ¹¤¾ß×èÖ¹ÁËÎ¢ÈíÓ¦ÓÃÉÌµê£¬Çë³·ÏûËü¡£"
+call :dk_color %Blue% "Èç¹ûÄúÊ¹ÓÃÁËÈÎºÎ¹¤¾ßÀ´×èÖ¹Ó¦ÓÃÉÌµê£¬Çë½«Æä³·Ïû¡£"
 echo:
 )
 
@@ -1035,12 +1078,12 @@ if defined wucorrupt (
 set error=1
 call :dk_color %Red% "ÕıÔÚ¼ì²é Windows Update ×¢²á±í      [·¢ÏÖËğ»µ]"
 if !wcount! GTR 2 (
-call :dk_color %Red% "Windows ËÆºõ¸ĞÈ¾ÁË¶ñÒâÈí¼ş¡£"
+call :dk_color %Red% "Windows ËÆºõ¸ĞÈ¾ÁË Mal%w%ware."
 set fixes=%fixes% %mas%remove_mal%w%ware
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%remove_mal%w%ware"
 echo:
 ) else (
-call :dk_color %Blue% "HWID ¼¤»îĞèÒªÓĞĞ§µÄ Windows ¸üĞÂ£¬Èç¹ûÄúÊ¹ÓÃÈÎºÎ¹¤¾ß×èÖ¹¸üĞÂ£¬Çë³·ÏûËü¡£"
+call :dk_color %Blue% "HWID ¼¤»îĞèÒªÓĞĞ§µÄ Windows ¸üĞÂ£¬Èç¹ûÄúÊ¹ÓÃÈÎºÎ¹¤¾ßÀ´×èÖ¹¸üĞÂ£¬Çë³·ÏûËü¡£"
 echo:
 )
 ) else (
@@ -1050,7 +1093,7 @@ set error=1
 set wuerror=1
 sc start wuauserv %nul%
 call :dk_color %Red% "Æô¶¯ Windows ¸üĞÂ·şÎñ               [Ê§°Ü] [!errorlevel!]"
-call :dk_color %Blue% "HWID ¼¤»îĞèÒªÓĞĞ§µÄ Windows ¸üĞÂ£¬Èç¹ûÄúÊ¹ÓÃÈÎºÎ¹¤¾ß×èÖ¹¸üĞÂ£¬Çë³·ÏûËü¡£"
+call :dk_color %Blue% "HWID ¼¤»îĞèÒªÕı³£ÔËĞĞµÄ Windows ¸üĞÂ£¬Èç¹ûÄúÊ¹ÓÃÁËÈÎºÎ¹¤¾ß×èÖ¹¸üĞÂ£¬Çë½«Æä³·Ïû¡£"
 echo:
 )
 )
@@ -1080,7 +1123,7 @@ call :dk_color %Green% "%winos% ÒÑÊ¹ÓÃÊı×ÖĞí¿ÉÓÀ¾Ã¼¤»î¡£"
 call :dk_color %Red% "¼¤»îÊ§°Ü %error_code%"
 if defined notworking (
 call :dk_color %Blue% "ÔÚ±àĞ´±¾½Å±¾Ê±£¬´Ë²úÆ·²»Ö§³Ö HWID ¼¤»î¡£"
-call :dk_color %Blue% "Çë¸ÄÓÃÖ÷²Ëµ¥ÖĞµÄ TSforge ¼¤»îÑ¡Ïî¡£"
+call :dk_color %Blue% "ÇëÊ¹ÓÃÖ÷²Ëµ¥ÖĞµÄ TSforge ¼¤»îÑ¡Ïî¡£"
 ) else (
 if not defined error call :dk_color %Blue% "%_fixmsg%"
 set fixes=%fixes% %mas%troubleshoot
@@ -1103,7 +1146,7 @@ call :dk_color %Red% "»¹Ô­ Windows ÇøÓò                   [Ê§°Ü] [%name%-%nation
 )
 )
 
-REM if %osSKU%==175 call :dk_color %Red% "%winos% ²»Ö§³ÖÔÚ·Ç azure Æ½Ì¨ÉÏ¼¤»î¡£"
+REM if %osSKU%==175 call :dk_color %Red% "%winos% ²»Ö§³ÖÔÚ·Ç Azure Æ½Ì¨ÉÏ¼¤»î¡£"
 
 ::  Trigger reevaluation of SPP's Scheduled Tasks
 
@@ -1210,7 +1253,7 @@ for /f "tokens=3 delims=." %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Con
 if %_wmic% EQU 1 for /f "tokens=2 delims==" %%a in ('"wmic Path Win32_OperatingSystem Get OperatingSystemSKU /format:LIST" %nul6%') do if not errorlevel 1 set "wmiSKU=%%a"
 if %_wmic% EQU 0 for /f "tokens=1" %%a in ('%psc% "([WMI]'Win32_OperatingSystem=@').OperatingSystemSKU" %nul6%') do if not errorlevel 1 set "wmiSKU=%%a"
 
-if %winbuild% GEQ 15063 %psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':winsubstatus\:.*';. ([scriptblock]::Create($f[1]))" %nul2% | find /i "Subscription_is_activated" %nul% && (
+if %winbuild% GEQ 15063 %psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':winsubstatus\:.*';. ([scriptblock]::Create($f[1]))" %nul2% | find /i "Subscription_is_activated" %nul% && (
 if defined regSKU if defined slcSKU if not "%regSKU%"=="%slcSKU%" (
 set winsub=1
 set osSKU=%regSKU%
@@ -1267,14 +1310,14 @@ set keyerror=%errorlevel%
 cmd /c exit /b %keyerror%
 if %keyerror% NEQ 0 set "keyerror=[0x%=ExitCode%]"
 
-if defined generickey (set "keyecho=°²×°Í¨ÓÃ²úÆ·ÃÜÔ¿                   ") else (set "keyecho=°²×°²úÆ·ÃÜÔ¿                       ")
+if defined generickey (set "keyecho=Installing Generic Product Key         ") else (set "keyecho=Installing Product Key                 ")
 if %keyerror% EQU 0 (
 if %sps%==SoftwareLicensingService call :dk_refresh
-echo %keyecho% %~1 [³É¹¦]
+echo %keyecho% %~1 [Successful]
 ) else (
-call :dk_color %Red% "%keyecho% %~1 [Ê§°Ü] %keyerror%"
+call :dk_color %Red% "%keyecho% %~1 [Failed] %keyerror%"
 if not defined showfix (
-if defined altapplist call :dk_color %Red% "Î´ÕÒµ½´ËÃÜÔ¿µÄ¼¤»î ID¡£"
+if defined altapplist call :dk_color %Red% "ÕÒ²»µ½´ËÃÜÔ¿µÄ¼¤»î ID¡£"
 call :dk_color %Blue% "%_fixmsg%"
 echo:
 set showfix=1
@@ -1294,7 +1337,7 @@ if %_wmic% EQU 1 wmic path %spp% where "ApplicationID='55c92734-d682-4d71-983e-d
 if %_wmic% EQU 0 %psc% "try {$null=(([WMISEARCHER]'SELECT ID FROM %spp% WHERE ApplicationID=''55c92734-d682-4d71-983e-d6ec3f16059f'' AND PartialProductKey IS NOT NULL AND LicenseDependsOn is NULL').Get()).Activate(); exit 0} catch { exit $_.Exception.InnerException.HResult }" %nul%
 set error_code=%errorlevel%
 cmd /c exit /b %error_code%
-if %error_code% NEQ 0 (set "error_code=[´íÎó´úÂë: 0x%=ExitCode%]") else (set error_code=)
+if %error_code% NEQ 0 (set "error_code=[Error Code: 0x%=ExitCode%]") else (set error_code=)
 exit /b
 
 ::  Get all products Activation IDs
@@ -1414,15 +1457,15 @@ set spperror=%errorlevel%
 
 if %spperror% NEQ 1056 if %spperror% NEQ 0 (
 %eline%
-echo sc start %_slser% [´íÎó´úÂë: %spperror%]
+echo sc start %_slser% [Error Code: %spperror%]
 if %spperror% EQU 1053 (
-call :dk_color %Blue% "Ê¹ÓÃÖØÆôÑ¡ÏîÖØÆôÄãµÄ¼ÆËã»ú£¬È»ºóÖØÊÔ¡£"
-call :dk_color %Blue% "Èç¹ûÈÔÈ»ÎŞ·¨Õı³£¹¤×÷£¬Çë·µ»ØÖ÷²Ëµ¥£¬Ñ¡Ôñ¹ÊÕÏÅÅ³ı²¢ÔËĞĞĞŞ¸´ WPA ×¢²á±íÑ¡Ïî¡£"
+call :dk_color %Blue% "ÇëÊ¹ÓÃÖØÆôÑ¡ÏîÖØÆô¼ÆËã»ú£¬È»ºóÖØÊÔ¡£"
+call :dk_color %Blue% "Èç¹ûÈÔÈ»ÎŞĞ§£¬Çë·µ»ØÖ÷²Ëµ¥£¬Ñ¡Ôñ¡°ÒÉÄÑ½â´ğ¡±£¬È»ºóÔËĞĞ¡°ĞŞ¸´ WPA ×¢²á±í¡±Ñ¡Ïî¡£"
 )
 )
 
 echo:
-%psc% "$job = Start-Job { (Get-WmiObject -Query 'SELECT * FROM %sps%').Version }; if (-not (Wait-Job $job -Timeout 30)) {write-host '%_slser% ÎŞ·¨Õı³£¹¤×÷¡£ ²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - %mas%troubleshoot'}"
+%psc% "$job = Start-Job { (Get-WmiObject -Query 'SELECT * FROM %sps%').Version }; if (-not (Wait-Job $job -Timeout 30)) {write-host '%_slser% is not working correctly. ²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - %mas%troubleshoot'}"
 exit /b
 
 ::  Get Product name (WMI/REG methods are not reliable in all conditions, hence winbrand.dll method is used)
@@ -1488,14 +1531,14 @@ if %hcount%==4 set "results=[·À²¡¶¾ÍøÖ·ÔÚ hosts ÎÄ¼şÖĞ±»×èÖ¹]"
 
 sc start %_slser% %nul%
 echo "%errorlevel%" | findstr "577 225" %nul% && (
-set "results=%results%[¿ÉÄÜÊÇÎÄ¼ş¸ĞÈ¾Õß²¡¶¾]"
+set "results=%results%[¿ÉÄÜµÄÎÄ¼ş¸ĞÈ¾³ÌĞò]"
 ) || (
-if not exist %SysPath%\%_slexe% if not exist %SysPath%\alg.exe (set "results=%results%[¿ÉÄÜÊÇÎÄ¼ş¸ĞÈ¾Õß²¡¶¾]")
+if not exist %SysPath%\%_slexe% if not exist %SysPath%\alg.exe (set "results=%results%[¿ÉÄÜµÄÎÄ¼ş¸ĞÈ¾³ÌĞò]")
 )
 
 if not "%results%%pupfound%"=="" (
-if defined pupfound call :dk_color %Gray% "¼ì²é PUP ¼¤»î¹¤¾ß                   [·¢ÏÖ%pupfound%]"
-if defined results call :dk_color %Red% "ÕıÔÚ¼ì²é¿ÉÄÜµÄ¶ñÒâÈí¼ş¸ĞÈ¾..."
+if defined pupfound call :dk_color %Gray% "¼ì²é PUP ¼¤»îÆ÷                     [·¢ÏÖ%pupfound%]"
+if defined results call :dk_color %Red% "ÕıÔÚ¼ì²é¿ÉÄÜµÄ Mal%w%ware ¸ĞÈ¾..."
 if defined results (call :dk_color %Red% "%results%"&set showfix=1)
 set fixes=%fixes% %mas%remove_mal%w%ware
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%remove_mal%w%ware"
@@ -1522,9 +1565,9 @@ call :dk_chkmal
 ::  Check Sandboxing
 
 sc query Null %nul% || (
-call :dk_color %Red% "ÕıÔÚ¼ì²éÉ³Ïä                        [·¢ÏÖ£¬½Å±¾¿ÉÄÜÎŞ·¨Õı³£¹¤×÷¡£]"
+call :dk_color %Red% "¼ì²éÉ³ºĞ                     [·¢ÏÖ£¬½Å±¾¿ÉÄÜÎŞ·¨Õı³£¹¤×÷]"
 if not defined showfix (
-call :dk_color %Blue% "Èç¹ûÄúÊ¹ÓÃµÄÊÇÈÎºÎµÚÈı·½·À²¡¶¾Èí¼ş£¬Çë¼ì²éËüÊÇ·ñ×èÖ¹ÁË½Å±¾¡£"
+call :dk_color %Blue% "Èç¹ûÄúÕıÔÚÊ¹ÓÃÈÎºÎµÚÈı·½·À²¡¶¾Èí¼ş£¬Çë¼ì²éËüÊÇ·ñ×èÖ¹ÁË¸Ã½Å±¾¡£"
 echo:
 )
 set error=1
@@ -1539,7 +1582,7 @@ reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinPE" /v InstRoot 
 
 call :dk_color %Red% "¼ì²é WinPE                          [·¢ÏÖ]"
 if not defined showfix (
-call :dk_color %Blue% "·¢ÏÖ WinPE Ä£Ê½¡£ÖØĞÂÆô¶¯ÏµÍ³²¢ÒÔÕı³£Ä£Ê½ÔËĞĞ¡£"
+call :dk_color %Blue% "ÕÒµ½ WinPE Ä£Ê½¡£ÖØĞÂÆô¶¯ÏµÍ³²¢ÒÔÕı³£Ä£Ê½ÔËĞĞ¡£"
 echo:
 )
 set error=1
@@ -1551,7 +1594,7 @@ set showfix=1
 ::  Check Safe mode
 
 if defined safeboot_option (
-call :dk_color %Red% "¼ì²éÆô¶¯Ä£Ê½                        [%safeboot_option%]"
+call :dk_color %Red% "¼ì²éÆô¶¯Ä£Ê½                      [%safeboot_option%]"
 if not defined showfix (
 call :dk_color %Blue% "·¢ÏÖ°²È«Ä£Ê½¡£ÖØĞÂÆô¶¯ÏµÍ³²¢ÒÔÕı³£Ä£Ê½ÔËĞĞ¡£"
 echo:
@@ -1568,10 +1611,10 @@ set showfix=1
 for /f "skip=2 tokens=2*" %%A in ('reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Setup\State" /v ImageState') do (set imagestate=%%B)
 
 if /i not "%imagestate%"=="IMAGE_STATE_COMPLETE" (
-call :dk_color %Gray% "¼ì²é Windows °²×°×´Ì¬               [%imagestate%]"
+call :dk_color %Gray% "¼ì²é Windows °²×°×´Ì¬            [%imagestate%]"
 echo "%imagestate%" | find /i "RESEAL" %nul% && (
 if not defined showfix (
-call :dk_color %Blue% "Èç¹ûÄúÔÚÉóºËÄ£Ê½ÏÂÔËĞĞ£¬ÇëÔÚÕı³£Ä£Ê½ÏÂÔËĞĞ¡£"
+call :dk_color %Blue% "Èç¹ûÄúÔÚÉó¼ÆÄ£Ê½ÏÂÔËĞĞËü£¬ÔòĞèÒªÔÚÕı³£Ä£Ê½ÏÂÔËĞĞËü¡£"
 echo:
 )
 set error=1
@@ -1580,7 +1623,7 @@ set showfix=1
 echo "%imagestate%" | find /i "UNDEPLOYABLE" %nul% && (
 if not defined showfix (
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Èç¹û¼¤»îÊ§°Ü£¬ÇëÖ´ĞĞ´Ë²Ù×÷ - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Èç¹û¼¤»îÊ§°Ü£¬ÇëÖ´ĞĞÒÔÏÂ²Ù×÷ - " %_Yellow% " %mas%in-place_repair_upgrade"
 echo:
 )
 )
@@ -1605,7 +1648,7 @@ if defined _corrupt (if defined serv_cor (set "serv_cor=!serv_cor! %%#!_regcorr!
 )
 
 if defined serv_cor (
-call :dk_color %Red% "¼ì²éËğ»µµÄ·şÎñ                      [%serv_cor%]"
+call :dk_color %Red% "¼ì²éËğ»µµÄ·şÎñ               [%serv_cor%]"
 
 if not defined showfix (
 echo:
@@ -1658,13 +1701,13 @@ if defined serv_cste (set "serv_cste=!serv_cste! %%#") else (set "serv_cste=%%#"
 if defined serv_csts call :dk_color %Gray% "ÆôÓÃÒÑ½ûÓÃµÄ·şÎñ                    [³É¹¦] [%serv_csts%]"
 
 if defined serv_cste (
-call :dk_color %Red% "ÆôÓÃÒÑ½ûÓÃµÄ·şÎñ                    [Ê§°Ü] [%serv_cste%]"
+call :dk_color %Red% "ÆôÓÃÒÑ½ûÓÃµÄ·şÎñ              [Failed] [%serv_cste%]"
 
 if not defined showfix (
 echo:
 echo %serv_cste% | findstr /i "ClipSVC sppsvc" %nul% && (
-echo ÒÑÓ¦ÓÃ×¢²á±íĞŞ²¹³ÌĞòÒÔÆôÓÃÒÑ½ûÓÃµÄ·şÎñ¡£
-call :dk_color %Blue% "Ê¹ÓÃÖØĞÂÆô¶¯Ñ¡ÏîÖØĞÂÆô¶¯¼ÆËã»úÒÔĞŞ¸´´Ë´íÎó¡£"
+echo ÒÑÓ¦ÓÃ×¢²á±íĞŞ¸´À´ÆôÓÃÒÑ½ûÓÃµÄ·şÎñ¡£
+call :dk_color %Blue% "Ê¹ÓÃÖØÆôÑ¡ÏîÖØĞÂÆô¶¯ÄúµÄ»úÆ÷À´ĞŞ¸´´Ë´íÎó¡£"
 ) || (
 set fixes=%fixes% %mas%in-place_repair_upgrade
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
@@ -1698,15 +1741,15 @@ if defined checkerror if defined serv_e (set "serv_e=!serv_e!, %%#-!errorcode!")
 )
 
 if defined serv_e (
-call :dk_color %Red% "Æô¶¯·şÎñ                            [Ê§°Ü] [%serv_e%]"
+call :dk_color %Red% "Starting Services                       [Failed] [%serv_e%]"
 
 if not defined showfix (
 set listwospp=%_serv:sppsvc=%
 echo %serv_e% | findstr /i "!listwospp!" %nul% && (
 set showfix=1
-call :dk_color %Blue% "Ê¹ÓÃÖØĞÂÆô¶¯Ñ¡ÏîÖØĞÂÆô¶¯¼ÆËã»ú²¢ÔÙ´ÎÔËĞĞ½Å±¾¡£"
+call :dk_color %Blue% "Ê¹ÓÃÖØÆôÑ¡ÏîÖØĞÂÆô¶¯ÄúµÄ»úÆ÷²¢ÔÙ´ÎÔËĞĞ¸Ã½Å±¾¡£"
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "Èç¹û·şÎñ´íÎóÈÔÎ´ĞŞ¸´£¬ÇëÖ´ĞĞ´Ë²Ù×÷ - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Èç¹û·şÎñ´íÎóÈÔÎ´ĞŞ¸´£¬ÇëÖ´ĞĞÒÔÏÂ²Ù×÷ - " %_Yellow% " %mas%in-place_repair_upgrade"
 echo:
 )
 )
@@ -1735,7 +1778,7 @@ if defined wmifailed (
 call :dk_color %Red% "¼ì²é WMI                            [²»¹¤×÷]"
 
 if not defined showfix (
-call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡Ôñ¹ÊÕÏÅÅ³ı²¢ÔËĞĞĞŞ¸´ WMI Ñ¡Ïî¡£"
+call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡ÔñÒÉÄÑ½â´ğ²¢ÔËĞĞĞŞ¸´ WMI Ñ¡Ïî¡£"
 echo:
 )
 set error=1
@@ -1747,7 +1790,7 @@ set showfix=1
 ::  Check SPP Registry Key
 
 if %winbuild% GEQ 7600 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Plugins\Objects\msft:rm/algorithm/hwid/4.0" /f ba02fed39662 /d %nul% || (
-call :dk_color %Red% "¼ì²é SPP ×¢²á±íÏî                   [·¢ÏÖ²»ÕıÈ·Ä£¿é] [×îÓĞ¿ÉÄÜÊÇÓÉÓÎÏ·ÆÛÆ­ÕßÒıÆğµÄ]"
+call :dk_color %Red% "¼ì²é SPP ×¢²á±íÏî               [·¢ÏÖ´íÎóµÄ ModuleId] [×îÓĞ¿ÉÄÜÊÇÓÉÓÎÏ·ÆÛÆ­ÕßÔì³ÉµÄ]"
 if not defined showfix (
 set fixes=%fixes% %mas%issues_due_to_gaming_spoofers
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%issues_due_to_gaming_spoofers"
@@ -1767,7 +1810,7 @@ for /f "skip=2 tokens=2*" %%a in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT
 if %winbuild% LSS 9200 set "tokenstore=%Systemdrive%\Windows\ServiceProfiles\NetworkService\AppData\Roaming\Microsoft\SoftwareProtectionPlatform"
 
 if %winbuild% GEQ 9200 if /i not "!tokenstore!"=="%SysPath%\spp\store" if /i not "!tokenstore!"=="%SysPath%\spp\store\2.0" if /i not "!tokenstore!"=="%SysPath%\spp\store_test\2.0" (
-call :dk_color %Red% "¼ì²éÁîÅÆ´æ´¢×¢²á±íÏî                [ÕÒ²»µ½ÕıÈ·µÄÂ·¾¶] [!tokenstore!]"
+call :dk_color %Red% "¼ì²é TokenStore ×¢²á±íÏî        [Î´ÕÒµ½ÕıÈ·Â·¾¶] [!tokenstore!]"
 if not defined showfix (
 set fixes=%fixes% %mas%in-place_repair_upgrade
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
@@ -1795,9 +1838,9 @@ set "d=!d! Set-Acl -Path %tokenstore% -AclObject $AclObject;"
 %psc% "!d!" %nul%
 
 if exist "%tokenstore%\" (
-call :dk_color %Gray% "¼ì²é SPP ÁîÅÆÎÄ¼ş¼Ğ                [Î´·¢ÏÖ, Á¢¼´´´½¨] [%tokenstore%\]"
+call :dk_color %Gray% "¼ì²é SPP ÁîÅÆÎÄ¼ş¼Ğ                 [Î´·¢ÏÖ£¬Á¢¼´´´½¨] [%tokenstore%\]"
 ) else (
-call :dk_color %Red% "¼ì²é SPP ÁîÅÆÎÄ¼ş¼Ğ                [Î´·¢ÏÖ, ´´½¨Ê§°Ü] [%tokenstore%\]"
+call :dk_color %Red% "¼ì²é SPP ÁîÅÆÎÄ¼ş¼Ğ                 [Î´·¢ÏÖ£¬´´½¨Ê§°Ü] [%tokenstore%\]"
 if not defined showfix (
 set fixes=%fixes% %mas%in-place_repair_upgrade
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
@@ -1836,12 +1879,12 @@ reg query "HKU\S-1-5-20\Software\Microsoft\Windows NT\CurrentVersion" %nul% && (
 set "pol=HKU\S-1-5-20\Software\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\Policies"
 reg query "!pol!" %nul% || reg add "!pol!" %nul%
 %psc% "$netServ = (New-Object Security.Principal.SecurityIdentifier('S-1-5-20')).Translate([Security.Principal.NTAccount]).Value; $aclString = Get-Acl 'Registry::!pol!' | Format-List | Out-String; if (-not ($aclString.Contains($netServ + ' Allow  FullControl') -or $aclString.Contains('NT SERVICE\sppsvc Allow  FullControl')) -or ($aclString.Contains('Deny'))) {Exit 3}" %nul%
-if !errorlevel!==3 set "permerror=Error Found In S-1-5-20 SPP"
+if !errorlevel!==3 set "permerror=ÔÚ S-1-5-20 SPP ÖĞ·¢ÏÖ´íÎó"
 )
 )
 
 if defined permerror (
-call :dk_color %Red% "¼ì²é SPP È¨ÏŞ                       [!permerror!]"
+call :dk_color %Red% "¼ì²é SPP È¨ÏŞ                [!permerror!]"
 if not defined showfix (
 call :dk_color %Blue% "%_fixmsg%"
 echo:
@@ -1857,13 +1900,13 @@ set showfix=1
 
 set chkalp=
 set wpainfo=NotFound
-for /f "delims=" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':wpatest\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (set wpainfo=%%a)
+for /f "delims=" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':wpatest\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (set wpainfo=%%a)
 for /f "delims=0123456789" %%i in ("%wpainfo%") do set chkalp=%%i
 
 if defined chkalp (
-call :dk_color %Red% "¼ì²é WPA ×¢²á±í´íÎó                [%wpainfo%]"
+call :dk_color %Red% "¼ì²é WPA ×¢²á±í´íÎó            [%wpainfo%]"
 if not defined showfix (
-echo "%wpainfo%" | find /i "Error Found" %nul% && (
+echo "%wpainfo%" | find /i "·¢ÏÖ´íÎó" %nul% && (
 call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡ÔñÒÉÄÑ½â´ğ²¢ÔËĞĞĞŞ¸´ WPA ×¢²á±íÑ¡Ïî¡£"
 echo:
 set error=1
@@ -1875,12 +1918,12 @@ set wpainfo=a
 
 if not defined chkalp (
 if %wpainfo% GEQ 5000 (
-call :dk_color %Gray% "¼ì²é WPA ×¢²á±í¼ÆÊı                 [%wpainfo%]"
-call :dk_color %Blue% "·¢ÏÖ´óÁ¿ WPA ×¢²á±í£¬Õâ¿ÉÄÜ»áµ¼ÖÂ CPU Ê¹ÓÃÂÊ¹ı¸ß¡£"
+call :dk_color %Gray% "¼ì²é WPA ×¢²á±í¼ÆÊı             [%wpainfo%]"
+call :dk_color %Blue% "·¢ÏÖ´óÁ¿ WPA ×¢²á±í£¬¿ÉÄÜµ¼ÖÂ CPU Ê¹ÓÃÂÊ¹ı¸ß¡£"
 call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡ÔñÒÉÄÑ½â´ğ²¢ÔËĞĞĞŞ¸´ WPA ×¢²á±íÑ¡Ïî¡£"
 echo:
 ) else (
-echo ¼ì²é WPA ×¢²á±í¼ÆÊı                 [%wpainfo%]
+echo ¼ì²é WPA ×¢²á±í¼ÆÊı             [%wpainfo%]
 )
 )
 
@@ -1889,9 +1932,9 @@ echo ¼ì²é WPA ×¢²á±í¼ÆÊı                 [%wpainfo%]
 ::  Check Rearm
 
 reg query "HKU\S-1-5-20\Software\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform\PersistedTSReArmed" %nul% && (
-call :dk_color %Red% "¼ì²éÖØĞÂ°²×°                          [ÏµÍ³ÒÑÖØĞÂ°²×°]"
+call :dk_color %Red% "¼ì²é Rearm                          [ÏµÍ³±»ÖØĞÂÉèÖÃ]"
 if not defined showfix (
-call :dk_color %Blue% "Ê¹ÓÃÖØĞÂÆô¶¯Ñ¡ÏîÖØĞÂÆô¶¯¼ÆËã»úÒÔĞŞ¸´´Ë´íÎó¡£"
+call :dk_color %Blue% "Ê¹ÓÃÖØÆôÑ¡ÏîÖØĞÂÆô¶¯ÄúµÄ»úÆ÷À´ĞŞ¸´´Ë´íÎó¡£"
 echo:
 )
 set error=1
@@ -1900,9 +1943,9 @@ set showfix=1
 
 
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ClipSVC\Volatile\PersistedSystemState" %nul% && (
-call :dk_color %Red% "¼ì²é ClipSVC ³Ö¾Ã»¯ÏµÍ³×´Ì¬         [·¢ÏÖ]"
+call :dk_color %Red% "¼ì²é ClipSVC PersistedSystemState   [·¢ÏÖ]"
 if not defined showfix (
-call :dk_color %Blue% "Ê¹ÓÃÖØĞÂÆô¶¯Ñ¡ÏîÖØĞÂÆô¶¯¼ÆËã»úÒÔĞŞ¸´´Ë´íÎó¡£"
+call :dk_color %Blue% "Ê¹ÓÃÖØÆôÑ¡ÏîÖØĞÂÆô¶¯ÄúµÄ»úÆ÷À´ĞŞ¸´´Ë´íÎó¡£"
 echo:
 )
 set error=1
@@ -1914,10 +1957,10 @@ set showfix=1
 ::  Check SoftwareLicensingService
 
 if %error_code% NEQ 0 (
-call :dk_color %Red% "¼ì²éÈí¼şĞí¿É·şÎñ                    [²»¹¤×÷] [%error_code%]"
+call :dk_color %Red% "¼ì²éÈí¼şĞí¿É·şÎñ       [Ã»ÓĞÔËĞĞ] [%error_code%]"
 if not defined showfix (
 call :dk_color %Blue% "%_fixmsg%"
-call :dk_color %Blue% "Èç¹û¼¤»îÈÔÈ»Ê§°Ü£¬ÇëÔËĞĞĞŞ¸´ WPA ×¢²á±íÑ¡Ïî¡£"
+call :dk_color %Blue% "Èç¹û¼¤»îÈÔÈ»Ê§°Ü£¬ÔòÔËĞĞĞŞ¸´ WPA ×¢²á±íÑ¡Ïî¡£"
 echo:
 )
 set error=1
@@ -1931,7 +1974,7 @@ set showfix=1
 call :dk_actid 55c92734-d682-4d71-983e-d6ec3f16059f
 
 if not defined apps (
-%psc% "if (-not $env:_vis) {Start-Job { Stop-Service %_slser% -force } | Wait-Job -Timeout 20 | Out-Null}; $sls = Get-WmiObject SoftwareLicensingService; $f=[System.IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
+%psc% "if (-not $env:_vis) {Start-Job { Stop-Service %_slser% -force } | Wait-Job -Timeout 20 | Out-Null}; $sls = Get-WmiObject SoftwareLicensingService; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
 if not defined _vis if !errorlevel! NEQ 0 set rlicfailed=1
 call :dk_actid 55c92734-d682-4d71-983e-d6ec3f16059f
 )
@@ -1939,14 +1982,14 @@ call :dk_actid 55c92734-d682-4d71-983e-d6ec3f16059f
 if not defined apps call :dk_actids 55c92734-d682-4d71-983e-d6ec3f16059f
 
 if not defined apps if defined allapps if not defined notwinact (
-call :dk_color %Gray% "¼ì²é¼¤»î ID                         [Î´°²×°ÃÜÔ¿»òÎ´ÕÒµ½¼¤»î ID]"
+call :dk_color %Gray% "¼ì²é¼¤»îID                 [Î´°²×°ÃÜÔ¿»òÎ´ÕÒµ½ Act ID]"
 )
 
 if not defined apps if not defined allapps (
-call :dk_color %Red% "¼ì²é¼¤»î ID                         [Î´·¢ÏÖ]"
+call :dk_color %Red% "¼ì²é¼¤»îID                 [Ã»ÓĞ·¢ÏÖ]"
 if not defined showfix (
 call :dk_color %Blue% "%_fixmsg%"
-call :dk_color %Blue% "Èç¹û¼¤»îÈÔÈ»Ê§°Ü£¬ÇëÔËĞĞĞŞ¸´ WPA ×¢²á±íÑ¡Ïî¡£"
+call :dk_color %Blue% "Èç¹û¼¤»îÈÔÈ»Ê§°Ü£¬ÔòÔËĞĞĞŞ¸´ WPA ×¢²á±íÑ¡Ïî¡£"
 echo:
 )
 set error=1
@@ -1955,12 +1998,12 @@ set showfix=1
 
 if not defined showfix if defined rlicfailed (
 call :dk_color %Blue% "%_fixmsg%"
-call :dk_color %Blue% "Èç¹û¼¤»îÈÔÈ»Ê§°Ü£¬ÇëÔËĞĞĞŞ¸´ WPA ×¢²á±íÑ¡Ïî¡£"
+call :dk_color %Blue% "Èç¹û¼¤»îÈÔÈ»Ê§°Ü£¬ÔòÔËĞĞĞŞ¸´ WPA ×¢²á±íÑ¡Ïî¡£"
 echo:
 )
 
 if %winbuild% GEQ 7600 if exist "%tokenstore%\" if not exist "%tokenstore%\tokens.dat" (
-call :dk_color %Red% "¼ì²é SPP tokens.dat                 [Î´·¢ÏÖ] [%tokenstore%\]"
+call :dk_color %Red% "¼ì²éSPP tokens.dat                 [Ã»ÓĞ·¢ÏÖ] [%tokenstore%\]"
 )
 
 ::==============================
@@ -1969,9 +2012,9 @@ call :dk_color %Red% "¼ì²é SPP tokens.dat                 [Î´·¢ÏÖ] [%tokenstore%
 
 if not defined notwinact if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-*EvalEdition~*.mum" (
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v EditionID %nul2% | find /i "Eval" %nul1% || (
-call :dk_color %Red% "¼ì²éÆÀ¹À°ü                          [ÕÒµ½Ğí¿ÉÖ¤½»»»¡£·ÇÆÀ¹ÀĞí¿ÉÖ¤°²×°ÔÚÆÀ¹À Windows ÖĞ]"
+call :dk_color %Red% "¼ì²éÆÀ¹À°ü                  [·¢ÏÖĞí¿ÉÖ¤½»»»¡£·ÇÆÀ¹ÀĞí¿ÉÖ¤ÒÑ°²×°ÔÚÆÀ¹À Windows ÖĞ]"
 if not defined showfix (
-call :dk_color %Blue% "Ğí¿ÉÖ¤½»»»²»ÊÇÉı¼¶µ½ÍêÕû°æµÄÕıÈ··½·¨¡£ÔÚÏÂÃæµÄÁ´½ÓÖĞÁË½âÕıÈ·µÄ·½·¨¡£"
+call :dk_color %Blue% "Ğí¿ÉÖ¤½»»»²¢·ÇÉı¼¶µ½ÍêÕû°æµÄÕıÈ··½·¨¡£Çëµã»÷ÏÂ·½Á´½ÓÁË½âÕıÈ·µÄ·½·¨¡£"
 set fixes=%fixes% %mas%evaluation_editions
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%evaluation_editions"
 echo:
@@ -1986,7 +2029,7 @@ set showfix=1
 ::  Check HKU\S-1-5-20\Software registry, in some systems it's missing and that causes Windows activation problems
 
 reg query "HKU\S-1-5-20\Software\Microsoft\Windows NT\CurrentVersion" %nul% || (
-call :dk_color %Red% "¼ì²é HKU\S-1-5-20 ×¢²á±í            [Î´·¢ÏÖ]"
+call :dk_color %Red% "Checking HKU\S-1-5-20 Registry          [Ã»ÓĞ·¢ÏÖ]"
 if not defined showfix (
 set fixes=%fixes% %mas%in-place_repair_upgrade
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
@@ -2016,18 +2059,18 @@ if "%osSKU%"=="165" set osedition=ProfessionalEducationN
 
 if not defined notwinact (
 if %osedition%==0 (
-call :dk_color %Red% "¼ì²é°æ±¾Ãû³Æ                        [×¢²á±íÖĞÎ´ÕÒµ½]"
+call :dk_color %Red% "¼ì²é°æ±¾Ãû³Æ                   [×¢²á±íÖĞÎ´ÕÒµ½]"
 ) else (
 if not exist "%SysPath%\spp\tokens\skus\%osedition%\%osedition%*.xrm-ms" if not exist "%SysPath%\spp\tokens\skus\Security-SPP-Component-SKU-%osedition%\*-%osedition%-*.xrm-ms" if not exist "%SysPath%\licensing\skus\Security-Licensing-SLC-Component-SKU-%osedition%\*-%osedition%-*.xrm-ms" (
 set skunotfound=1
-call :dk_color %Red% "¼ì²éĞí¿ÉÖ¤ÎÄ¼ş                      [Î´ÕÒµ½] [%osedition%]"
+call :dk_color %Red% "¼ì²éĞí¿ÉÖ¤ÎÄ¼ş                  [Ã»ÓĞ·¢ÏÖ] [%osedition%]"
 )
 if not exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-*-%osedition%-*.mum" (
 if not exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-%osedition%Edition*.mum" (
-call :dk_color %Red% "¼ì²é³ÌĞò°üÎÄ¼ş                      [Î´ÕÒµ½] [%osedition%]"
+call :dk_color %Red% "¼ì²é°üÎÄ¼ş                  [Ã»ÓĞ·¢ÏÖ] [%osedition%]"
 if not defined showfix (
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%in-place_repair_upgrade"
 echo:
 )
 set error=1
@@ -2064,7 +2107,7 @@ call :dk_color %Gray% "¼ì²é SLC/WMI SKU                    [·¢ÏÖ²îÒì - SLC:%slcS
 sc query wlms %nul%
 
 if %errorlevel% NEQ 1060 (
-echo ¼ì²éÆÀ¹À WLMS ·şÎñ                  [·¢ÏÖ]
+echo ¼ì²é Eval WLMS ·şÎñ              [·¢ÏÖ]
 )
 
 ::==============================
@@ -2076,14 +2119,14 @@ reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Ima%w%ge File Execu
 )
 if defined _sppint (
 echo %_sppint% | find /i "PerfOptions" %nul% && (
-call :dk_color %Red% "¼ì²é IFEO ÖĞµÄ SPP ¸ÉÈÅ             [%_sppint% - ÏµÍ³¿ÉÄÜÉÔºóÍ£ÓÃ]"
+call :dk_color %Red% "¼ì²é IFEO ÖĞµÄ SPP ¸ÉÈÅ       [%_sppint% - ÏµÍ³ÉÔºó¿ÉÄÜ»áÍ£ÓÃ]"
 if not defined showfix (
 call :dk_color %Blue% "%_fixmsg%"
 echo:
 )
 set showfix=1
 ) || (
-echo ÔÚ IFEO ÖĞ¼ì²é SPP                  [%_sppint%]
+echo ÔÚ IFEO ÖĞ¼ì²é SPP                    [%_sppint%]
 )
 )
 
@@ -2093,7 +2136,7 @@ echo ÔÚ IFEO ÖĞ¼ì²é SPP                  [%_sppint%]
 
 if %winbuild% GEQ 7600 for /f "skip=2 tokens=2*" %%a in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "SkipRearm" %nul6%') do if /i %%b NEQ 0x0 (
 reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "SkipRearm" /t REG_DWORD /d "0" /f %nul%
-call :dk_color %Gray% "¼ì²é SkipRearm                      [Î´ÕÒµ½Ä¬ÈÏ 0 Öµ£¬ÕıÔÚ¸ü¸ÄÎª 0]"
+call :dk_color %Gray% "¼ì²é SkipRearm                      [Î´ÕÒµ½Ä¬ÈÏÖµ 0¡£¸ü¸ÄÎª 0]"
 %psc% "Start-Job { Stop-Service sppsvc -force } | Wait-Job -Timeout 20 | Out-Null"
 )
 
@@ -2108,15 +2151,15 @@ for /f "delims=" %%a in ('%psc% "$s=New-Object -ComObject 'Schedule.Service'; $s
 echo !taskinfo! | find /i "Ready" %nul% || (
 reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "actionlist" /f %nul%
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\Microsoft\Windows\SoftwareProtectionPlatform\SvcRestartTask" %nul% || set taskinfo=Removed
-if "!taskinfo!"=="" set "taskinfo=Î´ÕÒµ½"
+if "!taskinfo!"=="" set "taskinfo=Not Found"
 
-call :dk_color %Gray% "¼ì²é Svc ÖØÆôÈÎÎñ×´Ì¬          [!taskinfo!, ÏµÍ³ÉÔºó¿ÉÄÜ»áÍ£ÓÃ]"
+call :dk_color %Gray% "¼ì²é SvcRestartTask ×´Ì¬          [!taskinfo!. ÏµÍ³ÉÔºó¿ÉÄÜ»áÍ£ÓÃ.]"
 if not defined showfix (
-echo "!taskinfo!" | findstr /i "Removed Not Found" %nul1% && (
+echo "!taskinfo!" | findstr /i "Î´ÕÒµ½ÒÑÒÆ³ı" %nul1% && (
 set fixes=%fixes% %mas%in-place_repair_upgrade
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
 ) || (
-call :dk_color %Blue% "Ê¹ÓÃÖØĞÂÆô¶¯Ñ¡ÏîÖØĞÂÆô¶¯¼ÆËã»ú²¢ÔÙ´ÎÔËĞĞ½Å±¾¡£"
+call :dk_color %Blue% "Ê¹ÓÃÖØÆôÑ¡ÏîÖØĞÂÆô¶¯ÄúµÄ»úÆ÷²¢ÔÙ´ÎÔËĞĞ¸Ã½Å±¾¡£"
 )
 echo:
 )
@@ -2150,7 +2193,7 @@ if ($osVersion.Build -ge $minBuildNumber) {
     }
     for ($i=1; $i -le $count; $i++) {
         if (-not $subkeyHashTable.ContainsKey("$i")) {
-            Write-Output "×ÜÏî $count¡£ ·¢ÏÖ´íÎó - $i Ïî²»´æÔÚ"
+            Write-Host "ÃÜÔ¿×ÜÏî $count¡£ ·¢ÏÖ´íÎó - $i Ïî²»´æÔÚ"
 			$wpaKey.Close()
 			exit
         }
@@ -2161,7 +2204,7 @@ $wpaKey.GetSubKeyNames() | ForEach-Object {
         if ($PSVersionTable.PSVersion.Major -lt 3) {
             cmd /c "reg query "HKLM\SYSTEM\WPA\$_" /ve /t REG_BINARY >nul 2>&1"
 			if ($LASTEXITCODE -ne 0) {
-            Write-Host "×ÜÏî $count¡£ ·¢ÏÖ´íÎó - ¶ş½øÖÆÊı¾İÒÑËğ»µ¡£"
+            Write-Host "ÃÜÔ¿×ÜÏî $count¡£·¢ÏÖ´íÎó - ¶ş½øÖÆÊı¾İÒÑËğ»µ"
 			$wpaKey.Close()
 			exit
 			}
@@ -2169,7 +2212,7 @@ $wpaKey.GetSubKeyNames() | ForEach-Object {
             $subkey = $wpaKey.OpenSubKey($_)
             $p = $subkey.GetValueNames()
             if (($p | Where-Object { $subkey.GetValueKind($_) -eq [Microsoft.Win32.RegistryValueKind]::Binary }).Count -eq 0) {
-                Write-Host "×ÜÏî $count¡£ ·¢ÏÖ´íÎó - ¶ş½øÖÆÊı¾İÒÑËğ»µ¡£"
+        Write-Host "ÃÜÔ¿×ÜÏî $count¡£ ·¢ÏÖ´íÎó - ¶ş½øÖÆÊı¾İÒÑËğ»µ"
 				$wpaKey.Close()
 				exit
             }
@@ -2212,7 +2255,7 @@ echo:
 if %_unattended%==1 timeout /t 2 & exit /b
 
 if defined fixes (
-call :dk_color %White% "×ñÑ­ÉÏÊöËùÓĞÀ¶ĞĞÎÄ×Ö¡£  "
+call :dk_color %White% "×ñÑ­ÉÏÊöËùÓĞÀ¶ĞĞÎÄ×Ö¡£   "
 call :dk_color2 %Blue% "°´ [1] ´ò¿ª¹ÊÕÏÅÅ³ıÒ³Ãæ  " %Gray% " °´ [0] ºöÂÔ"
 choice /C:10 /N
 if !errorlevel!==2 exit /b
@@ -2295,8 +2338,8 @@ set key=%%B
 REM Generate ticket
 
 if %1==ticket if "%key%"=="%%B" (
-set "SessionIdStr=OSMajorVersion=5;OSMinorVersion=1;OSPlatformId=2;PP=0;Pfn=Microsoft.Windows.%%C.%%D_8wekyb3d8bbwe;PKeyIID=465145217131314304264339481117862266242033457260311819664735280;"
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!') -split ':sign\:.*';. ([scriptblock]::Create($f[1]))"
+set "SessionIdStr=OSMajorVersion=5;OSMinorVersion=1;OSPlatformId=2;PP=0;Pfn=Microsoft.Windows.%%C.%%D_8wekyb3d8bbwe;PKeyIID=221306452340115677963964261259250411589493550039199940431586886;"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':sign\:.*';. ([scriptblock]::Create($f[1]))"
 )
 
 )
@@ -2371,7 +2414,7 @@ $SignatureStr = SignProperties $PropertiesStr $rsa
 $xml = @"
 <?xml version="1.0" encoding="utf-8"?><genuineAuthorization xmlns="http://www.microsoft.com/DRM/SL/GenuineAuthorization/1.0"><version>1.0</version><genuineProperties origin="sppclient"><properties>$PropertiesStr</properties><signatures><signature name="clientLockboxKey" method="rsa-sha256">$SignatureStr</signature></signatures></genuineProperties></genuineAuthorization>
 "@
-[System.IO.File]::WriteAllText("$env:ProgramData\Microsoft\Windows\ClipSVC\GenuineTicket\GenuineTicket", ($xml -join ""), [System.Text.Encoding]::ASCII)
+[IO.File]::WriteAllText("$env:ProgramData\Microsoft\Windows\ClipSVC\GenuineTicket\GenuineTicket", ($xml -join ""), [System.Text.Encoding]::ASCII)
 :sign:
 
 ::========================================================================================================================================
@@ -2502,13 +2545,13 @@ call :dk_chkmal
 
 if not exist %SysPath%\%_slexe% (
 %eline%
-echo [%SysPath%\%_slexe%] ÎÄ¼şÈ±Ê§, ÖĞÖ¹...
+echo [%SysPath%\%_slexe%] ÎÄ¼ş¶ªÊ§£¬ÕıÔÚÖĞÖ¹...
 echo:
 if not defined results (
-call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡Ôñ¹ÊÕÏÅÅ³ı²¢ÔËĞĞ DISM »¹Ô­ºÍ SFC É¨ÃèÑ¡Ïî¡£"
-call :dk_color %Blue% "Ö®ºó£¬ÖØÆôÏµÍ³²¢ÔÙ´Î³¢ÊÔ¼¤»î¡£"
+call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡ÔñÒÉÄÑ½â´ğ²¢ÔËĞĞ DISM »¹Ô­ºÍ SFC É¨ÃèÑ¡Ïî¡£"
+call :dk_color %Blue% "Ö®ºó£¬ÖØĞÂÆô¶¯ÏµÍ³²¢ÔÙ´Î³¢ÊÔ¼¤»î¡£"
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Èç¹ûÈÔÈ»³öÏÖÍ¬ÑùµÄ´íÎó£¬ÇëÖ´ĞĞÒÔÏÂ²Ù×÷ - " %_Yellow% " %mas%in-place_repair_upgrade"
 )
 goto dk_done
 )
@@ -2564,8 +2607,8 @@ for /f "delims=" %%a in ('%psc% "(Get-AppxPackage -name 'Microsoft.Office.Deskto
 
 if not "%o14c2r%%o16uwp%"=="" (
 echo:
-call :dk_color %Red% "¼ì²é²»Ö§³ÖµÄ Office °²×°            [ %o14c2r%%o16uwp%]"
-if not "%o16uwp%"=="" call :dk_color %Blue% "Ê¹ÓÃ TSforge Ñ¡Ïî¼¤»î¡£"
+call :dk_color %Red% "¼ì²é²»ÊÜÖ§³ÖµÄ Office °²×°     [ %o14c2r%%o16uwp%]"
+if not "%o16uwp%"=="" call :dk_color %Blue% "Ê¹ÓÃ TSforge Ñ¡ÏîÀ´¼¤»îËü¡£"
 )
 
 if %winbuild% GEQ 10240 %psc% "Get-AppxPackage -name "Microsoft.MicrosoftOfficeHub"" | find /i "Office" %nul1% && (
@@ -2607,9 +2650,9 @@ call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ Office                 [Î´ÕÒµ½]"
 
 if defined ohub (
 echo:
-echo ÄúÖ»°²×°ÁË Office Ó¦ÓÃÉÌµêÓ¦ÓÃ³ÌĞò£¬ĞèÒª°²×°ÍêÕû°æµÄ Office¡£
+echo ÄúÖ»°²×°ÁË Office Dashboard Ó¦ÓÃ³ÌĞò£»ÄúĞèÒª°²×°ÍêÕû°æµÄ Office¡£
 )
-call :dk_color %Blue% "´ÓÏÂÃæÍøÖ·ÏÂÔØ²¢°²×° Office ÔÙÖØÊÔ¡£"
+call :dk_color %Blue% "´ÓÏÂÃæµÄ URL ÏÂÔØ²¢°²×° Office£¬È»ºóÖØÊÔ¡£"
 set fixes=%fixes% %mas%genuine-installation-media
 call :dk_color %_Yellow% "%mas%genuine-installation-media"
 goto dk_done
@@ -2643,13 +2686,13 @@ for /f "tokens=3" %%a in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\CI\P
 )
 if defined sacstate (
 if "%sacstate%"=="0x1" (
-call :dk_color %Gray% "¼ì²éÖÇÄÜÓ¦ÓÃ¿ØÖÆ×´Ì¬                [ÆôÓÃ]"
-call :dk_color %Blue% "ÖÇÄÜÓ¦ÓÃ¿ØÖÆ¿ÉÄÜ»áÔÚ Ohook ¼¤»îºó×èÖ¹Äã´ò¿ª Office¡£"
-call :dk_color %Blue% "Èç¹ûÊÇÕâÑù£¬ÄãĞèÒªÔÚ Microsoft Defender ÉèÖÃÖĞ½«Æä½ûÓÃ¡£"
+call :dk_color %Gray% "Checking Smart App Control State        [Enabled]"
+call :dk_color %Blue% "Smart App Control may prevent you from opening Office after Ohook activation."
+call :dk_color %Blue% "You will need to disable it from the Windows Defender settings if it does."
 ) else if "%sacstate%"=="0x2" (
-call :dk_color %Gray% "¼ì²éÖÇÄÜÓ¦ÓÃ¿ØÖÆ×´Ì¬                [ÆÀ¹À]"
-call :dk_color %Blue% "Èç¹ûÖÇÄÜÓ¦ÓÃ¿ØÖÆÔÚÆÀ¹ÀÆÚ½áÊøºóÆôÓÃ×ÔÉí£¬¿ÉÄÜ»á×èÖ¹ÄúÔÚ½«À´´ò¿ª Office¡£"
-call :dk_color %Blue% "½¨ÒéÄúÔÚ Microsoft Defender ÉèÖÃÖĞ½«Æä½ûÓÃ¡£"
+call :dk_color %Gray% "Checking Smart App Control State        [Evaluation]"
+call :dk_color %Blue% "Smart App Control may prevent you from opening Office in the future if it enables itself after the evaluation period."
+call :dk_color %Blue% "It is recommended that you disable it from the Windows Defender settings."
 )
 )
 
@@ -2685,16 +2728,16 @@ if /i "%_oArch%"=="x86" (set "_hookPath=%_oRoot%\vfs\SystemX86" & set "_hook=spp
 call :oh_ppcpath
 
 echo:
-echo ÕıÔÚ¼¤»î Office...                  [C2R ^| %_version% ^| %_oArch%]
+echo Activating Office...                    [C2R ^| %_version% ^| %_oArch%]
 
 if not defined _oIds (
-call :dk_color %Red% "¼ì²éÒÑ°²×°²úÆ·                      [²úÆ· ID Î´·¢ÏÖ¡£ÖĞÖ¹¼¤»î...]"
+call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ²úÆ·             [Î´ÕÒµ½²úÆ· ID¡£ÕıÔÚÖĞÖ¹¼¤»î¡­¡­]"
 set error=1
 goto :starto16c2r
 )
 
 if defined noOsppc (
-call :dk_color %Red% "¼ì²é OSPPC.DLL                      [Î´ÕÒµ½£¬ÖĞÖ¹¼¤»î...]"
+call :dk_color %Red% "¼ì²éOSPPC.DLL                      [Î´ÕÒµ½¡£ÕıÔÚÖĞÖ¹¼¤»î¡­¡­]"
 call :dk_color %Blue% "%_fixmsg%"
 set error=1
 goto :starto16c2r
@@ -2743,16 +2786,16 @@ if /i "%_oArch%"=="x86" (set "_hookPath=%_oRoot%\vfs\SystemX86" & set "_hook=spp
 call :oh_ppcpath
 
 echo:
-echo ÕıÔÚ¼¤»î Office...                  [C2R ^| %_version% %_AudienceData%^| %_oArch%]
+echo Activating Office...                    [C2R ^| %_version% %_AudienceData%^| %_oArch%]
 
 if not defined _oIds (
-call :dk_color %Red% "¼ì²éÒÑ°²×°²úÆ·                      [²úÆ· ID Î´·¢ÏÖ¡£ÕıÔÚÖĞÖ¹¼¤»î...]"
+call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ²úÆ·             [Î´ÕÒµ½²úÆ· ID¡£ÕıÔÚÖĞÖ¹¼¤»î¡­¡­]"
 set error=1
 goto :startmsi
 )
 
 if defined noOsppc (
-call :dk_color %Red% "¼ì²é OSPPC.DLL                      [Î´ÕÒµ½. ÖĞÖ¹¼¤»î...]"
+call :dk_color %Red% "¼ì²éOSPPC.DLL                      [Î´ÕÒµ½¡£ÕıÔÚÖĞÖ¹¼¤»î¡­¡­]"
 call :dk_color %Blue% "%_fixmsg%"
 set error=1
 goto :startmsi
@@ -2886,13 +2929,13 @@ if !size! GEQ 1 if !size! LSS 100000 (
 set _present=1
 del /f /q "%%~G"
 if exist "%%~G" (move /y "%%~G" "!_ttemp!\needsToBeDeleted%random%" %nul%)
-if exist "%%~G" (set _unerror=1) else (echo ÒÑÉ¾³ıµÄÎÄ¼ş - %%~G)
+if exist "%%~G" (set _unerror=1) else (echo Deleted file - %%~G)
 )
 if /i sppcs.dll==%%# if !size! GEQ 100000 (
 move /y "%%~G" "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL" %nul%
 if exist "%%~G" (move /y "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL" "!_ttemp!\needsToBeDeleted%random%" %nul%)
 move /y "%%~G" "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL" %nul%
-if exist "%%~G" (set _unerror=1&echo ÎŞ·¨½« sppcs.dll ÖØÃüÃû»Ø "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL") else (echo ÒÑ½« sppcs.dll ÖØÃüÃû»Ø "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL")
+if exist "%%~G" (set _unerror=1&echo Failed to rename sppcs.dll back to "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL") else (echo Renamed sppcs.dll back to "%%~A\Microsoft Shared\OfficeSoftwareProtectionPlatform\OSPPC.DLL")
 )
 )
 )
@@ -3030,8 +3073,8 @@ if %%#==2024 set _offver=2024
 if exist "!_oLPath!\ProPlus!_offver!PreviewVL_*.xrm-ms" if not exist "!_oLPath!\ProPlus!_offver!VL_*.xrm-ms" (
 set error=1
 set showfix=1
-call :dk_color %Red% "¼ì²é¹ıÆÚµÄÔ¤ÀÀ²úÆ·              [·¢ÏÖ Office %%# Ô¤ÀÀ°æ]"
-call :dk_color %Blue% "ÇëÏÈÔËĞĞ Office ¸üĞÂ£¬È»ºóÔÙ´Î³¢ÊÔ¼¤»î¡£"
+call :dk_color %Red% "¼ì²éÒÑ¹ıÆÚµÄÔ¤ÀÀ²úÆ·       [ÒÑÕÒµ½ Office %%# Preview]"
+call :dk_color %Blue% "ÇëÏÈÔËĞĞ Office ¸üĞÂ£¬È»ºó³¢ÊÔÔÙ´Î¼¤»îËü¡£"
 )
 )
 
@@ -3088,7 +3131,7 @@ exit /b
 :oh_fixprids
 
 if not defined _prids (
-call :dk_color %Gray% "¼ì²é×¢²á±íÖĞµÄ ProductReleaseId  [Î´ÕÒµ½]"
+call :dk_color %Gray% "¼ì²é×¢²á±íÖĞµÄ ProductReleaseIds [Î´ÕÒµ½]"
 exit /b
 )
 
@@ -3153,12 +3196,12 @@ for %%# in ("!_oLPath!\%_License%*.xrm-ms") do (
 if defined _arr (set "_arr=!_arr!;"!_oLPath!\%%~nx#"") else (set "_arr="!_oLPath!\%%~nx#"")
 )
 
-%psc% "$sls = Get-WmiObject %sps%; $f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); InstallLicenseArr '!_arr!'; InstallLicenseFile '"!_oLPath!\pkeyconfig-office.xrm-ms"'" %nul%
+%psc% "$sls = Get-WmiObject %sps%; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); InstallLicenseArr '!_arr!'; InstallLicenseFile '"!_oLPath!\pkeyconfig-office.xrm-ms"'" %nul%
 
 call :dk_actids 0ff1ce15-a989-479d-af46-f275c6370663
 echo "!allapps!" | find /i "!_actid!" %nul1% || (
 set error=1
-call :dk_color %Red% "°²×°È±Ê§µÄĞí¿ÉÖ¤ÎÄ¼ş                [Office %oVer%.0 %_prod%] [Ê§°Ü]"
+call :dk_color %Red% "°²×°È±Ê§µÄĞí¿ÉÖ¤ÎÄ¼ş        [Office %oVer%.0 %_prod%] [Ê§°Ü]"
 )
 
 exit /b
@@ -3180,7 +3223,7 @@ if %_hook%==sppc64.dll set offset=3076
 for %%# in (sppcs.dll sppc.dll) do (
 del /f /q "%_hookPath%\%%#" %nul%
 if exist "%_hookPath%\%%#" (move /y "%_hookPath%\%%#" "!_ttemp!\needsToBeDeleted%random%" %nul%)
-if exist "%_hookPath%\%%#" (set "ierror=É¾³ıÒÔÇ°°²×°µÄ Ohook [%%#]")
+if exist "%_hookPath%\%%#" (set "ierror=Remove Previous Ohook Install [%%#]")
 )
 
 if defined ierror goto :oh_hookinstall_error
@@ -3193,17 +3236,8 @@ set ierror=mklink sppcs.dll
 goto :oh_hookinstall_error
 )
 
-set exhook=
-if exist "!_work!\BIN\%_hook%" set exhook=1
-
 if not exist "%_hookPath%\sppc.dll" (
-if defined exhook (
-pushd "!_work!\BIN\"
-copy /y /b "%_hook%" "%_hookPath%\sppc.dll" %nul%
-popd
-) else (
 call :oh_extractdll "%_hookPath%\sppc.dll" "%offset%"
-)
 )
 if not exist "%_hookPath%\sppc.dll" (
 set ierror=Copy
@@ -3211,12 +3245,8 @@ goto :oh_hookinstall_error
 )
 
 echo:
-echo ´´½¨ÏµÍ³·ûºÅÁ´½Ó sppc.dll Îª        ["%_hookPath%\sppcs.dll"] [³É¹¦]
-if defined exhook (
-echo ¸´ÖÆ¶¨ÖÆ %_hook% Îª              ["%_hookPath%\sppc.dll"] [³É¹¦]
-) else (
-echo ÌáÈ¡¶¨ÖÆ %_hook% Îª              ["%_hookPath%\sppc.dll"] [³É¹¦]
-)
+echo Á¬½ÓÏµÍ³µÄ sppc.dll            ["%_hookPath%\sppcs.dll"] [³É¹¦]
+echo ½«×Ô¶¨Òå %_hook% ÌáÈ¡µ½         ["%_hookPath%\sppc.dll"] [³É¹¦]
 
 goto :oh_hookinstall_error
 
@@ -3241,7 +3271,7 @@ set size=%%~zA
 if !size! GEQ 1 if !size! LSS 100000 (
 del /f /q "%%~A" %nul%
 if exist "%%~A" (move /y "%%~A" "!_ttemp!\needsToBeDeleted%random%" %nul%)
-if exist "%%~A" (set "ierror=É¾³ıÒÔÇ°°²×°µÄ Ohook [%%#]")
+if exist "%%~A" (set "ierror=Remove Previous Ohook Install [%%#]")
 )
 )
 )
@@ -3254,12 +3284,12 @@ if exist "%%~A\sppcs.dll" (
 move /y "%%~A\OSPPC.DLL" "!_ttemp!\needsToBeDeleted%random%" %nul%
 move /y "%%~A\sppcs.dll" "%%~A\OSPPC.DLL" %nul%
 )
-if exist "%%~A\sppcs.dll" (set "ierror=½« sppcs.dll ÒÆ»Ø OSPPC.DLL")
+if exist "%%~A\sppcs.dll" (set "ierror=Move sppcs.dll back to OSPPC.DLL")
 )
 
 del /f /q "%_hookPath%\sppcs.dll" %nul%
 if exist "%_hookPath%\sppcs.dll" (move /y "%_hookPath%\sppcs.dll" "!_ttemp!\needsToBeDeleted%random%" %nul%)
-if exist "%_hookPath%\sppcs.dll" (set "ierror=É¾³ıÒÔÇ°µÄ Ohook ·ûºÅÁ´½Ó sppcs.dll")
+if exist "%_hookPath%\sppcs.dll" (set "ierror=Remove Previous Ohook mklink sppcs.dll")
 
 if defined ierror goto :oh_hookinstall_error
 
@@ -3278,43 +3308,28 @@ if defined _osppPath68 if not defined _osppPath86 (mklink "%_hookPath%\sppcs.dll
 if defined _osppPath86 if not defined _osppPath68 (mklink "%_hookPath%\sppcs.dll" "%_osppPath86%\sppcs.dll" %nul%)
 
 if not exist "%_hookPath%\sppcs.dll" (
-set ierror=´´½¨ sppcs.dll ·ûºÅÁ´½Ó
+set ierror=mklink sppcs.dll
 goto :oh_hookinstall_error
 )
 
-set exhook=
-if exist "!_work!\BIN\%_hook68%" if exist "!_work!\BIN\%_hook86%"  set exhook=1
-
-if defined exhook (
-pushd "!_work!\BIN\"
-if defined _osppPath68 (copy /y /b "%_hook68%" "%_osppPath68%\OSPPC.DLL" %nul%)
-if defined _osppPath86 (copy /y /b "%_hook86%" "%_osppPath86%\OSPPC.DLL" %nul%)
-popd
-) else (
 if defined _osppPath68 (set _hook=%_hook68%&call :oh_extractdll "%_osppPath68%\OSPPC.DLL" "%offset68%")
 if defined _osppPath86 (set _hook=%_hook86%&call :oh_extractdll "%_osppPath86%\OSPPC.DLL" "%offset86%")
-)
 
 if defined _osppPath68 (if not exist "%_osppPath68%\OSPPC.DLL" set ierror=1)
 if defined _osppPath86 (if not exist "%_osppPath86%\OSPPC.DLL" set ierror=1)
 
 if defined ierror (
-set ierror=¸´ÖÆ
+set ierror=Copy
 goto :oh_hookinstall_error
 )
 
 echo:
-if defined _osppPath68 (echo ÖØÃüÃû OSPPC.DLL Îª sppcs.dll         ["%_osppPath68%\sppcs.dll"])
-if defined _osppPath86 (echo ÖØÃüÃû OSPPC.DLL Îª sppcs.dll         ["%_osppPath86%\sppcs.dll"])
-if defined exhook (
-if defined _osppPath68 (echo ¸´ÖÆ¶¨ÖÆ %_hook68% Îª            ["%_osppPath68%\OSPPC.DLL"])
-if defined _osppPath86 (echo ¸´ÖÆ¶¨ÖÆ %_hook86% Îª            ["%_osppPath86%\OSPPC.DLL"])
-) else (
-if defined _osppPath68 (echo ÌáÈ¡¶¨ÖÆ %_hook68% Îª         ["%_osppPath68%\OSPPC.DLL"])
-if defined _osppPath86 (echo ÌáÈ¡¶¨ÖÆ %_hook86% Îª         ["%_osppPath86%\OSPPC.DLL"])
-)
+if defined _osppPath68 (echo Renaming OSPPC.DLL to sppcs.dll         ["%_osppPath68%\sppcs.dll"])
+if defined _osppPath86 (echo Renaming OSPPC.DLL to sppcs.dll         ["%_osppPath86%\sppcs.dll"])
+if defined _osppPath68 (echo Extracting Custom %_hook68% to         ["%_osppPath68%\OSPPC.DLL"])
+if defined _osppPath86 (echo Extracting Custom %_hook86% to         ["%_osppPath86%\OSPPC.DLL"])
 
-echo ·ûºÅÁ´½ÓÒÑÖØÃüÃûÎª sppcs.dll            ["%_hookPath%\sppcs.dll"]
+echo ÖØÃüÃûÎª sppcs.dll µÄÏµÍ³Á´½Ó            ["%_hookPath%\sppcs.dll"]
 
 ::========================================================================================================================================
 
@@ -3322,15 +3337,15 @@ echo ·ûºÅÁ´½ÓÒÑÖØÃüÃûÎª sppcs.dll            ["%_hookPath%\sppcs.dll"]
 
 if defined ierror (
 set error=1
-call :dk_color %Red% "°²×° Ohook                          [Ê§°Ü %ierror%]"
+call :dk_color %Red% "°²×° Ohook                       [Ê§°Ü %ierror%]"
 echo:
 call :oh_checkapps
 if defined checknames (
-call :dk_color %Blue% "¹Ø±Õ [!checknames!] ²¢ÖØÆô¡£"
-call :dk_color %Blue% "Èç¹ûÈÔÎ´ĞŞ¸´£¬ÇëÊ¹ÓÃ ÖØÆô Ñ¡ÏîÖØĞÂÆô¶¯¼ÆËã»ú£¬È»ºóÖØÊÔ¡£"
+call :dk_color %Blue% "¹Ø±Õ [!checknames!] ²¢ÖØÊÔ¡£"
+call :dk_color %Blue% "Èç¹ûÈÔÈ»Ã»ÓĞĞŞ¸´£¬ÇëÊ¹ÓÃÖØÆôÑ¡ÏîÖØĞÂÆô¶¯»úÆ÷²¢ÖØÊÔ¡£"
 ) else (
-if /i not "%ierror%"=="Copy" call :dk_color %Blue% "Ê¹ÓÃ ÖØÆô Ñ¡ÏîÖØĞÂÆô¶¯¼ÆËã»ú£¬È»ºóÖØÊÔ¡£"
-if /i "%ierror%"=="Copy" call :dk_color %Blue% "Èç¹ûÄúÊ¹ÓÃµÄÊÇÈÎºÎµÚÈı·½·À²¡¶¾Èí¼ş£¬Çë¼ì²éËüÊÇ·ñ×èÖ¹ÁË½Å±¾¡£"
+if /i not "%ierror%"=="Copy" call :dk_color %Blue% "Ê¹ÓÃÖØÆôÑ¡ÏîÖØĞÂÆô¶¯ÄúµÄ»úÆ÷²¢ÖØÊÔ¡£"
+if /i "%ierror%"=="Copy" call :dk_color %Blue% "Èç¹ûÄúÕıÔÚÊ¹ÓÃÈÎºÎµÚÈı·½·À²¡¶¾Èí¼ş£¬Çë¼ì²éËüÊÇ·ñ×èÖ¹ÁË¸Ã½Å±¾¡£"
 )
 echo:
 )
@@ -3339,9 +3354,9 @@ if not defined exhook if not defined ierror (
 if defined hasherror (
 set error=1
 set ierror=1
-call :dk_color %Red% "ĞŞ¸Ä¶¨ÖÆ %_hook% µÄ¹şÏ£Öµ        [Ê§°Ü]"
+call :dk_color %Red% "ĞŞ¸Ä×Ô¶¨Òå sppcs.dll µÄ¹şÏ£Öµ [Ê§°Ü]"
 ) else (
-echo ĞŞ¸Ä¶¨ÖÆ %_hook% µÄ¹şÏ£Öµ        [³É¹¦]
+echo ĞŞ¸Ä×Ô¶¨Òå sppcs.dll µÄ¹şÏ£Öµ      [³É¹¦]
 )
 )
 
@@ -3392,8 +3407,8 @@ if not %oVer%==14 set generickey=1
 call :dk_inskey "[!key!] [!_prod!] [!_lic!]"
 ) else (
 set error=1
-call :dk_color %Red% "ÔÚ½Å±¾ÖĞ¼ì²é²úÆ·                     [Office %oVer%.0 !_prod! ÔÚ½Å±¾ÖĞÎ´ÕÒµ½]"
-call :dk_color %Blue% "È·ÈÏÄãÊ¹ÓÃ×îĞÂ°æµÄ MAS ½Å±¾¡£"
+call :dk_color %Red% "ÔÚ½Å±¾ÖĞ¼ì²é²úÆ·              [Office %oVer%.0 !_prod! key ÔÚ½Å±¾ÖĞÎ´ÕÒµ½]"
+call :dk_color %Blue% "È·±£ÄúÊ¹ÓÃµÄÊÇ×îĞÂ°æ±¾µÄ MAS¡£"
 set fixes=%fixes% %mas%
 call :dk_color %_Yellow% "%mas%"
 )
@@ -3442,23 +3457,23 @@ call :oh_ppcpath
 call :msiofficedata %2
 
 echo:
-echo ÕıÔÚ¼¤»î Office...                  [MSI ^| %_version% ^| %_oArch%]
+echo Activating Office...                    [MSI ^| %_version% ^| %_oArch%]
 
 if not defined _oIds (
 set error=1
-call :dk_color %Red% "¼ì²éÒÑ°²×°²úÆ·                      [²úÆ· ID Î´·¢ÏÖ¡£ÕıÔÚÖĞÖ¹¼¤»î...]"
+call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ²úÆ·             [Î´ÕÒµ½²úÆ· ID£¬ÕıÔÚÖĞÖ¹¼¤»î...]"
 exit /b
 )
 
 if defined noOsppc (
-call :dk_color %Red% "¼ì²é OSPPC.DLL                      [Î´·¢ÏÖ¡£ÕıÔÚÖĞÖ¹¼¤»î...]"
+call :dk_color %Red% "¼ì²é OSPPC.DLL                      [Î´ÕÒµ½¡£ÕıÔÚÖĞÖ¹¼¤»î¡­¡­]"
 call :dk_color %Blue% "%_fixmsg%"
 set error=1
 exit /b
 )
 
 if %oVer%==14 if defined SingleImage (
-echo ¼ì²éÒÑ°²×°²úÆ·             [ÕÒµ½µ¥¸öÓ³Ïñ²úÆ·£¬½«×¨ÒµÁãÊÛ°æÃÜÔ¿ÓÃÓÚ¼¤»î]
+echo ¼ì²éÒÑ°²×°µÄ²úÆ·             [ÕÒµ½ SingleImage ²úÆ·£¬½«Ê¹ÓÃ×¨ÒµÁãÊÛÃÜÔ¿½øĞĞ¼¤»î]
 )
 
 call :oh_process
@@ -3565,10 +3580,10 @@ reg unload HKU\!defname! %nul%
 
 if defined vnextexist (
 echo:
-call :dk_color %Gray% "ÒÑµÇÂ¼µÄ Office ÕË»§¾ßÓĞ¶©ÔÄĞí¿É¡£"
-call :dk_color %Blue% "Èç¹û¶©ÔÄ´¦ÓÚ¼¤»î×´Ì¬£¬Ëü½«¸²¸ÇÆäËû¼¤»î·½Ê½¡£"
-call :dk_color %Blue% "Èç¹û¼´½«¹ıÆÚ£¬ÇëÔÚ¹ıÆÚºóÖØĞÂÔËĞĞ½Å±¾¡£"
-call :dk_color2 %Blue% "Èç¹û¹ıÆÚÇÒ½Å±¾¼¤»îÊ§°Ü£¬Çë»ñÈ¡°ïÖú - " %_Yellow% " %mas%troubleshoot"
+call :dk_color %Gray% "ÒÑµÇÂ¼µÄ Office ÕÊ»§ÓµÓĞ¶©ÔÄĞí¿ÉÖ¤¡£"
+call :dk_color %Blue% "Èç¹û¶©ÔÄÒÑ¼¤»î£¬Ôò»á¸²¸ÇÆäËû¼¤»î·½Ê½¡£"
+call :dk_color %Blue% "Èç¹û¼´½«¹ıÆÚ£¬ÇëÔÚ¹ıÆÚºóÖØĞÂÔËĞĞ¼¤»î½Å±¾¡£"
+call :dk_color2 %Blue% "Èç¹ûÒÑ¹ıÆÚÇÒ¼¤»îÊ§°Ü£¬ÇëÔÚ´Ë´¦»ñÈ¡°ïÖú - " %_Yellow% " %mas%troubleshoot"
 echo:
 )
 
@@ -3667,7 +3682,7 @@ set upk_result=2
 if defined ohookact if not %upk_result%==0 echo:
 if %upk_result%==1 echo Ğ¶ÔØÆäËû/¿íÏŞÃÜÔ¿                   [³É¹¦]
 if %upk_result%==2 (
-call :dk_color %Red% "Ğ¶ÔØÆäËû/¿íÏŞÃÜÔ¿                   [Ê§°Ü]"
+call :dk_color %Red% "Uninstalling Other/Grace Keys           [Failed]"
 if not defined showfix (
 call :dk_color %Blue% "%_fixmsg%"
 echo:
@@ -3684,8 +3699,8 @@ exit /b
 :oh_licrefresh
 
 if exist "%SysPath%\spp\store_test\2.0\tokens.dat" (
-%psc% "Stop-Service sppsvc -force; $sls = Get-WmiObject SoftwareLicensingService; $f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
-if !errorlevel! NEQ 0 %psc% "$sls = Get-WmiObject SoftwareLicensingService; $f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
+%psc% "Stop-Service sppsvc -force; $sls = Get-WmiObject SoftwareLicensingService; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
+if !errorlevel! NEQ 0 %psc% "$sls = Get-WmiObject SoftwareLicensingService; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
 )
 exit /b
 
@@ -4021,7 +4036,7 @@ exit /b
 :oh_extractdll
 
 set b=
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':%_hook%\:.*';$encoded = ($f[1]) -replace '-', 'A' -replace '_', 'a';$bytes = [Con%b%vert]::FromBas%b%e64String($encoded); $PePath='%1'; $offset='%2'; $m=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':hexedit\:.*';. ([scriptblock]::Create($m[1]))" %nul2% | find /i "Error found" %nul1% && set hasherror=1
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':%_hook%\:.*';$encoded = ($f[1]) -replace '-', 'A' -replace '_', 'a';$bytes = [Con%b%vert]::FromBas%b%e64String($encoded); $PePath='%1'; $offset='%2'; $m=[IO.File]::ReadAllText('!_batp!') -split ':hexedit\:.*';. ([scriptblock]::Create($m[1]))" %nul2% | find /i "Error found" %nul1% && set hasherror=1
 exit /b
 
 :hexedit:
@@ -4060,8 +4075,8 @@ $Writer.Write($unixTimestamp)
 $Writer.Flush()
 
 # Write the current state of the MemoryStream to a temporary file
-$tempFilePath = "$env:windir\Temp\$([System.IO.Path]::GetRandomFileName())"
-[System.IO.File]::WriteAllBytes($tempFilePath, $MemoryStream.ToArray())
+$tempFilePath = "$env:windir\Temp\$([Guid]::NewGuid().Guid)"
+[IO.File]::WriteAllBytes($tempFilePath, $MemoryStream.ToArray())
 
 # Update hash using the temporary file
 [int]$HeaderSum = 0
@@ -4074,7 +4089,7 @@ if ($HeaderSum -ne $CheckSum) {
     $Writer.Write($CheckSum)
     $Writer.Flush()
 } else {
-    Write-host ·¢ÏÖ´íÎó
+    Write-host Error found
 }
 
 # Delete the temporary file
@@ -4084,11 +4099,11 @@ Remove-Item -Path $tempFilePath -Force
 $modifiedBytes = $MemoryStream.ToArray()
 
 # Write the modified bytes to the final file
-[System.IO.File]::WriteAllBytes($PePath, $modifiedBytes)
+[IO.File]::WriteAllBytes($PePath, $modifiedBytes)
 
 [void]$Imagehlp::MapFileAndCheckSum($PePath, [ref]$HeaderSum, [ref]$CheckSum)
 if ($HeaderSum -ne $CheckSum) {
-    Write-host ·¢ÏÖ´íÎó
+    Write-host Error found
 }
 
 $MemoryStream.Close()
@@ -4111,12 +4126,6 @@ $MemoryStream.Close()
 ::  Here you can check how to extract sppc.dll files from base64
 ::
 ::  For any further question, feel free to contact us on mass{}grave{dot}dev/contactus
-::
-::========================================================================================================================================
-::
-::  If you want to use a different sppc.dll or without base64 format, then create a folder named "BIN" where this script is located and 
-::  place these two files in that "BIN" folder. sppc32.dll, sppc64.dll
-::  Script will auto pick that instead of using the below from base64 section. You can also delete the below code in that case.
 ::
 ::========================================================================================================================================
 ::
@@ -4298,7 +4307,7 @@ set _resall=0
 ::  Choose activation method:
 ::  In builds 26100 and later, the script will auto select StaticCID (requires internet). If no internet is detected, it will then auto select the KMS4k method. For builds lower than 26100, the script will auto select ZeroCID.
 ::  To change the activation method, run the script with the parameters "/Z-SCID", "/Z-ZCID", or "/Z-KMS4k", or modify the option from Auto to SCID, ZCID, or KMS4k in the line below.
-set _actmethod=×Ô¶¯
+set _actmethod=Auto
 
 ::  Debug Mode:
 ::  To run the script in debug mode, change 0 to any parameter above that you want to run, in below line
@@ -4341,13 +4350,13 @@ if /i "%%A"=="/Z-KMS4k"                (set _actmethod=KMS4k)
 
 if not defined tsids set _actman=0
 for %%A in (%_actwin% %_actesu% %_actoff% %_actprojvis% %_actwinesuoff% %_actwinhost% %_actoffhost% %_actappx% %_actman% %_resall%) do (if "%%A"=="1" set _unattended=1)
-if /i not %_actmethod%==×Ô¶¯ set _unattended=1
+if /i not %_actmethod%==Auto set _unattended=1
 
 if %winbuild% LSS 7600 (
 reg query "HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5" /v Install %nul2% | find /i "0x1" %nul1% || (
 %eline%
-echo ÄúµÄÏµÍ³ÖĞÎ´°²×° .NET 3.5 Framework¡£
-echo Ê¹ÓÃÒÔÏÂÍøÖ·°²×°¡£
+echo ÄúµÄÏµÍ³ÖĞÎ´°²×°.NET 3.5 Framework¡£
+echo Ê¹ÓÃÒÔÏÂ URL °²×°Ëü¡£
 echo:
 echo https://www.microsoft.com/en-us/download/details.aspx?id=25150
 if %_unattended%==0 start https://www.microsoft.com/en-us/download/details.aspx?id=25150
@@ -4371,31 +4380,31 @@ echo        ______________________________________________________________
 echo: 
 echo               [1] ¼¤»î - Windows
 echo               [2] ¼¤»î - ESU
-echo               [3] ¼¤»î - Office  [È«²¿]
-echo               [4] ¼¤»î - Office  [Project/Visio]
-echo               [5] ¼¤»î - È«²¿
+echo               [3] ¼¤»î - Office [All]
+echo               [4] ¼¤»î - Office [Project/Visio]
+echo               [5] ¼¤»î - All
 echo               _______________________________________________  
 echo: 
 echo                   ¸ß¼¶Ñ¡Ïî:
 echo:
-echo               [A] ¼¤»î - Windows %KS% Ö÷»ú
-echo               [B] ¼¤»î - Office %KS% Ö÷»ú
-echo               [C] ¼¤»î - Windows 8/8.1 APPX ÅÔ¼ÓÔØ
+echo               [A] ¼¤»î - Windows %KS% Host
+echo               [B] ¼¤»î - Office %KS% Host
+echo               [C] ¼¤»î - Windows 8/8.1 APPX Sideloading
 echo               [D] ¼¤»î - ÊÖ¶¯Ñ¡Ôñ²úÆ·
 if defined _vis (
-echo               [E] ÖØÖÃ - ÖØ×°/¼ÆÊ±Æ÷
+echo               [E] ÖØÖÃ - Rearm/Timers
 ) else (
-echo               [E] ÖØÖÃ - ÖØ×°/¼ÆÊ±Æ÷/´Û¸Ä/Ëø¶¨
+echo               [E] ÖØÖÃ - Rearm/Timers/Tamper/Lock
 )
-echo               [F] ¸ü¸Ä - ¼¤»î·½·¨ [%_actmethod%]
+echo               [F] ¸ü¸Ä   - ¼¤»î·½Ê½ [%_actmethod%]
 echo               _______________________________________________       
 echo:
-echo               [6] Ğ¶ÔØ TSforge ¼¤»î
+echo               [6] ÒÆ³ı TSforge ¼¤»î
 echo               [7] ÏÂÔØ Office
 echo               [0] %_exitmsg%
 echo        ______________________________________________________________
 echo:
-call :dk_color2 %_White% "            " %_Green% "ÊäÈë²Ëµ¥Ïî..."
+call :dk_color2 %_White% "            " %_Green% "Ê¹ÓÃ¼üÅÌÑ¡Ôñ²Ëµ¥Ñ¡Ïî..."
 choice /C:12345ABCDEF670 /N
 set _el=!errorlevel!
 
@@ -4430,31 +4439,33 @@ echo:
 echo:
 echo        ______________________________________________________________
 echo: 
-call :dk_color2 %_White% "             [1] " %_Green% "×Ô¶¯"
-echo                  ÄÚ²¿°æ±¾ ^>= 26100 - StaticCID (ÀëÏßÊ¹ÓÃ KMS4k)
-echo                  ÄÚ²¿°æ±¾ ^<  26100 - ZeroCID
+call :dk_color2 %_White% "             [1] " %_Green% "×Ô¶¯Ñ¡Ôñ"
+echo                  Builds ^>= 26100 - Windows only  - KMS4k
+echo                                    Other options - StaticCID
+echo:
+echo                  Builds ^<  26100 - ZeroCID
 echo              __________________________________________________
 echo: 
 echo              [2] StaticCID
-echo                  ĞèÒª»¥ÁªÍø¡£
-echo                  ²»ÊÊÓÃÓÚ Windows 7 »ò¸üÔç°æ±¾¡£
+echo                  ĞèÒªÍøÂçÁ¬½Ó
+echo                  ²»ÊÊÓÃÓÚ Windows 7 »ò¸üÔç°æ±¾
 echo              __________________________________________________
 echo:
 echo              [3] ZeroCID
-echo                  ÔÚ 26100 ÒÔÏÂµÄÄÚ²¿°æ±¾ÖĞ¿É¿¿¹¤×÷
+echo                  ¿ÉÔÚÒÔÏÂ°æ±¾ÉÏ¿É¿¿ÔËĞĞ 26100
 echo                  ²»ÊÊÓÃÓÚ 26100.4188 ÒÔÉÏµÄ°æ±¾
 echo              __________________________________________________
 echo:
 echo              [4] KMS4k
-echo                  ½öÊÊÓÃÓÚÅúÁ¿Ğí¿É²úÆ·¡£
-echo                  ¼¤»î 4000+ Äê¡£
+echo                  ½öÏŞÅúÁ¿Ğí¿É
+echo                  ¼¤»îÊ±¼ä³¬¹ı 4000 Äê
 echo              __________________________________________________
 echo:
-echo              [5] ÁË½â¸ü¶àĞÅÏ¢
+echo              [5] ÁË½â¸ü¶à
 echo              [0] %_exitmsg%
 echo        ______________________________________________________________
 echo:
-call :dk_color2 %_White% "            " %_Green% "Ñ¡Ôñ²Ëµ¥Ïî..."
+call :dk_color2 %_White% "            " %_Green% "Ê¹ÓÃ¼üÅÌÑ¡Ôñ²Ëµ¥Ñ¡Ïî..."
 choice /C:123450 /N
 set _el=!errorlevel!
 
@@ -4463,7 +4474,7 @@ if !_el!==5  cls & start %mas%tsforge &goto :ts_menu
 if !_el!==4  cls & set "_actmethod=KMS4k" & goto :ts_menu
 if !_el!==3  cls & set "_actmethod=ZCID"  & goto :ts_menu
 if !_el!==2  cls & set "_actmethod=SCID"  & goto :ts_menu
-if !_el!==1  cls & set "_actmethod=×Ô¶¯"  & goto :ts_menu
+if !_el!==1  cls & set "_actmethod=Auto"  & goto :ts_menu
 goto :ts_changemethod
 
 ::========================================================================================================================================
@@ -4481,18 +4492,18 @@ if exist "%SysPath%\spp\store_test\" mode 134, %height%
 title  TSforge ¼¤»î %masver%
 
 echo:
-echo ÕıÔÚ³õÊ¼»¯...
+echo Initializing...
 call :dk_chkmal
 
 if not exist %SysPath%\%_slexe% (
 %eline%
-echo [%SysPath%\%_slexe%] ÎÄ¼şÈ±Ê§, ÕıÔÚÖĞÖ¹...
+echo [%SysPath%\%_slexe%] ÎÄ¼ş¶ªÊ§£¬ÕıÔÚÖĞÖ¹...
 echo:
 if not defined results (
-call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡Ôñ¹ÊÕÏÅÅ³ı²¢ÔËĞĞ DISM »¹Ô­ºÍ SFC É¨ÃèÑ¡Ïî¡£"
-call :dk_color %Blue% "Ö®ºó£¬ÖØÆôÏµÍ³²¢ÔÙ´Î³¢ÊÔ¼¤»î¡£"
+call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡ÔñÒÉÄÑ½â´ğ²¢ÔËĞĞ DISM »¹Ô­ºÍ SFC É¨ÃèÑ¡Ïî¡£"
+call :dk_color %Blue% "Ö®ºó£¬ÖØĞÂÆô¶¯ÏµÍ³²¢ÔÙ´Î³¢ÊÔ¼¤»î¡£"
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Èç¹ûÈÔÈ»³öÏÖÍ¬ÑùµÄ´íÎó£¬ÇëÖ´ĞĞÒÔÏÂ²Ù×÷ - " %_Yellow% " %mas%in-place_repair_upgrade"
 )
 goto dk_done
 )
@@ -4500,7 +4511,7 @@ goto dk_done
 for /f "delims=" %%a in ('%psc% "[System.Environment]::Version.Major" %nul6%') do if "%%a"=="2" (
 reg query "HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5" /v Install %nul2% | find /i "0x1" %nul1% || (
 %eline%
-echo .NET 3.5 Framework ÒÑËğ»µ»òÈ±Ê§¡£ÖĞÖ¹...
+echo .NET 3.5 Framework ÒÑËğ»µ»ò¶ªÊ§¡£ÕıÔÚÖĞÖ¹...
 if exist "%SysPath%\spp\tokens\skus\Security-SPP-Component-SKU-Embedded" (
 echo °²×° .NET Framework 4.8 ºÍ Windows Management Framework 5.1
 )
@@ -4515,8 +4526,8 @@ sc query wlms | find /i "RUNNING" %nul% && (
 sc stop %_slser% %nul%
 if !errorlevel! EQU 1051 (
 %eline%
-echo ÆÀ¹À WLMS ·şÎñÕıÔÚÔËĞĞ£¬ÎŞ·¨Í£Ö¹ sppsvc ·şÎñ¡£ÖĞÖ¹...
-echo °²×° Windows %winbuild% ·ÇÆÀ¹À°æ±¾¡£
+echo ÆÀ¹À WLMS ·şÎñÕıÔÚÔËĞĞ£¬%_slser% ·şÎñÎŞ·¨Í£Ö¹¡£ÕıÔÚÖĞÖ¹...
+echo Îª Windows ¹¹½¨ %winbuild% °²×°·ÇÆÀ¹À°æ±¾¡£
 set fixes=%fixes% %mas%troubleshoot
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%troubleshoot"
 goto dk_done
@@ -4549,9 +4560,12 @@ if /i %_actmethod%==SCID set tsmethod=StaticCID
 if /i %_actmethod%==ZCID set tsmethod=ZeroCID
 if /i %_actmethod%==KMS4k set tsmethod=KMS4k
 
-if /i %_actmethod%==×Ô¶¯ (
+if /i %_actmethod%==Auto (
 if %winbuild% GEQ 26100 (
 set tsmethod=StaticCID
+if !_actwin!==1 if not !_actwinesuoff!==1 (
+set tsmethod=KMS4k
+)
 ) else (
 set tsmethod=ZeroCID
 )
@@ -4559,7 +4573,7 @@ set tsmethod=ZeroCID
 
 if %winbuild% LSS 9200 if /i %tsmethod%==StaticCID (
 %eline%
-echo StaticCID ·½·¨½öÖ§³Ö Windows 8 ¼°¸ü¸ß°æ±¾¡£
+echo StaticCID method is supported only on Windows 8 and later.
 goto dk_done
 )
 
@@ -4575,19 +4589,19 @@ for /f "delims=[] tokens=2" %%# in ('ping -n 1 %%a') do (if not "%%#"=="" set _i
 
 if not defined _int (
 %psc% "If([Activator]::CreateInstance([Type]::GetTypeFromCLSID([Guid]'{DCB00C01-570F-4A9B-8D69-199FDBA5723B}')).IsConnectedToInternet){Exit 0}Else{Exit 1}"
-if !errorlevel!==0 (set _int=1&set ping_f= µ« Ping Ê§°Ü)
+if !errorlevel!==0 (set _int=1&set ping_f= But Ping Failed)
 )
 
 if defined _int (
-echo ¼ì²é»¥ÁªÍøÁ¬½Ó                      [ÒÑÁ¬½Ó!ping_f!]
+echo ¼ì²éÍøÂçÁ¬½Ó            [!ping_f!ÒÑÁ¬½Ó]
 ) else (
-if /i %_actmethod%==×Ô¶¯ if not %_actman%==1 set tsmethod=KMS4k
+if /i %_actmethod%==Auto if not %_actman%==1 set tsmethod=KMS4k
 if /i !tsmethod!==KMS4k (
-call :dk_color %Red% "¼ì²é»¥ÁªÍøÁ¬½Ó                      [Î´Á¬½Ó]"
-call :dk_color %Blue% "ÇĞ»»Îª KMS4k ¼¤»î·½·¨£¬ÒòÎª StaticCID ·½·¨ĞèÒª»¥ÁªÍø¡£"
+call :dk_color %Red% "Checking Internet Connection            [Not Connected]"
+call :dk_color %Blue% "Switching To KMS4k activation because Internet is needed for StaticCID method."
 ) else (
 set error=1
-call :dk_color %Red% "¼ì²é»¥ÁªÍøÁ¬½Ó                      [Î´Á¬½Ó]"
+call :dk_color %Red% "¼ì²éÍøÂçÁ¬½Ó            [Î´Á¬½Ó]"
 call :dk_color %Blue% "TSforge StaticCID Ñ¡ÏîĞèÒª»¥ÁªÍø¡£"
 )
 echo:
@@ -4607,7 +4621,7 @@ call :dk_errorcheck
 
 call :ts_getedition
 if not defined tsedition (
-call :dk_color %Red% "¼ì²é Windows °æ±¾ ID             [Î´ÔÚÒÑ°²×°µÄĞí¿ÉÖ¤ÖĞÕÒµ½£¬ÕıÔÚÖĞÖ¹...]"
+call :dk_color %Red% "¼ì²é Windows °æ±¾ ID             [ÔÚÒÑ°²×°µÄĞí¿ÉÖ¤ÖĞÎ´ÕÒµ½£¬ÕıÔÚÖĞÖ¹...]"
 set fixes=%fixes% %mas%troubleshoot
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%troubleshoot"
 goto :dk_done
@@ -4615,7 +4629,7 @@ goto :dk_done
 
 if /i !tsmethod!==KMS4k (
 call :_taskclear-cache
-echo ÇåÀí %KS% »º´æ                      [³É¹¦]
+echo Çå³ı %KS% »º´æ                      [³É¹¦]
 )
 
 ::========================================================================================================================================
@@ -4633,7 +4647,7 @@ if not %_actwin%==1 goto :ts_esu
 ::  Check if system is permanently activated or not
 
 echo:
-echo ÕıÔÚ¼¤»î Windows...
+echo ´¦Àí Windows...
 
 echo %tsedition% | find /i "Eval" %nul1% && (
 goto :ts_wineval
@@ -4647,7 +4661,7 @@ if !UBR! LSS 4188 (set dontcheckact=1)
 
 if not defined dontcheckact call :ts_checkwinperm
 if defined _perm (
-call :dk_color %Gray% "¼ì²é²Ù×÷ÏµÍ³¼¤»î                    [Windows ÒÑÓÀ¾Ã¼¤»î]"
+call :dk_color %Gray% "¼ì²é²Ù×÷ÏµÍ³¼¤»î                  [Windows ÒÑÓÀ¾Ã¼¤»î]"
 goto :ts_esu
 )
 
@@ -4656,27 +4670,27 @@ if defined _vis goto :ts_winvista
 
 set tempid=
 if /i %tsmethod%==KMS4k (set keytype=ks) else (set keytype=zero)
-for /f "delims=" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':wintsid\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (
+for /f "delims=" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':wintsid\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (
 echo "%%a" | findstr /r ".*-.*-.*-.*-.*" %nul1% && (set tsids=!tsids! %%a& set tempid=%%a)
 )
 
 if defined tempid (
-echo ¼ì²é¼¤»î ID                         [%tempid%] [%tsedition%]
+echo ¼ì²é¼¤»îID                  [%tempid%] [%tsedition%]
 ) else (
-call :dk_color %Red% "¼ì²é¼¤»î ID                         [Î´·¢ÏÖ] [%tsedition%] [%osSKU%]"
+call :dk_color %Red% "¼ì²é¼¤»îID                  [Î´·¢ÏÖ] [%tsedition%] [%osSKU%]"
 set error=1
 if /i %tsmethod%==KMS4k (
-if /i %_actmethod%==×Ô¶¯ (
-call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø£¬È»ºóÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
+if /i %_actmethod%==Auto (
+call :dk_color %Blue% "·µ»ØÉÏÒ»¼¶²Ëµ¥£¬Ñ¡ÔñStaticCID¼¤»î·½Ê½¡£ĞèÒª»¥ÁªÍøÁ¬½Ó²ÅÄÜ¼¤»î¡£"
 ) else (
-call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
+call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»¸ö²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
 )
 )
 goto :ts_esu
 )
 
 if defined winsub (
-call :dk_color %Blue% "·¢ÏÖ Windows ¶©ÔÄ°æ±¾ [SKU ID-%slcSKU%]¡£ ½Å±¾½«¼¤»î»ù±¾°æ±¾ [SKU ID-%regSKU%]¡£"
+call :dk_color %Blue% "ÒÑÕÒµ½ Windows ¶©ÔÄ [SKU ID-%slcSKU%]¡£½Å±¾½«¼¤»î»ù´¡°æ±¾ [SKU ID-%regSKU%]¡£"
 echo:
 )
 
@@ -4745,12 +4759,12 @@ set tempid=%%A
 )
 
 if not defined key (
-call :dk_color %Red% "¼ì²é¼¤»î ID                         [%tsedition% SKU-%osSKU% %KS% ÃÜÔ¿²»¿ÉÓÃ]"
-call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»²Ëµ¥ÖĞµÄ ZeroCID ¼¤»î·½·¨¡£"
+call :dk_color %Red% "¼ì²é¼¤»îID                  [%tsedition% SKU-%osSKU% %KS% ÃÜÔ¿²»¿ÉÓÃ]"
+call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»¸ö²Ëµ¥ÖĞµÄ ZeroCID ¼¤»î·½·¨¡£"
 goto :ts_esu
 )
 
-echo ¼ì²é¼¤»î ID                         [%tempid%] [%tsedition%]
+echo ¼ì²é¼¤»îID                  [%tempid%] [%tsedition%]
 
 set oldks=1
 set generickey=1
@@ -4827,12 +4841,12 @@ set tempid=%%A
 
 if not defined key (
 set error=1
-call :dk_color %Red% "¼ì²é¼¤»î ID                  [ÏµÍ³ÖĞÎ´ÕÒµ½ %tsedition% SKU-%osSKU% ]"
+call :dk_color %Red% "¼ì²é¼¤»îID                  [ÏµÍ³ÖĞÎ´ÕÒµ½ %tsedition% SKU-%osSKU%]"
 call :dk_color %Blue% "%_fixmsg%"
 goto :ts_esu
 )
 
-echo ¼ì²é¼¤»î ID                  [%tempid%] [%tsedition%]
+echo ¼ì²é¼¤»îID                  [%tempid%] [%tsedition%]
 
 set generickey=1
 call :dk_inskey "[%key%]"
@@ -4848,9 +4862,9 @@ call :dk_color %Blue% "ÆÀ¹À°æÎŞ·¨ÔÚÆÀ¹ÀÆÚÖ®Íâ¼¤»î¡£"
 
 if exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-Server*Edition~*.mum" (
 call :dk_color %Blue% "½Å±¾½«ÖØÖÃÆÀ¹ÀÆÚ£¬µ«ÒªÓÀ¾Ã¼¤»î Windows£¬"
-call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥²¢Ê¹ÓÃ [¸ü¸Ä°æ±¾] Ñ¡Ïî²¢¸ü¸ÄÎª·ÇÆÀ¹À°æ±¾¡£"
+call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ê¹ÓÃ[¸ü¸Ä°æ±¾]Ñ¡Ïî²¢¸ü¸ÄÎª·Ç°æ±¾¡£"
 ) else (
-call :dk_color %Blue% "½Å±¾½«ÖØÖÃÆÀ¹ÀÆÚ£¬µ«ÒªÓÀ¾Ã¼¤»î Windows£¬Çë°²×°·ÇÆÀ¹À°æ±¾¡£"
+call :dk_color %Blue% "½Å±¾½«ÖØÖÃÆÀ¹ÀÆÚ£¬µ«ÒªÓÀ¾Ã¼¤»î Windows£¬Çë°²×°·ÇÆÀ¹À°æ¡£"
 call :dk_color %_Yellow% "%mas%evaluation_editions"
 )
 
@@ -4863,15 +4877,15 @@ for /f "delims=[] tokens=2" %%# in ('ping -n 1 %%a') do (if not "%%#"=="" set _i
 
 if not defined _int (
 %psc% "If([Activator]::CreateInstance([Type]::GetTypeFromCLSID([Guid]'{DCB00C01-570F-4A9B-8D69-199FDBA5723B}')).IsConnectedToInternet){Exit 0}Else{Exit 1}"
-if !errorlevel!==0 (set _int=1&set ping_f= µ« Ping Ê§°Ü)
+if !errorlevel!==0 (set _int=1&set ping_f= But Ping Failed)
 )
 
 if defined _int (
-echo ¼ì²é»¥ÁªÍøÁ¬½Ó                      [ÒÑÁ¬½Ó %ping_f%]
+echo ¼ì²éÍøÂçÁ¬½Ó            [ÒÑÁ¬½Ó%ping_f%]
 ) else (
 set error=1
-call :dk_color %Red% "¼ì²é»¥ÁªÍøÁ¬½Ó                      [Î´Á¬½Ó]"
-call :dk_color %Blue% "ÔÚÏß %KS% ¼¤»îĞèÒª»¥ÁªÍøÁ¬½Ó¡£"
+call :dk_color %Red% "¼ì²é»¥ÁªÍøÁ¬½Ó            [Ã»ÓĞÍøÂç]"
+call :dk_color %Blue% "Windows ÆÀ¹À¼¤»îĞèÒª»¥ÁªÍø¡£"
 )
 
 ::  List of products lacking activable evaluation keys and ISOs
@@ -4933,28 +4947,28 @@ echo "%allapps%" | find /i "%%A" %nul1% && (
 set key=%%B
 set eval=1
 if /i "%%E"=="NoAct" set noact=1
-echo ¼ì²é¼¤»î ID                         [%%A] [%%C]
+echo ¼ì²é¼¤»îID                  [%%A] [%%C]
 )
 )
 )
 
 if not defined key (
 set error=1
-call :dk_color %Red% "¼ì²é ID                  [%tsedition% ÔÚ½Å±¾ÖĞÎ´ÕÒµ½]"
-call :dk_color %Blue% "È·±£ÄúÊ¹ÓÃµÄÊÇ½Å±¾µÄ×îĞÂ°æ±¾¡£"
+call :dk_color %Red% "¼ì²é¼¤»îID                  [%tsedition% ÔÚ½Å±¾ÖĞÎ´ÕÒµ½]"
+call :dk_color %Blue% "È·±£ÄúÊ¹ÓÃµÄÊÇ½Å±¾µÄ¸üĞÂ°æ±¾¡£"
 goto :ts_esu
 )
 
 set resetstuff=1
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':tsforge\:.*';. ([scriptblock]::Create($f[1]))"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':tsforge\:.*';. ([scriptblock]::Create($f[1]))"
 set resetstuff=
 if !errorlevel!==3 (
 set error=1
-call :dk_color %Red% "ÖØÖÃ ÖØ×° / ¿íÏŞÆÚ           [Ê§°Ü]"
+call :dk_color %Red% "ÖØÖÃ Rearm / GracePeriod           [Ê§°Ü]"
 call :dk_color %Blue% "%_fixmsg%"
 goto :ts_esu
 ) else (
-echo ÖØÖÃ ÖØ×° / ¿íÏŞÆÚ           [³É¹¦]
+echo ÖØÖÃ Rearm / GracePeriod           [³É¹¦]
 )
 
 set generickey=1
@@ -4967,10 +4981,10 @@ call :dk_inskey "[%key%]"
 if not %_actesu%==1 goto :ts_off
 if /i %tsmethod%==KMS4k (
 call :dk_color %Red% "Ìø¹ı Windows ESU                    [Windows ESU ²»Ö§³Ö KMS4k ·½·¨]"
-if /i %_actmethod%==×Ô¶¯ (
-call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø£¬È»ºóÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
+if /i %_actmethod%==Auto (
+call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø²¢ÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
 ) else (
-call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
+call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»¸ö²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
 )
 goto :ts_off
 )
@@ -4978,7 +4992,7 @@ goto :ts_off
 ::  Process Windows ESU
 
 echo:
-echo ÕıÔÚ¼¤»î Windows ESU...
+echo ´¦Àí Windows ESU...
 
 set esuexist=
 set esuexistsup=
@@ -5044,7 +5058,7 @@ set esuexistsup=1
 set esueditionlist=
 set esuexistbutnosup=
 set tsids=!tsids! %%A
-echo ¼ì²é¼¤»î ID                         [%%A] [%%B]
+echo ¼ì²é¼¤»îID                  [%%A] [%%B]
 ) || (
 if not defined esueditionlist set esueditionlist=%%C
 set esuexistbutnosup=1
@@ -5063,7 +5077,7 @@ goto :ts_off
 if defined esuexistsup (
 echo "%tsids%" | find /i "4220f546-f522-46df-8202-4d07afd26454" %nul1% && (
 echo "%tsids%" | find /i "7e94be23-b161-4956-a682-146ab291774c" %nul1% || (
-call :dk_color %Gray% "Òª»ñÈ¡ Client-ESU-Year6[4-6y] Ğí¿ÉÖ¤£¬Çë´ÓÒÔÏÂÍøÒ³°²×°¸üĞÂ¡£"
+call :dk_color %Gray% "Òª»ñÈ¡ Client-ESU-Year6[4-6y] Ğí¿ÉÖ¤£¬Çë´ÓÒÔÏÂ URL °²×°¸üĞÂ¡£"
 call :dk_color %Blue% "%mas%tsforge#windows-esu"
 )
 )
@@ -5071,15 +5085,15 @@ goto :ts_off
 )
 
 if defined isltsc (
-call :dk_color %Gray% "¼ì²é¼¤»î ID                         [%tsedition% LTSC ÒÑ»ñµÃ¸ü³¤µÄÖ§³Ö£¬ESU ²»ÊÊÓÃ]"
+call :dk_color %Gray% "¼ì²é¼¤»îID                  [%tsedition% LTSC ÒÑ»ñµÃ¸ü³¤Ê±¼äµÄÖ§³Ö£¬ESU ²»ÊÊÓÃ]"
 goto :ts_off
 )
 
 if defined esuexistbutnosup (
-call :dk_color %Red% "¼ì²é¼¤»î ID                         [µ±Ç°°²×°µÄ ESU Ğí¿ÉÖ¤²»Ö§³Ö %tsedition%]"
+call :dk_color %Red% "Checking Activation ID                  [Currently installed ESU License is not supported for %tsedition%]"
 echo:
 if %winbuild% EQU 19045 if not defined w10EsuEditionsLaterAdded (
-call :dk_color %Blue% "Òª»ñÈ¡×îĞÂ°æ±¾£¬Çë×ªµ½ Windows ÉèÖÃ²¢ÔËĞĞ Windows ¸üĞÂ¡£Ö®ºó£¬ÔÙ´Î³¢ÊÔ½Å±¾¡£"
+call :dk_color %Blue% "To get latest version, go to Windows settings and run Windows Update. After that, try the script again."
 goto :ts_off
 )
 call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡Ôñ¡°¸ü¸Ä Windows °æ±¾¡±Ñ¡Ïî²¢¸ü¸ÄÎªÏÂÃæÁĞ³öµÄÈÎºÎ°æ±¾¡£"
@@ -5095,11 +5109,11 @@ if %winbuild% GEQ 10240 if %winbuild% LEQ 19045 if not defined isServer set esua
 if %winbuild% EQU 9600 set esuavail=1
 
 if defined esuavail (
-call :dk_color %Red% "¼ì²é¼¤»î ID                         [Î´ÕÒµ½ ESU Ğí¿ÉÖ¤£¬ÇëÈ·±£ Windows ÒÑÍêÈ«¸üĞÂ]"
+call :dk_color %Red% "¼ì²é¼¤»îID                  [Î´ÕÒµ½ ESU Ğí¿ÉÖ¤£¬ÇëÈ·±£ Windows ÒÑÍêÈ«¸üĞÂ]"
 set fixes=%fixes% %mas%tsforge#windows-esu
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%tsforge#windows-esu"
 ) else (
-call :dk_color %Gray% "¼ì²é¼¤»î ID                         [ESU ²»ÊÊÓÃÓÚ %winos%]"
+call :dk_color %Gray% "¼ì²é¼¤»îID                  [ESU ²»ÊÊÓÃÓÚ %winos%]"
 )
 
 ::========================================================================================================================================
@@ -5110,8 +5124,8 @@ if not %_actoff%==1 goto :ts_act
 
 if %winbuild% LSS 9200 (
 echo:
-call :dk_color %Gray% "¼ì²éÖ§³ÖµÄ Office                   [TSforge Office ¼¤»îÖ§³Ö Windows 8 ¼°¸ü¸ß°æ±¾]"
-call :dk_color %Blue% "ÔÚ Windows Vista / 7 ÖĞ£¬Çë¸ÄÓÃ Office µÄ Ohook ¼¤»îÑ¡Ïî¡£"
+call :dk_color %Gray% "¼ì²éÖ§³ÖµÄ Office               [TSforge for Office Ö§³Ö Windows 8 ¼°¸ü¸ß°æ±¾]"
+call :dk_color %Blue% "ÔÚ Windows Vista / 7 ÉÏ£¬Çë¸ÄÓÃ Ohook ¼¤»î Office Ñ¡Ïî¡£"
 goto :ts_act
 )
 
@@ -5151,8 +5165,8 @@ for /f "skip=2 tokens=2*" %%a in ('"reg query %_68%\14.0\Common\InstallRoot /v P
 
 if not "%o14msi%%o14c2r%"=="" (
 echo:
-call :dk_color %Red% "¼ì²é²»Ö§³ÖµÄ Office °²×°            [ %o14msi%%o14c2r%]"
-if defined o14msi call :dk_color %Blue% "Ê¹ÓÃ Office 2010 µÄ Ohook ¼¤»îÑ¡Ïî¡£"
+call :dk_color %Red% "¼ì²é²»ÊÜÖ§³ÖµÄ Office °²×°     [ %o14msi%%o14c2r%]"
+if defined o14msi call :dk_color %Blue% "Ê¹ÓÃ Ohook ¼¤»îÑ¡Ïî¼¤»î Office 2010¡£"
 )
 
 if %winbuild% GEQ 10240 %psc% "Get-AppxPackage -name "Microsoft.MicrosoftOfficeHub"" | find /i "Office" %nul1% && (
@@ -5177,7 +5191,7 @@ set error1=%errorlevel%
 
 if defined o16c2r if %error1% EQU 1060 (
 echo:
-call :dk_color %Red% "¼ì²é ClickToRun ·şÎñ                [Î´·¢ÏÖ, Office 16.0 ÎÄ¼ş·¢ÏÖ]"
+call :dk_color %Red% "¼ì²é ClickToRun ·şÎñ             [Î´ÕÒµ½£¬ÕÒµ½ Office 16.0 ÎÄ¼ş]"
 set o16c2r=
 set error=1
 )
@@ -5187,7 +5201,7 @@ set error2=%errorlevel%
 
 if defined o15c2r if %error1% EQU 1060 if %error2% EQU 1060 (
 echo:
-call :dk_color %Red% "¼ì²é ClickToRun ·şÎñ                [Î´·¢ÏÖ, Office 15.0 ÎÄ¼ş·¢ÏÖ]"
+call :dk_color %Red% "¼ì²é ClickToRun ·şÎñ             [Î´ÕÒµ½£¬ÕÒµ½ Office 15.0 ÎÄ¼ş]"
 set o15c2r=
 set error=1
 )
@@ -5197,20 +5211,20 @@ set error=1
 set showfix=1
 echo:
 if not "%o14msi%%o14c2r%"=="" (
-call :dk_color %Red% "¼ì²éÖ§³ÖµÄ Office °²×°              [Î´ÕÒµ½]"
+call :dk_color %Red% "¼ì²éÖ§³ÖµÄ Office °²×°       [Î´·¢ÏÖ]"
 ) else (
 if %_actwin%==0 (
-call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ Office                 [Î´ÕÒµ½]"
+call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ Office               [Î´·¢ÏÖ]"
 ) else (
-call :dk_color %Gray% "¼ì²éÒÑ°²×°µÄ Office                 [Î´ÕÒµ½]"
+call :dk_color %Gray% "¼ì²éÒÑ°²×°µÄ Office               [Î´·¢ÏÖ]"
 )
 )
 
 if defined ohub (
 echo:
-echo ÄúÖ»°²×°ÁË Office Ó¦ÓÃÉÌµêÓ¦ÓÃ³ÌĞò£¬ĞèÒª°²×°ÍêÕûµÄ Office °æ±¾¡£
+echo ÄúÖ»°²×°ÁË Office Dashboard Ó¦ÓÃ³ÌĞò£»ÄúĞèÒª°²×°ÍêÕû°æµÄ Office¡£
 )
-call :dk_color %Blue% "´ÓÒÔÏÂÍøÖ·ÏÂÔØ²¢°²×° Office£¬È»ºóÖØÊÔ¡£"
+call :dk_color %Blue% "´ÓÏÂÃæµÄ URL ÏÂÔØ²¢°²×° Office£¬È»ºóÖØÊÔ¡£"
 if %_actwin%==0 set fixes=%fixes% %mas%genuine-installation-media
 call :dk_color %_Yellow% "%mas%genuine-installation-media"
 goto :ts_act
@@ -5222,7 +5236,7 @@ if not "%o14c2r%%o14msi%"=="" set multioffice=1
 
 if defined multioffice (
 echo:
-call :dk_color %Gray% "¼ì²â¶à¸ö Office °²×°                [·¢ÏÖ, ½¨ÒéÖ»°²×°Ò»¸ö°æ±¾]"
+call :dk_color %Gray% "¼ì²é¶à¸ö Office °²×°        [ÒÑÕÒµ½¡£½¨Òé½ö°²×°Ò»¸ö°æ±¾]"
 )
 
 ::========================================================================================================================================
@@ -5264,10 +5278,10 @@ if not defined _lat set "_oIds= !_oIds! %%#ProRetail "
 set uwpinfo=%o16uwp_path:C:\Program Files\WindowsApps\Microsoft.Office.Desktop_=%
 
 echo:
-echo ÕıÔÚ¼¤»î Office...                  [UWP ^| %uwpinfo%]
+echo Processing Office...                    [UWP ^| %uwpinfo%]
 
 if not defined _oIds (
-call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ²úÆ·                    [²úÆ· ID Î´·¢ÏÖ, ÖĞÖ¹¼¤»î...]"
+call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ²úÆ·             [Î´ÕÒµ½²úÆ· ID¡£ÕıÔÚÖĞÖ¹¼¤»î¡­¡­]"
 set error=1
 goto :ts_starto15c2r
 )
@@ -5304,10 +5318,10 @@ set "pkeypath=%_oRoot%\Office15\pkeyconfig-office.xrm-ms"
 set "_oIntegrator=%_oRoot%\integration\integrator.exe"
 
 echo:
-echo ÕıÔÚ¼¤»î Office...                  [C2R ^| %_version% ^| %_oArch%]
+echo Processing Office...                    [C2R ^| %_version% ^| %_oArch%]
 
 if not defined _oIds (
-call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ²úÆ·                    [²úÆ· ID Î´·¢ÏÖ, ÖĞÖ¹¼¤»î...]"
+call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ²úÆ·             [Î´ÕÒµ½²úÆ· ID¡£ÕıÔÚÖĞÖ¹¼¤»î¡­¡­]"
 set error=1
 goto :ts_starto16c2r
 )
@@ -5346,10 +5360,10 @@ set "pkeypath=%_oRoot%\Office16\pkeyconfig-office.xrm-ms"
 set "_oIntegrator=%_oRoot%\integration\integrator.exe"
 
 echo:
-echo ÕıÔÚ¼¤»î Office...                  [C2R ^| %_version% %_AudienceData%^| %_oArch%]
+echo Processing Office...                    [C2R ^| %_version% %_AudienceData%^| %_oArch%]
 
 if not defined _oIds (
-call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ²úÆ·                    [²úÆ· ID Î´·¢ÏÖ, ÖĞÖ¹¼¤»î...]"
+call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ²úÆ·             [Î´ÕÒµ½²úÆ· ID¡£ÕıÔÚÖĞÖ¹¼¤»î¡­¡­]"
 set error=1
 goto :ts_startmsi
 )
@@ -5372,7 +5386,7 @@ reg add "%kmskey%" /f /v KeyManagementServiceName /t REG_SZ /d "10.0.0.10" /reg:
 )
 reg delete "%kmskey%" /f %nul%
 reg add "%kmskey%" /f /v KeyManagementServiceName /t REG_SZ /d "10.0.0.10" %nul%
-echo Ìí¼Ó×¢²á±íÒÔ·ÀÖ¹Õı°æºá·ù            [³É¹¦]
+echo Ìí¼Ó×¢²á±íÒÔ·ÀÖ¹ºá·ù¹ã¸æ     [³É¹¦]
 )
 )
 
@@ -5399,25 +5413,25 @@ goto :ts_act
 ::  Process Windows K-M-S host
 
 echo:
-echo ÕıÔÚ¼¤»î Windows %KS% Ö÷»ú...
+echo ÕıÔÚ´¦Àí Windows %KS% Ö÷»ú...
 
 if /i %tsmethod%==KMS4k (
 echo:
-call :dk_color %Red% "Ìø¹ı Windows %KS% Ö÷»ú              [ Windows %KS% Ö÷»ú²»Ö§³Ö KMS4k ·½·¨]"
-if /i %_actmethod%==×Ô¶¯ (
-call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø£¬È»ºóÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
+call :dk_color %Red% "Ìø¹ı Windows %KS% Ö÷»ú               [Windows %KS% Ö÷»ú²»Ö§³Ö KMS4k ·½·¨]"
+if /i %_actmethod%==Auto (
+call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø²¢ÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
 ) else (
-call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
+call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»¸ö²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
 )
 goto :ts_act
 )
 
 echo:
 if %winbuild% GEQ 10586 (
-call :dk_color %Gray% "Ê¹ÓÃ %KS% Ö÷»úĞí¿ÉÖ¤£¬ÏµÍ³ÒÔºó¿ÉÄÜ»áËæ»ú¸ü»» Windows °æ±¾¡£ÕâÊÇÒ»¸ö Windows ÎÊÌâ£¬¿ÉÒÔ·ÅĞÄµØºöÂÔ¡£"
+call :dk_color %Gray% "Ê¹ÓÃ %KS% Ö÷»úĞí¿ÉÖ¤ºó£¬ÏµÍ³¿ÉÄÜ»áËæ»ú¸ü¸Ä Windows °æ±¾¡£ÕâÊÇ Windows ÎÊÌâ£¬¿ÉÒÔ·ÅĞÄºöÂÔ¡£"
 )
-call :dk_color %Gray% "%KS% Ö÷»ú [²»ÒªÓë %KS% ¿Í»§¶Ë»ìÏı] Ğí¿ÉÖ¤»áµ¼ÖÂ %_slser% ·şÎñ³ÖĞøÔËĞĞ¡£"
-call :dk_color %Blue% "½öÔÚ±ØÒªÊ±Ê¹ÓÃ´Ë¼¤»î£¬Äú¿ÉÒÔ´ÓÉÏÒ»¸ö²Ëµ¥»Ö¸´ÎªÕı³£¼¤»î¡£"
+call :dk_color %Gray% "%KS% Ö÷»ú [²»ÒªÓë %KS% ¿Í»§¶Ë»ìÏı] Ğí¿ÉÖ¤µ¼ÖÂ %_slser% ·şÎñ³ÖĞøÔËĞĞ¡£"
+call :dk_color %Blue% "½öÔÚ±ØÒªÊ±Ê¹ÓÃ´Ë¼¤»î£¬Äú¿ÉÒÔ´ÓÉÏÒ»¸ö²Ëµ¥»Ö¸´µ½Õı³£¼¤»î¡£"
 
 if %_unattended%==0 (
 echo:
@@ -5438,25 +5452,25 @@ if %winbuild% GEQ 10586 (
 for %%# in ("%SysPath%\spp\tokens\skus\%tsedition%\*CSVLK*.xrm-ms") do (
 if defined _arr (set "_arr=!_arr!;"%SysPath%\spp\tokens\skus\%tsedition%\%%~nx#"") else (set "_arr="%SysPath%\spp\tokens\skus\%tsedition%\%%~nx#"")
 )
-if defined _arr %psc% "$sls = Get-WmiObject %sps%; $f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); InstallLicenseArr '!_arr!'" %nul%
+if defined _arr %psc% "$sls = Get-WmiObject %sps%; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); InstallLicenseArr '!_arr!'" %nul%
 )
 
-for /f "delims=" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':wintsid\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (
+for /f "delims=" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':wintsid\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (
 echo "%%a" | findstr /r ".*-.*-.*-.*-.*" %nul1% && (set tsids=!tsids! %%a& set tempid=%%a)
 )
 
 if defined tempid (
-echo ¼ì²é¼¤»î ID                         [%tempid%] [%tsedition%]
+echo ¼ì²é¼¤»îID                  [%tempid%] [%tsedition%]
 ) else (
-call :dk_color %Red% "¼ì²é¼¤»î ID                         [Î´·¢ÏÖ] [%tsedition%] [%osSKU%]"
-call :dk_color %Blue% "%KS% ÔÚÄúµÄÏµÍ³ÉÏÎ´ÕÒµ½Ö÷»úĞí¿ÉÖ¤¡£ËüÊÊÓÃÓÚÒÔÏÂ°æ±¾¡£"
-call :dk_color %Blue% "Professional, Education, ProfessionalWorkstation, Enterprise, EnterpriseS, ºÍ Server °æµÈ¡£"
+call :dk_color %Red% "¼ì²é¼¤»îID                  [Î´·¢ÏÖ] [%tsedition%] [%osSKU%]"
+call :dk_color %Blue% "%KS% Host license is not found on your system. It is available for the below editions."
+call :dk_color %Blue% "Professional, Education, ProfessionalWorkstation, Enterprise, EnterpriseS, and Server editions, etc."
 goto :ts_act
 )
 
 if defined winsub (
 echo:
-call :dk_color %Blue% "·¢ÏÖ Windows ¶©ÔÄ°æ±¾ [SKU ID-%slcSKU%]¡£½Å±¾½«¼¤»î»ù´¡°æ±¾ [SKU ID-%regSKU%]¡£"
+call :dk_color %Blue% "Windows Subscription [SKU ID-%slcSKU%] found. Script will activate base edition [SKU ID-%regSKU%]."
 )
 
 goto :ts_act
@@ -5496,11 +5510,11 @@ set tempid=%%A
 )
 
 if defined key (
-echo ¼ì²é¼¤»î ID                        [%tempid%] [%tsedition%]
+echo ¼ì²é¼¤»îID                  [%tempid%] [%tsedition%]
 ) else (
-call :dk_color %Red% "¼ì²é¼¤»î ID                        [Î´ÕÒµ½] [%tsedition%] [%osSKU%]"
-call :dk_color %Blue% "ÔÚÄúµÄÏµÍ³ÉÏÎ´ÕÒµ½ %KS% Ö÷»úĞí¿ÉÖ¤¡£ËüÊÊÓÃÓÚÒÔÏÂ°æ±¾¡£"
-call :dk_color %Blue% "Business, BusinessN, Enterprise, EnterpriseN, ºÍ Server °æµÈ¡£"
+call :dk_color %Red% "¼ì²é¼¤»îID                  [Î´·¢ÏÖ] [%tsedition%] [%osSKU%]"
+call :dk_color %Blue% "ÄúµÄÏµÍ³ÉÏÎ´ÕÒµ½ %KS% Ö÷»úĞí¿ÉÖ¤¡£¸ÃĞí¿ÉÖ¤ÊÊÓÃÓÚÒÔÏÂ°æ±¾¡£"
+call :dk_color %Blue% "ÉÌÒµ°æ¡¢BusinessN°æ¡¢ÆóÒµ°æ¡¢EnterpriseN°æ¡¢·şÎñÆ÷°æµÈ¡£"
 goto :ts_act
 )
 
@@ -5515,21 +5529,21 @@ goto :ts_act
 ::  Process Office K-M-S host
 
 echo:
-echo ÕıÔÚ¼¤»î Office %KS% Ö÷»ú...
+echo ´¦Àí Office %KS% Ö÷»ú...
 
 if defined _vis (
 echo:
-call :dk_color %Blue% "Windows Vista ºÍ Server 2008 ²»Ö§³Ö°²×° Office KMS Ö÷»ú¡£"
+call :dk_color %Blue% "Windows Vista ºÍ Server 2008 ²»Ö§³Ö°²×° Office KMS Host¡£"
 goto :ts_act
 )
 
 if /i %tsmethod%==KMS4k (
 echo:
-call :dk_color %Red% "Ìø¹ı Office %KS% Ö÷»ú               [Office %KS% Ö÷»ú²»Ö§³Ö KMS4K ·½·¨]"
-if /i %_actmethod%==×Ô¶¯ (
-call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø£¬È»ºóÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
+call :dk_color %Red% "Ìø¹ı Office %KS% Host                [Office %KS% Host ²»Ö§³Ö KMS4k ·½·¨]"
+if /i %_actmethod%==Auto (
+call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø²¢ÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
 ) else (
-call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
+call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»¸ö²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
 )
 goto :ts_act
 )
@@ -5552,18 +5566,18 @@ for /f "tokens=1-2 delims=_" %%A in ("%%#") do (
 echo "%ohostids%" | find /i "%%A" %nul1% && (
 set ohostexist=1
 set tsids=!tsids! %%A
-echo ¼ì²é¼¤»î ID                         [%%A] [%%B]
+echo ¼ì²é¼¤»îID                  [%%A] [%%B]
 )
 )
 )
 
 if not defined ohostexist (
-call :dk_color %Gray% "¼ì²é¼¤»î ID                         [Î´·¢ÏÖ Office %KS% Ö÷»ú]"
+call :dk_color %Gray% "¼ì²é¼¤»îID                  [Î´ÕÒµ½ Office %KS% Host]"
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%tsforge#office-kms-host"
 )
 
 echo:
-call :dk_color %Gray% "%KS% Ö÷»ú [²»ÒªÓë %KS% ¿Í»§¶Ë»ìÏı] Ğí¿ÉÖ¤»áµ¼ÖÂ sppsvc ·şÎñ³ÖĞøÔËĞĞ¡£"
+call :dk_color %Gray% "%KS% Ö÷»ú [²»ÒªÓë %KS% ¿Í»§¶Ë»ìÏı] Ğí¿ÉÖ¤µ¼ÖÂ sppsvc ·şÎñ³ÖĞøÔËĞĞ¡£"
 call :dk_color %Gray% "½öÔÚ±ØÒªÊ±Ê¹ÓÃ´Ë¼¤»î¡£"
 
 goto :ts_act
@@ -5575,24 +5589,24 @@ goto :ts_act
 ::  Process Windows 8/8.1 APPX Sideloading
 
 echo:
-echo ÕıÔÚ¼¤»î Windows 8/8.1 APPX ÅÔ¼ÓÔØ...
+echo ÕıÔÚ´¦Àí Windows 8/8.1 APPX ²àÔØ...
 
 if %winbuild% LSS 9200 set noappx=1
 if %winbuild% GTR 9600 set noappx=1
 
 echo:
 if defined noappx (
-call :dk_color %Gray% "¼ì²é¼¤»î ID                         [APPX ÅÔ¼ÓÔØ¹¦ÄÜ½öÔÚ Windows 8/8.1 ÉÏ¿ÉÓÃ]"
+call :dk_color %Gray% "¼ì²é¼¤»îID                  [APPX ²àÔØ¹¦ÄÜ½öÊÊÓÃÓÚ Windows 8/8.1]"
 goto :dk_done
 )
 
 if /i %tsmethod%==KMS4k (
 echo:
 call :dk_color %Red% "Ìø¹ı Windows 8/8.1 APPX             [Windows 8/8.1 APPX ²»Ö§³Ö KMS4k ·½·¨]"
-if /i %_actmethod%==×Ô¶¯ (
-call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø£¬È»ºóÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
+if /i %_actmethod%==Auto (
+call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø²¢ÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
 ) else (
-call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
+call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»¸ö²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
 )
 goto :dk_done
 )
@@ -5610,14 +5624,14 @@ for /f "tokens=1-2 delims=_" %%A in ("%%#") do (
 echo "%allapps%" | find /i "%%A" %nul1% && (
 set appxexist=1
 set tsids=!tsids! %%A
-echo ¼ì²é¼¤»î ID                         [%%A] [%%B]
+echo ¼ì²é¼¤»îID                  [%%A] [%%B]
 )
 )
 )
 
 if not defined appxexist (
-call :dk_color %Red% "¼ì²é¼¤»î ID                         [Î´·¢ÏÖ]"
-call :dk_color %Blue% "APPX ÅÔ¼ÓÔØ¹¦ÄÜ½öÊÊÓÃÓÚ×¨Òµ°æºÍ¸ü¸ß¼¶±ğ°æ±¾¡£"
+call :dk_color %Red% "¼ì²é¼¤»îID                  [Î´·¢ÏÖ]"
+call :dk_color %Blue% "APPX Sideloading ¹¦ÄÜ½öÊÊÓÃÓÚ×¨Òµ°æ¼°¸ü¸ß¼¶±ğ°æ±¾¡£"
 )
 
 goto :ts_act
@@ -5628,17 +5642,17 @@ goto :ts_act
 
 echo:
 if defined _vis (
-echo ÕıÔÚÖ´ĞĞ ÖØÖÃ ÖØ×° / ¼ÆÊ±Æ÷...
+echo ÕıÔÚ´¦Àí Rearm / Timers µÄÖØÖÃ...
 ) else (
-echo ÕıÔÚÖ´ĞĞ ÖØÖÃ ÖØ×° / ¼ÆÊ±Æ÷ / ´Û¸Ä / Ëø¶¨...
+echo ÕıÔÚ´¦Àí Rearm / Timers / Tamper / Lock µÄÖØÖÃ...
 )
 echo:
 
 set resetstuff=1
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':tsforge\:.*';. ([scriptblock]::Create($f[1]))"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':tsforge\:.*';. ([scriptblock]::Create($f[1]))"
 
 if %errorlevel%==3 (
-call :dk_color %Red% "ÖØÖÃÊ§°Ü"
+call :dk_color %Red% "³äÖµÊ§°Ü¡£"
 set fixes=%fixes% %mas%troubleshoot
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%troubleshoot"
 ) else (
@@ -5652,26 +5666,26 @@ goto :dk_done
 :ts_actman
 
 echo:
-echo ÕıÔÚÖ´ĞĞÊÖ¶¯¼¤»î...
+echo ÕıÔÚ´¦ÀíÊÖ¶¯¼¤»î...
 echo:
 
 if /i %tsmethod%==KMS4k (
 echo:
-call :dk_color %Red% "Ìø¹ıÊÖ¶¯¼¤»î                        [²»Ö§³Ö KMS4k ·½·¨]"
-if /i %_actmethod%==×Ô¶¯ (
-call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø£¬È»ºóÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
+call :dk_color %Red% "Ìø¹ıÊÖ¶¯¼¤»î              [KMS4k ·½·¨²»Ö§³Ö]"
+if /i %_actmethod%==Auto (
+call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø²¢ÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
 ) else (
-call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
+call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»¸ö²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
 )
 goto :dk_done
 )
 
-call :dk_color %Gray% "´ËÑ¡ÏîÊÊÓÃÓÚ¸ß¼¶ÓÃ»§£¬¼´ÒÑ¾­ÖªµÀ×Ô¼ºÔÚ×öÊ²Ã´µÄÓÃ»§¡£"
-call :dk_color %Blue% "Ä³Ğ©¼¤»î ID ¿ÉÄÜ»áµ¼ÖÂÏµÍ³±ÀÀ£ [MUI ²»Æ¥Åä] »ò²»¿ÉÄæ¸ü¸Ä [ÔÆ°æ±¾ µÈ]¡£"
+call :dk_color %Gray% "´ËÑ¡ÏîÊÊÓÃÓÚ¸ß¼¶ÓÃ»§£¬¼´ÄÇĞ©ÒÑ¾­ÖªµÀ×Ô¼ºÔÚ×öÊ²Ã´µÄÓÃ»§¡£"
+call :dk_color %Blue% "Ò»Ğ©¼¤»î ID ¿ÉÄÜ»áµ¼ÖÂÏµÍ³±ÀÀ£ [MUI ²»Æ¥Åä]£¬»ò²»¿ÉÄæµÄ¸ü¸Ä [CloudEdition µÈ]¡£"
 
 if %_unattended%==1 (
 echo:
-for %%# in (%tsids%) do (echo ¼¤»î ID - %%#)
+for %%# in (%tsids%) do (echo Activation ID - %%#)
 goto :ts_act
 )
 
@@ -5683,9 +5697,9 @@ if %errorlevel%==1 exit /b
 echo:
 echo ÕıÔÚ»ñÈ¡Ö§³ÖµÄ¼¤»î ID ÁĞ±í¡£ÇëÉÔºò...
 
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':listactids\:.*';. ([scriptblock]::Create($f[1]))"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':listactids\:.*';. ([scriptblock]::Create($f[1]))"
 if %errorlevel%==3 (
-call :dk_color %Gray% "Î´·¢ÏÖÖ§³ÖµÄ¼¤»î ID, ÖĞÖ¹..."
+call :dk_color %Gray% "Î´ÕÒµ½Ö§³ÖµÄ¼¤»î ID£¬ÕıÔÚÖĞÖ¹..."
 goto :dk_done
 )
 
@@ -5693,11 +5707,11 @@ for /f "delims=" %%a in ('%psc% "$ids = Get-WmiObject -Query 'SELECT ID FROM Sof
 
 if defined _vis (
 echo:
-call :dk_color %Blue% "ÔÚ Windows Vista ºÍ Server 2008 ÉÏ£¬±ØĞëÏÈÊÖ¶¯°²×°ÃÜÔ¿£¬È»ºó²ÅÄÜ¼¤»î¡£"
+call :dk_color %Blue% "ÔÚ Windows Vista ºÍ Server 2008 ÉÏ£¬Äú±ØĞëÏÈÊÖ¶¯°²×°ÃÜÔ¿²ÅÄÜ¼¤»îËü¡£"
 )
 echo:
-call :dk_color %Gray% "ÊäÈë/Õ³Ìù ´ò¿ªµÄÎÄ±¾ÎÄ¼şµÚÒ»ÁĞÏÔÊ¾µÄ¼¤»î ID£¬»ò°´ »Ø³µ¼ü ·µ»Ø:"
-echo Èç¹ûÒªÌí¼Ó¶à¸ö¼¤»î ID£¬ÇëÔÚÃ¿¸ö¼¤»î ID ºóÌí¼Ó¿Õ¸ñ:
+call :dk_color %Gray% "ÊäÈë/Õ³Ìù´ò¿ªµÄÎÄ±¾ÎÄ¼şÖĞµÚÒ»ÁĞÏÔÊ¾µÄ¼¤»î ID£¬»òÕßÖ±½Ó°´ Enter ·µ»Ø£º"
+echo Èç¹ûÒªÌí¼Ó¶à¸ö¼¤»î ID£¬ÇëÔÚÃ¿¸ö¼¤»î ID ºóÌí¼Ó¿Õ¸ñ£º
 echo:
 set /p tsids=
 
@@ -5706,7 +5720,7 @@ if not defined tsids goto :dk_done
 
 for %%# in (%tsids%) do (
 echo "%allactids%" | find /i " %%# " %nul1% || (
-call :dk_color %Red% "[%%#] ÊäÈëµÄ¼¤»î ID ²»ÕıÈ·£¬ÖĞÖ¹..."
+call :dk_color %Red% "[%%#] ÊäÈëµÄ¼¤»î ID ²»ÕıÈ·£¬ÕıÔÚÖĞÖ¹..."
 goto :dk_done
 )
 )
@@ -5794,7 +5808,7 @@ Start-Process notepad.exe $filename
 
 if defined eval (
 echo:
-echo ÕıÔÚ¼¤»î...
+echo ¼¤»îÖĞ...
 echo:
 call :dk_act
 
@@ -5808,15 +5822,15 @@ if !gprdays! EQU 90 set actdone=1
 if !gprdays! EQU 180 set actdone=1
 
 if defined actdone (
-call :dk_color %Green% "[%winos%] ÒÑ³É¹¦ÖØÖÃ²¢¼¤»î !gprdays! Ìì¡£"
+call :dk_color %Green% "[%winos%] ÒÑÖØÖÃ²¢³É¹¦¼¤»î !gprdays! Ìì¡£"
 ) else (
 set error=1
 set showfix=1
-call :dk_color %Red% "[%winos%] ¼¤»îÊ§°Ü %error_code%¡£ Ê£ÓàÊ±¼ä: !gprdays! Ìì [!gpr! ·Ö]¡£"
+call :dk_color %Red% "[%winos%] ¼¤»îÊ§°Ü %error_code%¡£Ê£ÓàÆÚÏŞ£º!gprdays! Ìì [!gpr! ·ÖÖÓ]¡£"
 if not defined noact (
-call :dk_color %Gray% "Òª¼¤»î£¬Çë¼ì²éÄúµÄ»¥ÁªÍøÁ¬½Ó²¢È·±£ÈÕÆÚºÍÊ±¼äÕıÈ·ÎŞÎó¡£"
+call :dk_color %Gray% "Òª¼¤»î£¬Çë¼ì²éÄúµÄ»¥ÁªÍøÁ¬½Ó²¢È·±£ÈÕÆÚºÍÊ±¼äÕıÈ·¡£"
 ) else (
-call :dk_color %Blue% "ÒÑÖªÓÉÓÚÎ¢Èí Windows/Server ÎÊÌâ£¬´Ë Windows °æ±¾ÎŞ·¨¼¤»î¡£"
+call :dk_color %Blue% "ÒÑÖª´Ë Windows °æ±¾ÓÉÓÚ MS Windows/Server ÎÊÌâ¶øÎŞ·¨¼¤»î¡£"
 )
 if not defined showfix call :dk_color %Blue% "%_fixmsg%"
 set fixes=%fixes% %mas%troubleshoot
@@ -5826,46 +5840,46 @@ call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%troubleshoot"
 
 if defined tsids (
 echo:
-if not defined _vis if not defined oldks echo °²×°Î±ÔìµÄ²úÆ·ÃÜÔ¿Êı¾İ...
+if not defined _vis if not defined oldks echo ÕıÔÚ°²×°Î±ÔìµÄ²úÆ·ÃÜÔ¿Êı¾İ...
 if /i %tsmethod%==KMS4k (
-echo Ğ´ÈëÊÜĞÅÈÎµÄ´æ´¢Êı¾İ...
+echo ÕıÔÚĞ´Èë TrustedStore Êı¾İ...
 ) else (
-if /i %tsmethod%==StaticCID (echo ´æÈë ¾²Ì¬È·ÈÏ ID...) else (echo ´æÈë ÁãÈ·ÈÏ ID...)
+if /i %tsmethod%==StaticCID (echo ´æÈë¾²Ì¬È·ÈÏ ID...) else (echo ´æÈëÁãÈ·ÈÏ ID...)
 )
 echo:
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':tsforge\:.*';. ([scriptblock]::Create($f[1])) %tsids%"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':tsforge\:.*';. ([scriptblock]::Create($f[1])) %tsids%"
 if !errorlevel!==3 (
 if %_actman%==0 (if not defined showfix call :dk_color %Blue% "%_fixmsg%")
 set fixes=%fixes% %mas%troubleshoot
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%troubleshoot"
 ) else (
-if /i %tsmethod%==KMS4k if %winbuild% GEQ 26100 (
+if /i %tsmethod%==KMS4k if %winbuild% GEQ 26100 if %_actwin%==1 (
 echo:
 call :dk_color %Gray% "ÔÚ Windows ÉèÖÃÖĞ£¬Äú¿ÉÄÜ»á¿´µ½¿ÉÒÔºöÂÔµÄ¼¤»îĞø¶©Í¨Öª¡£"
-if /i %_actmethod%==×Ô¶¯ call :dk_color %Gray% "ÈôÒª±ÜÃâ´ËÍ¨Öª£¬ÇëÔÚ»¥ÁªÍøÁ¬½ÓÏÂÔËĞĞ½Å±¾ÒÔÊ¹ÓÃ StaticCID ·½·¨¡£"
+if /i %_actmethod%==Auto call :dk_color %Gray% "ÎªÁË±ÜÃâ´ËÍ¨Öª£¬ÇëÊ¹ÓÃ»¥ÁªÍøÁ¬½ÓÔËĞĞ½Å±¾ÒÔÊ¹ÓÃ StaticCID ·½·¨¡£"
 )
 echo "%tsids%" | find /i "7e94be23-b161-4956-a682-146ab291774c" %nul1% && (
-call :dk_color %Gray% "Windows ¸üĞÂ¿ÉÒÔ½ÓÊÕ 1-3 ÄêµÄ ESU¡£4-6 ÊÇ·Ç¹Ù·½µÄ£¬µ«¿ÉÒÔÈÃÄãÊÖ¶¯°²×° Server 2008 R2 ¸üĞÂ¡£"
+call :dk_color %Gray% "Windows Update gets 1-3 years of ESU; 4-6 are unofficial but let you install Server 2008 R2 updates manually."
 )
 echo "%tsids%" | findstr /i "4afc620f-12a4-48ad-8015-2aebfbd6e47c 11be7019-a309-4763-9a09-091d1722ffe3" %nul1% && (
-call :dk_color %Gray% "Windows 8.1 ²»ÕıÊ½Ö§³Ö ESU£¬µ«Äú¿ÉÒÔÊÖ¶¯°²×° 2024 Äê 1 ÔÂÖ®Ç°µÄ¸üĞÂ¡£"
+call :dk_color %Gray% "ESU is not officially supported on Windows 8.1, but updates can be installed manually until January 2024."
 )
 echo "%tsids%" | findstr /i "83d49986-add3-41d7-ba33-87c7bfb5c0fb 0b533b5e-08b6-44f9-b885-c2de291ba456" %nul1% && (
-call :dk_color %Gray% "Windows ¸üĞÂ¿ÉÒÔ½ÓÊÕ 1-3 ÄêµÄ ESU¡£4-6 ÊÇ·ÇÕıÊ½µÄ£¬µ«¿ÉÄÜÔÊĞíÄãÊÖ¶¯°²×° LTSC ¸üĞÂ¡£"
+call :dk_color %Gray% "Windows Update gets 1-3 years of ESU; 4-6 are unofficial but may let you install LTSC updates manually."
 if exist %SysPath%\ClipESUConsumer.exe (%SysPath%\ClipESUConsumer.exe -evaluateEligibility)
 if exist %SysPath%\ClipESU.exe (%SysPath%\ClipESU.exe %nul%)
 )
 )
 
-if defined esuexistsup echo °ïÖú: %mas%tsforge#windows-esu
+if defined esuexistsup echo Help: %mas%tsforge#windows-esu
 
 if %_actwin%==1 for %%# in (407) do if %osSKU%==%%# (
-call :dk_color %Red% "%winos% ²»Ö§³ÖÔÚ·Ç azure Æ½Ì¨ÉÏ¼¤»î¡£"
+call :dk_color %Red% "%winos% ²»Ö§³ÖÔÚ·Ç Azure Æ½Ì¨ÉÏ¼¤»î¡£"
 )
 
 if %_actoff%==1 if not defined error if defined ohub (
 echo:
-call :dk_color %Gray% "Word¡¢Excel µÈ Office Ó¦ÓÃ³ÌĞòÒÑ¼¤»î£¬ÇëÖ±½ÓÊ¹ÓÃËüÃÇ¡£ºöÂÔ Office Ó¦ÓÃÉÌµêÓ¦ÓÃ³ÌĞòÖĞµÄ¡°¹ºÂò¡±°´Å¥¡£"
+call :dk_color %Gray% "Word¡¢Excel µÈ Office Ó¦ÓÃÒÑ¼¤»î£¬ÇëÖ±½ÓÊ¹ÓÃ¡£ÇëºöÂÔ Office ÒÇ±í°åÓ¦ÓÃÖĞµÄ¡°¹ºÂò¡±°´Å¥¡£"
 )
 
 REM Trigger reevaluation of SPP's Scheduled Tasks
@@ -5887,14 +5901,14 @@ cls
 if not defined terminal (
 mode 100, 30
 )
-title  Ğ¶ÔØ TSforge ¼¤»î %masver%
+title  Remove TSforge ¼¤»î %masver%
 
 echo:
-echo TSforge ¼¤»î²»»áĞŞ¸ÄÈÎºÎ Windows ×é¼ş£¬²»»á°²×°ÈÎºÎĞÂÎÄ¼ş¡£
+echo TSforge ¼¤»î²»»áĞŞ¸ÄÈÎºÎ Windows ×é¼ş£¬Ò²²»»á°²×°ÈÎºÎĞÂÎÄ¼ş¡£
 echo:
-echo Ïà·´£¬Ëü»á½«Êı¾İ¸½¼Óµ½Èí¼ş±£»¤Æ½Ì¨Ê¹ÓÃµÄÒ»¸öÊı¾İÎÄ¼şÖĞ¡£
+echo Ïà·´£¬Ëü½«Êı¾İ¸½¼Óµ½Èí¼ş±£»¤Æ½Ì¨Ê¹ÓÃµÄÊı¾İÎÄ¼şÖ®Ò»¡£
 echo:
-call :dk_color %Gray% "Èç¹ûÒªÖØÖÃ¼¤»î×´Ì¬£¬"
+call :dk_color %Gray% "Èç¹ûÄúÏëÖØÖÃ¼¤»î×´Ì¬£¬"
 call :dk_color %Blue% "%_fixmsg%"
 echo:
 
@@ -5949,7 +5963,7 @@ exit /b
 :ts_process
 
 if not exist "%pkeypath%" (
-call :dk_color %Red% "¼ì²é pkeyconfig-office.xrm-ms       [Î´·¢ÏÖ£¬ ÖĞÖ¹¼¤»î...]"
+call :dk_color %Red% "¼ì²é pkeyconfig-office.xrm-ms       [Î´ÕÒµ½¡£ÕıÔÚÖĞÖ¹¼¤»î¡­¡­]"
 set error=1
 exit /b
 )
@@ -5965,25 +5979,25 @@ set foundprod=
 call :tsksdata chkprod %%#
 if defined _oMSI if not defined foundprod if /i %tsmethod%==KMS4k (
 set skipprocess=1
-call :dk_color %Red% "ÔÚ½Å±¾ÖĞ¼ì²é²úÆ·                    [%%# MSI ÁãÊÛ°æ²»Ö§³Ö KMS4k]"
-if /i %_actmethod%==×Ô¶¯ (
-call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø£¬È»ºóÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
+call :dk_color %Red% "ÔÚ½Å±¾ÖĞ¼ì²é²úÆ·              [%%# MSI Retail ²»Ö§³Ö KMS4k]"
+if /i %_actmethod%==Auto (
+call :dk_color %Blue% "Á¬½Óµ½»¥ÁªÍø²¢ÖØÊÔ¡£½Å±¾½«Ê¹ÓÃ StaticCID ¼¤»î·½·¨¡£"
 ) else (
-call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
+call :dk_color %Blue% "Ê¹ÓÃÉÏÒ»¸ö²Ëµ¥ÖĞµÄ·Ç KMS4K ¼¤»îÑ¡Ïî¡£"
 )
 )
 
 if "%_actprojvis%"=="1" (
 echo %%# | findstr /i "Project Visio" %nul% || (
 set skipprocess=1
-call :dk_color %Gray% "Ìø¹ı - ÒòÎª Project/Visio Ä£Ê½      [%%#]"
+call :dk_color %Gray% "ÒòÎª Project/Visio Mode ¶øÌø¹ı     [%%#]"
 )
 )
 
 if "%_actprojvis%"=="0" if /i %tsmethod%==KMS4k echo %_oIds% | findstr /i "O365" %nul% && (
 echo %%# | findstr /i "Project Visio" %nul% && (
 set skipprocess=1
-echo Ìø¹ı£¬ÒòÎª Mondo ¿ÉÓÃ     [%%#]
+echo ÓÉÓÚ Mondo ¿ÉÓÃ£¬Òò´ËÌø¹ı     [%%#]
 )
 )
 
@@ -5999,9 +6013,9 @@ if defined no365 (
 set _License=MondoRetail
 set _altoffid=MondoRetail
 call :ks_osppready
-echo ×ª»»²»Ö§³ÖµÄ O365 Office            [%%# Îª Mondo ÁãÊÛ°æ]
-if "%oVer%"=="15" (call :dk_color %Gray% "Mondo 2013 ÔÚ×îĞÂ¹¦ÄÜÉÏÏàµ±ÓÚ O365 [15.0 °æ±¾]¡£")
-if "%oVer%"=="16" (call :dk_color %Gray% "Mondo 2016 ÔÚ×îĞÂ¹¦ÄÜ·½ÃæÏàµ±ÓÚ O365¡£")
+echo ×ª»»²»ÊÜÖ§³ÖµÄ O365 Office      [%%# To MondoRetail]
+if "%oVer%"=="15" (call :dk_color %Gray% "Mondo 2013 ÔÚ×îĞÂ¹¦ÄÜ·½ÃæÏàµ±ÓÚ O365 [15.0 °æ±¾]¡£")
+if "%oVer%"=="16" (call :dk_color %Gray% "Mondo 2016 ÔÚ×îĞÂ¹¦ÄÜ·½ÃæÓë O365 Ïàµ±¡£")
 )
 
 if not defined _oMSI (
@@ -6009,7 +6023,7 @@ echo %%# | findstr /i "ARM" %nul% && (
 set _License=MondoRetail
 set _altoffid=MondoRetail
 call :ks_osppready
-echo ×ª»»²»Ö§³ÖµÄ OEM-ARM Office         [%%# Îª Mondo ÁãÊÛ°æ]
+echo ×ª»»²»ÊÜÖ§³ÖµÄ OEM-ARM Office   [%%# To MondoRetail]
 )
 )
 )
@@ -6017,15 +6031,15 @@ echo ×ª»»²»Ö§³ÖµÄ OEM-ARM Office         [%%# Îª Mondo ÁãÊÛ°æ]
 if not defined _oMSI if /i %tsmethod%==KMS4k if not defined foundprod (
 call :tsksdata getinfo %%#
 if defined _altoffid (
-echo ×ª»»ÁãÊÛ°æÎªÅúÁ¿°æ                  [%%# Îª !_altoffid!]
+echo ½«ÁãÊÛ°æ×ª»»ÎªÅúÁ¿°æ             [%%# To !_altoffid!]
 ) else (
 set _License=MondoVolume
 set _altoffid=MondoVolume
-echo ×ª»»ÁãÊÛ°æÎªÅúÁ¿°æ                  [%%# Îª !_altoffid!] [ÒòÎªÔÚ½Å±¾ÖĞÕÒ²»µ½ %%# ¶øÊ¹ÓÃ Mondo]
+echo ½«ÁãÊÛ°æ×ª»»ÎªÅúÁ¿°æ             [%%# To !_altoffid!] [Ê¹ÓÃ Mondo£¬ÒòÎªÔÚ½Å±¾ÖĞÕÒ²»µ½ %%#]
 )
 echo %%# | find /i "O365" %nul% && (
-if "%oVer%"=="15" (call :dk_color %Gray% "Mondo 2013 ÔÚ×îĞÂ¹¦ÄÜÉÏÏàµ±ÓÚ O365 [15.0 °æ±¾]¡£")
-if "%oVer%"=="16" (call :dk_color %Gray% "Mondo 2016 ÔÚ×îĞÂ¹¦ÄÜ·½ÃæÏàµ±ÓÚ O365¡£")
+if "%oVer%"=="15" (call :dk_color %Gray% "Mondo 2013 ÔÚ×îĞÂ¹¦ÄÜ·½ÃæÏàµ±ÓÚ O365 [15.0 °æ±¾]¡£")
+if "%oVer%"=="16" (call :dk_color %Gray% "Mondo 2016 ÔÚ×îĞÂ¹¦ÄÜ·½ÃæÓë O365 Ïàµ±¡£")
 )
 call :ks_osppready
 )
@@ -6036,15 +6050,15 @@ echo !_License! | find /i "Retail" %nul% && (set keytype=zero) || (set keytype=k
 set keytype=zero
 )
 
-for /f "delims=" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':offtsid\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (
+for /f "delims=" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':offtsid\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (
 echo "%%a" | findstr /r ".*-.*-.*-.*-.*" %nul1% && (set tsids=!tsids! %%a& set _actid=%%a)
 )
 set "_allactid=!tsids!"
 
 if defined _actid (
-echo ¼ì²é¼¤»î ID                         [!_actid!] [!_License!]
+echo ¼ì²é¼¤»îID                  [!_actid!] [!_License!]
 ) else (
-call :dk_color %Red% "¼ì²é¼¤»î ID                         [Office %oVer%.0 !_License! Î´·¢ÏÖ]"
+call :dk_color %Red% "¼ì²é¼¤»îID                  [Office %oVer%.0 !_License! not found]"
 set error=1
 set showfix=1
 set fixes=%fixes% %mas%troubleshoot
@@ -6068,7 +6082,7 @@ if /i not %tsmethod%==KMS4k if defined winserver if defined _config if exist "%_
 echo %_oIds% | find /i "Retail" %nul1% && (
 set scaIsNeeded=1
 reg add %_config% /v SharedComputerLicensing /t REG_SZ /d "1" /f %nul1%
-echo Ìí¼Ó SharedComputerLicensing ×¢²á±í      [³É¹¦] [ÁãÊÛ°æ Office ·şÎñÆ÷ÉÏĞèÒª]"
+echo Ìí¼Ó SharedComputerLicensing Reg      [³É¹¦] [ĞèÒªÔÚÊ¹ÓÃ Retail Office µÄ·şÎñÆ÷ÉÏÌí¼Ó]"
 )
 )
 
@@ -6106,11 +6120,11 @@ set "pkeypath=%_common2%\Microsoft Shared\OFFICE%oVer%\Office Setup Controller\p
 call :msiofficedata %2
 
 echo:
-echo ÕıÔÚ¼¤»î Office...                  [MSI ^| %_version% ^| %_oArch%]
+echo ´¦Àí Office...                    [MSI ^| %_version% ^| %_oArch%]
 
 if not defined _oIds (
 set error=1
-call :dk_color %Red% "¼ì²éÒÑ°²×°²úÆ·                      [²úÆ· ID Î´·¢ÏÖ, ÕıÔÚÖĞÖ¹¼¤»î...]"
+call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ²úÆ·             [Î´ÕÒµ½²úÆ· ID¡£ÖÕÖ¹¼¤»î...]"
 exit /b
 )
 
@@ -6283,11 +6297,11 @@ using System.Xml.Linq;
 
         private static string ParseSoapResponse(XDocument soapResponse) {
             if (soapResponse == null) {
-                throw new ArgumentNullException("soapResponse", "The remote server returned an unexpected response.");
+                throw new ArgumentNullException("soapResponse", "Ô¶³Ì·şÎñÆ÷·µ»ØÁËÒâÍâµÄÏìÓ¦¡£");
             }
 
             if (!soapResponse.Descendants(BatchActivationServiceNs + "ResponseXml").Any()) {
-                throw new Exception("The remote server returned an unexpected response");
+                throw new Exception("Ô¶³Ì·şÎñÆ÷·µ»ØÁËÒâÍâµÄÏìÓ¦");
             }
 
             try {
@@ -6298,22 +6312,22 @@ using System.Xml.Linq;
 
                     switch (errorCode) {
                         case "0x7F":
-                            throw new Exception("The Multiple Activation Key has exceeded its limit");
+                            throw new Exception("¶à´Î¼¤»îÃÜÔ¿ÒÑ³¬³öÏŞÖÆ");
 
                         case "0x67":
-                            throw new Exception("The product key has been blocked");
+                            throw new Exception("²úÆ·ÃÜÔ¿ÒÑ±»×èÖ¹");
 
                         case "0x68":
-                            throw new Exception("Invalid product key");
+                            throw new Exception("²úÆ·ÃÜÔ¿ÎŞĞ§");
 
                         case "0x86":
-                            throw new Exception("Invalid key type");
+                            throw new Exception("ÃÜÔ¿ÀàĞÍÎŞĞ§");
 
                         case "0x90":
-                            throw new Exception("Please check the Installation ID and try again");
+                            throw new Exception("Çë¼ì²é°²×° ID ²¢ÖØÊÔ");
 
                         default:
-                            throw new Exception(string.Format("The remote server reported an error ({0})", errorCode));
+                            throw new Exception(string.Format("Ô¶³Ì·şÎñÆ÷±¨¸æ´íÎó ({0})", errorCode));
                     }
 
                 } else if (responseXml.Descendants(BatchActivationResponseNs + "ResponseType").Any()) {
@@ -6329,11 +6343,11 @@ using System.Xml.Linq;
                             return activationsRemaining;
 
                         default:
-                            throw new Exception("The remote server returned an unrecognized response");
+                            throw new Exception("Ô¶³Ì·şÎñÆ÷·µ»ØÁËÎŞ·¨Ê¶±ğµÄÏìÓ¦");
                     }
 
                 } else {
-                    throw new Exception("The remote server returned an unrecognized response");
+                    throw new Exception("Ô¶³Ì·şÎñÆ÷·µ»ØÁËÎŞ·¨Ê¶±ğµÄÏìÓ¦");
                 }
 
             } catch {
@@ -6570,7 +6584,7 @@ namespace LibTSforge
             if (build >= 7600 && build <= 7602) return PSVersion.Win7;
             if (build == 9200) return PSVersion.Win8;
 
-            throw new NotSupportedException("ÎŞ·¨×Ô¶¯¼ì²â°æ±¾ĞÅÏ¢");
+            throw new NotSupportedException("Unable to auto-detect version info");
         }
     }
 
@@ -6631,7 +6645,7 @@ namespace LibTSforge.SPP
         {
             if (Ranges.Count == 0)
             {
-                throw new ArgumentException("ÎŞÃÜÔ¿·¶Î§¡£");
+                throw new ArgumentException("No key ranges.");
             }
 
             if (Algorithm == PKeyAlgorithm.PKEY2005)
@@ -6643,7 +6657,7 @@ namespace LibTSforge.SPP
 
             if (FilteredRanges.Count == 0)
             {
-                throw new NotSupportedException("Ö¸¶¨µÄ¼¤»î ID ½öÊÊÓÃÓÚ Windows Ò×Éı¡£Çë¸ÄÓÃ·Ç Windows Ò×Éı ¼¤»î ID¡£");
+                throw new NotSupportedException("Specified Activation ID is usable only for Windows Anytime Upgrade. Please use a non-WAU Activation ID instead.");
             }
 
             return FilteredRanges;
@@ -6791,7 +6805,7 @@ namespace LibTSforge.SPP
                 }
             }
 
-            throw new FileNotFoundException("ÎŞ·¨ÕÒµ½ÓëÌá¹©µÄ²úÆ·ÃÜÔ¿²ÎÊıÆ¥ÅäµÄ²úÆ·¡£");
+            throw new FileNotFoundException("Failed to find product matching supplied product key parameters.");
         }
 
         public void LoadAllConfigs(Guid appId)
@@ -7407,7 +7421,7 @@ namespace LibTSforge.SPP
 
         public static string GetLicenseContents(Guid fileId)
         {
-            if (fileId == Guid.Empty) throw new ArgumentException("ÎŞ·¨¼ìË÷Ğí¿ÉÖ¤ÄÚÈİ¡£");
+            if (fileId == Guid.Empty) throw new ArgumentException("License contents could not be retrieved.");
 
             using (SLContext sl = new SLContext())
             {
@@ -7570,10 +7584,10 @@ namespace LibTSforge.SPP
             }
             catch (InvalidOperationException ex)
             {
-                throw new InvalidOperationException(string.Format("ÎŞ·¨·ÃÎÊ {0}: ", svcName) + ex.Message);
+                throw new InvalidOperationException(string.Format("Unable to access {0}: ", svcName) + ex.Message);
             }
 
-            Logger.WriteLine(string.Format("Í£Ö¹ {0}...", svcName));
+            Logger.WriteLine(string.Format("Stopping {0}...", svcName));
 
             bool stopped = false;
 
@@ -7592,7 +7606,7 @@ namespace LibTSforge.SPP
                 }
                 catch (InvalidOperationException ex)
                 {
-                    Logger.WriteLine("¾¯¸æ: Í£Ö¹ sppsvc Ê§°Ü, ÕıÔÚÖØÊÔ. ÏêÇé: " + ex.Message);
+                    Logger.WriteLine("Warning: Stopping sppsvc failed, retrying. Details: " + ex.Message);
                     System.Threading.Thread.Sleep(500);
                     continue;
                 }
@@ -7601,22 +7615,22 @@ namespace LibTSforge.SPP
             }
 
             if (!stopped)
-                throw new System.TimeoutException(string.Format("Í£Ö¹Ê§°Ü {0}", svcName));
+                throw new System.TimeoutException(string.Format("Failed to stop {0}", svcName));
 
-            Logger.WriteLine(string.Format("{0} Í£Ö¹³É¹¦¡£", svcName));
+            Logger.WriteLine(string.Format("{0} stopped successfully.", svcName));
 
             if (version == PSVersion.Vista && SPSys.IsSpSysRunning())
             {
-                Logger.WriteLine("Ğ¶ÔØ spsys...");
+                Logger.WriteLine("Unloading spsys...");
 
                 int status = SPSys.ControlSpSys(false);
 
                 if (status < 0)
                 {
-                    throw new IOException("Ğ¶ÔØ spsys Ê§°Ü");
+                    throw new IOException("Failed to unload spsys");
                 }
 
-                Logger.WriteLine("spsys Ğ¶ÔØ³É¹¦¡£");
+                Logger.WriteLine("spsys unloaded successfully.");
             }
         }
 
@@ -7635,10 +7649,10 @@ namespace LibTSforge.SPP
                 }
                 catch (InvalidOperationException ex)
                 {
-                    throw new InvalidOperationException("ÎŞ·¨·ÃÎÊ slsvc: " + ex.Message);
+                    throw new InvalidOperationException("Unable to access slsvc: " + ex.Message);
                 }
 
-                Logger.WriteLine("Æô¶¯ slsvc...");
+                Logger.WriteLine("Starting slsvc...");
 
                 bool started = false;
 
@@ -7657,7 +7671,7 @@ namespace LibTSforge.SPP
                     }
                     catch (InvalidOperationException ex)
                     {
-                        Logger.WriteLine("¾¯¸æ: Æô¶¯ slsvc Ê§°Ü, ÖØÊÔ¡£ ÏêÇé: " + ex.Message);
+                        Logger.WriteLine("Warning: Starting slsvc failed, retrying. Details: " + ex.Message);
                         System.Threading.Thread.Sleep(500);
                         continue;
                     }
@@ -7666,9 +7680,9 @@ namespace LibTSforge.SPP
                 }
 
                 if (!started)
-                    throw new System.TimeoutException("Æô¶¯ slsvc Ê§°Ü");
+                    throw new System.TimeoutException("Failed to start slsvc");
 
-                Logger.WriteLine("slsvc ³É¹¦Æô¶¯¡£");
+                Logger.WriteLine("slsvc started successfully.");
             }
 
             SLApi.RefreshLicenseStatus();
@@ -7689,7 +7703,7 @@ namespace LibTSforge.SPP
                 }
             }
 
-            throw new FileNotFoundException("ÎŞ·¨×Ô¶¯¼ì²âÃÜÔ¿ÀàĞÍ£¬ÇëÊ¹ÓÃ /prod »ò /test ²ÎÊıÖ¸¶¨ÎïÀí´æ´¢ÃÜÔ¿¡£");
+            throw new FileNotFoundException("Failed to autodetect key type, specify physical store key with /prod or /test arguments.");
         }
 
         public static string GetPSPath(PSVersion version)
@@ -7740,7 +7754,7 @@ namespace LibTSforge.SPP
                         return psPath;
                     }
 
-                    throw new FileNotFoundException("¶¨Î» ÎïÀí´æ´¢ Ê§°Ü¡£");
+                    throw new FileNotFoundException("Failed to locate physical store.");
             }
         }
 
@@ -7796,7 +7810,7 @@ namespace LibTSforge.SPP
                         return tokPath;
                     }
 
-                    throw new FileNotFoundException("¶¨Î» ÁîÅÆ´æ´¢ Ê§°Ü¡£");
+                    throw new FileNotFoundException("Failed to locate token store.");
             }
         }
 
@@ -7835,7 +7849,7 @@ namespace LibTSforge.SPP
 
             if (string.IsNullOrEmpty(encrFilePath) || !File.Exists(encrFilePath))
             {
-                throw new FileNotFoundException("´æ´¢²»´æÔÚÓÚÔ¤ÆÚÂ·¾¶ '" + encrFilePath + "'.");
+                throw new FileNotFoundException("Store does not exist at expected path '" + encrFilePath + "'.");
             }
 
             try
@@ -7845,7 +7859,7 @@ namespace LibTSforge.SPP
                     byte[] encrData = fs.ReadAllBytes();
                     File.WriteAllBytes(filePath, PhysStoreCrypto.DecryptPhysicalStore(encrData, production, version));
                 }
-                Logger.WriteLine("´æ´¢³É¹¦×ª´¢Îª '" + filePath + "'.");
+                Logger.WriteLine("Store dumped successfully to '" + filePath + "'.");
             }
             finally
             {
@@ -7860,7 +7874,7 @@ namespace LibTSforge.SPP
         {
             if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
             {
-                throw new FileNotFoundException("´æ´¢ÎÄ¼ş '" + filePath + "' ²»´æÔÚ¡£");
+                throw new FileNotFoundException("Store file '" + filePath + "' does not exist.");
             }
 
             KillSPP(version);
@@ -7872,7 +7886,7 @@ namespace LibTSforge.SPP
 
             RestartSPP(version);
 
-            Logger.WriteLine("³É¹¦ÔØÈë´æ´¢ÎÄ¼ş¡£");
+            Logger.WriteLine("Loaded store file successfully.");
         }
     }
 }
@@ -8171,7 +8185,7 @@ namespace LibTSforge.Crypto
 
             if (!CryptoUtils.RSAVerifySignature(rsaKey, encAesKey, aesKeySig))
             {
-                throw new Exception("ÎŞ·¨½âÃÜÎïÀí´æ´¢¡£");
+                throw new Exception("Failed to decrypt physical store.");
             }
 
             byte[] aesKey = CryptoUtils.RSADecrypt(rsaKey, encAesKey);
@@ -8184,14 +8198,14 @@ namespace LibTSforge.Crypto
             {
                 if (!CryptoUtils.HMACVerify(hmacKey, psData, hmacSig))
                 {
-                    throw new InvalidDataException("Ğ£Ñé HMAC Ê§°Ü£¬ ÎïÀí´æ´¢ÒÑËğ»µ¡£");
+                    throw new InvalidDataException("Failed to verify HMAC. Physical store is corrupt.");
                 }
             }
             else
             {
                 if (!CryptoUtils.SaltSHAVerify(hmacKey, psData, hmacSig))
                 {
-                    throw new InvalidDataException("ÎŞ·¨ÑéÖ¤Ğ£ÑéºÍ¡£ÎïÀí´æ´¢ÒÑËğ»µ¡£");
+                    throw new InvalidDataException("Failed to verify checksum. Physical store is corrupt.");
                 }
             }
 
@@ -8249,7 +8263,7 @@ namespace LibTSforge.Modifiers
     {
         private static void WritePkey2005RegistryValues(PSVersion version, ProductKey pkey)
         {
-            Logger.WriteLine("Îª Windows ²úÆ·ÃÜÔ¿Ğ´Èë×¢²á±íÊı¾İ...");
+            Logger.WriteLine("Writing registry data for Windows product key...");
             Registry.SetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductId", pkey.GetPid2());
             Registry.SetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DigitalProductId", pkey.GetPid3());
             Registry.SetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DigitalProductId4", pkey.GetPid4());
@@ -8269,8 +8283,8 @@ namespace LibTSforge.Modifiers
 
         public static void InstallGenPKey(PSVersion version, bool production, Guid actId)
         {
-            if (version == PSVersion.Vista) throw new NotSupportedException("Windows Vista/Server 2008 ²»Ö§³Ö´Ë¹¦ÄÜ¡£");
-            if (actId == Guid.Empty) throw new ArgumentException("±ØĞëÎªÉú³ÉµÄ²úÆ·ÃÜÔ¿°²×°Ö¸¶¨¼¤»î ID¡£");
+            if (version == PSVersion.Vista) throw new NotSupportedException("This feature is not supported on Windows Vista/Server 2008.");
+            if (actId == Guid.Empty) throw new ArgumentException("Activation ID must be specified for generated product key install.");
 
             PKeyConfig pkc = new PKeyConfig();
             
@@ -8286,7 +8300,7 @@ namespace LibTSforge.Modifiers
             ProductConfig config;
             pkc.Products.TryGetValue(actId, out config);
 
-            if (config == null) throw new ArgumentException("ÔÚ PKeyConfig ÖĞÎ´·¢ÏÖ¼¤»î ID " + actId + " ¡£");
+            if (config == null) throw new ArgumentException("Activation ID " + actId + " not found in PKeyConfig.");
 
             ProductKey pkey = config.GetRandomKey();
 
@@ -8296,20 +8310,20 @@ namespace LibTSforge.Modifiers
             if (pkey.Algorithm == PKeyAlgorithm.PKEY2009)
             {
                 uint status = SLApi.InstallProductKey(pkey);
-                Logger.WriteLine(string.Format("°²×°Éú³ÉµÄ²úÆ·ÃÜÔ¿ {0} status {1:X}", pkey, status));
+                Logger.WriteLine(string.Format("Installing generated product key {0} status {1:X}", pkey, status));
 
                 if ((int)status < 0)
                 {
-                    throw new ApplicationException("ÎŞ·¨°²×°Éú³ÉµÄ²úÆ·ÃÜÔ¿¡£");
+                    throw new ApplicationException("Failed to install generated product key.");
                 }
 
-                Logger.WriteLine("ÒÑ³É¹¦´æÈëÉú³ÉµÄ²úÆ·ÃÜÔ¿¡£");
+                Logger.WriteLine("Successfully deposited generated product key.");
                 return;
             }
 
-            Logger.WriteLine("ÃÜÔ¿·¶Î§Îª PKEY2005£¬´´½¨Ğé¼ÙÃÜÔ¿Êı¾İ...");
+            Logger.WriteLine("Key range is PKEY2005, creating fake key data...");
 
-            if (pkey.Channel == "Volume:GVLK" && version == PSVersion.Win7) throw new NotSupportedException("Windows 7 ²»Ö§³ÖÉú³ÉĞé¼Ù GVLK¡£");
+            if (pkey.Channel == "Volume:GVLK" && version == PSVersion.Win7) throw new NotSupportedException("Fake GVLK generation is not supported on Windows 7.");
 
             VariableBag pkb = new VariableBag(version);
             pkb.Blocks.AddRange(new[]
@@ -8385,7 +8399,7 @@ namespace LibTSforge.Modifiers
             {
                 using (ITokenStore tks = SPPUtils.GetTokenStore(version))
                 {
-                    Logger.WriteLine("Ğ´ÈëÎïÀí´æ´¢ºÍÁîÅÆ´æ´¢...");
+                    Logger.WriteLine("Writing to physical store and token store...");
 
                     string suffix = (version == PSVersion.Win8 || version == PSVersion.WinBlue || version == PSVersion.WinModern) ? "_--" : "";
                     string metSuffix = suffix + "_met";
@@ -8440,7 +8454,7 @@ namespace LibTSforge.Modifiers
             }
 
             SLApi.RefreshTrustedTime(actId);
-            Logger.WriteLine("³É¹¦´æÈëĞé¼Ù²úÆ·ÃÜÔ¿¡£");
+            Logger.WriteLine("Successfully deposited fake product key.");
         }
     }
 }
@@ -8459,7 +8473,7 @@ namespace LibTSforge.Modifiers
         public static void Reset(PSVersion version, bool production)
         {
             SPPUtils.KillSPP(version);
-            Logger.WriteLine("Ğ´ÈëÊÜĞÅÈÎµÄ´æ´¢Êı¾İ...");
+            Logger.WriteLine("Writing TrustedStore data...");
 
             using (IPhysicalStore store = SPPUtils.GetStore(version, production))
             {
@@ -8473,7 +8487,7 @@ namespace LibTSforge.Modifiers
             }
 
             SPPUtils.RestartSPP(version);
-            Logger.WriteLine("ÒÑ³É¹¦ÖØÖÃËùÓĞ¿íÏŞÆÚºÍÆÀ¹ÀÆÚ¼ÆÊ±Æ÷¡£");
+            Logger.WriteLine("Successfully reset all grace and evaluation period timers.");
         }
     }
 }
@@ -8492,10 +8506,10 @@ namespace LibTSforge.Modifiers
     {
         public static void Delete(PSVersion version, bool production)
         {
-            if (version == PSVersion.Vista) throw new NotSupportedException("Windows Vista/Server 2008 ²»Ö§³Ö´Ë¹¦ÄÜ¡£");
+            if (version == PSVersion.Vista) throw new NotSupportedException("This feature is not supported on Windows Vista/Server 2008.");
 
             SPPUtils.KillSPP(version);
-            Logger.WriteLine("Ğ´ÈëÊÜĞÅÈÎµÄ´æ´¢Êı¾İ...");
+            Logger.WriteLine("Writing TrustedStore data...");
             using (IPhysicalStore store = SPPUtils.GetStore(version, production))
             {
                 List<string> values = new List<string>
@@ -8513,7 +8527,7 @@ namespace LibTSforge.Modifiers
                     store.DeleteBlock(block.KeyAsStr, block.ValueAsStr);
                 }
             }
-            Logger.WriteLine("ÒÑ³É¹¦É¾³ıÃÜÔ¿¸ü¸ÄËø¶¨¡£");
+            Logger.WriteLine("Successfully removed the key change lock.");
         }
     }
 }
@@ -8537,13 +8551,13 @@ namespace LibTSforge.Modifiers
 
                 if (actId == Guid.Empty)
                 {
-                    throw new NotSupportedException("Î´ÕÒµ½ÊÊÓÃµÄ¼¤»î ID¡£");
+                    throw new NotSupportedException("No applicable activation IDs found.");
                 }
             }
 
             if (SLApi.GetPKeyChannel(SLApi.GetInstalledPkeyID(actId)) != "Volume:CSVLK")
             {
-                throw new NotSupportedException("·ÇÅúÁ¿:CSVLK ²úÆ·ÃÜÔ¿ÒÑ°²×°¡£");
+                throw new NotSupportedException("Non-Volume:CSVLK product key installed.");
             }
 
             Guid appId = SLApi.GetAppId(actId);
@@ -8609,7 +8623,7 @@ namespace LibTSforge.Modifiers
 
             SPPUtils.KillSPP(version);
 
-            Logger.WriteLine("Ğ´ÈëÊÜĞÅÈÎµÄ´æ´¢Êı¾İ...");
+            Logger.WriteLine("Writing TrustedStore data...");
 
             using (IPhysicalStore store = SPPUtils.GetStore(version, production))
             {
@@ -8671,7 +8685,7 @@ namespace LibTSforge.Modifiers
                     Data = kmsChargeData
                 });
 
-                Logger.WriteLine(string.Format("³É¹¦ÉèÖÃ³äµç¼ÆÊıÎª {0} ¡£", currClients));
+                Logger.WriteLine(string.Format("Set charge count to {0} successfully.", currClients));
             }
 
             SPPUtils.RestartSPP(version);
@@ -8694,7 +8708,7 @@ namespace LibTSforge.Modifiers
         {
             SPPUtils.KillSPP(version);
 
-            Logger.WriteLine("Ğ´ÈëÊÜĞÅÈÎµÄ´æ´¢Êı¾İ...");
+            Logger.WriteLine("Writing TrustedStore data...");
 
             using (IPhysicalStore store = SPPUtils.GetStore(version, production))
             {
@@ -8729,7 +8743,7 @@ namespace LibTSforge.Modifiers
                     }
                 }
 
-                Logger.WriteLine("ÒÑ³É¹¦ÖØÖÃËùÓĞÖØ×°¼ÆÊıÆ÷¡£");
+                Logger.WriteLine("Successfully reset all rearm counters.");
             }
         }
     }
@@ -8748,7 +8762,7 @@ namespace LibTSforge.Modifiers
     {
         public static void SetParams(PSVersion version, bool production, Guid actId, PKeyAlgorithm algorithm, int group, int serial, ulong security)
         {
-            if (version == PSVersion.Vista) throw new NotSupportedException("Windows Vista/Server 2008 ²»Ö§³Ö´Ë¹¦ÄÜ¡£");
+            if (version == PSVersion.Vista) throw new NotSupportedException("This feature is not supported on Windows Vista/Server 2008.");
 
             Guid appId;
 
@@ -8759,7 +8773,7 @@ namespace LibTSforge.Modifiers
 
                 if (actId == Guid.Empty)
                 {
-                    throw new Exception("Î´ÕÒµ½ÊÊÓÃµÄ¼¤»î ID¡£");
+                    throw new Exception("No applicable activation IDs found.");
                 }
             }
             else
@@ -8771,7 +8785,7 @@ namespace LibTSforge.Modifiers
 
             SPPUtils.KillSPP(version);
 
-            Logger.WriteLine("Ğ´ÈëÊÜĞÅÈÎµÄ´æ´¢Êı¾İ...");
+            Logger.WriteLine("Writing TrustedStore data...");
 
             using (IPhysicalStore store = SPPUtils.GetStore(version, production))
             {
@@ -8780,7 +8794,7 @@ namespace LibTSforge.Modifiers
 
                 if (keyBlock == null)
                 {
-                    throw new InvalidDataException("ÎŞ·¨»ñÈ¡¼¤»î ID " + actId + "µÄ²úÆ·ÃÜÔ¿Êı¾İ¡£");
+                    throw new InvalidDataException("Failed to get product key data for activation ID " + actId + ".");
                 }
 
                 VariableBag pkb = new VariableBag(keyBlock.Data, version);
@@ -8799,7 +8813,7 @@ namespace LibTSforge.Modifiers
                 store.SetBlock(key, pkeyId.ToString(), pkb.Serialize());
             }
 
-            Logger.WriteLine("ÒÑ³É¹¦ÉèÖÃ IID ²ÎÊı¡£");
+            Logger.WriteLine("Successfully set IID parameters.");
         }
     }
 }
@@ -8818,7 +8832,7 @@ namespace LibTSforge.Modifiers
         {
             SPPUtils.KillSPP(version);
 
-            Logger.WriteLine("Ğ´ÈëÊÜĞÅÈÎµÄ´æ´¢Êı¾İ...");
+            Logger.WriteLine("Writing TrustedStore data...");
 
             using (IPhysicalStore store = SPPUtils.GetStore(version, production))
             {
@@ -8836,7 +8850,7 @@ namespace LibTSforge.Modifiers
                     DeleteFlag(store, "__##USERSEP-RESERVED##__$$RECOVERED-FLAG$$");
                 }
 
-                Logger.WriteLine("ÒÑ³É¹¦Çå³ı´Û¸Ä×´Ì¬¡£");
+                Logger.WriteLine("Successfully cleared the tamper state.");
             }
 
             SPPUtils.RestartSPP(version);
@@ -8866,7 +8880,7 @@ namespace LibTSforge.Modifiers
     {
         public static void DeleteUniqueId(PSVersion version, bool production, Guid actId)
         {
-            if (version == PSVersion.Vista) throw new NotSupportedException("Windows Vista/Server 2008 ²»Ö§³Ö´Ë¹¦ÄÜ¡£");
+            if (version == PSVersion.Vista) throw new NotSupportedException("This feature is not supported on Windows Vista/Server 2008.");
 
             Guid appId;
 
@@ -8877,7 +8891,7 @@ namespace LibTSforge.Modifiers
 
                 if (actId == Guid.Empty)
                 {
-                    throw new Exception("Î´ÕÒµ½ÊÊÓÃµÄ¼¤»î ID¡£");
+                    throw new Exception("No applicable activation IDs found.");
                 }
             }
             else
@@ -8889,7 +8903,7 @@ namespace LibTSforge.Modifiers
 
             SPPUtils.KillSPP(version);
 
-            Logger.WriteLine("Ğ´ÈëÊÜĞÅÈÎµÄ´æ´¢Êı¾İ...");
+            Logger.WriteLine("Writing TrustedStore data...");
 
             using (IPhysicalStore store = SPPUtils.GetStore(version, production))
             {
@@ -8898,7 +8912,7 @@ namespace LibTSforge.Modifiers
 
                 if (keyBlock == null)
                 {
-                    throw new Exception("Î´ÕÒµ½²úÆ·ÃÜÔ¿¡£");
+                    throw new Exception("No product key found.");
                 }
 
                 VariableBag pkb = new VariableBag(keyBlock.Data, version);
@@ -8908,7 +8922,7 @@ namespace LibTSforge.Modifiers
                 store.SetBlock(key, pkeyId.ToString(), pkb.Serialize());
             }
 
-            Logger.WriteLine("ÒÑ³É¹¦ÒÆ³ı²úÆ·ÃÜÔ¿ ID µÄÎ¨Ò»±êÊ¶ " + pkeyId);
+            Logger.WriteLine("Successfully removed Unique ID for product key ID " + pkeyId);
         }
     }
 }
@@ -8944,12 +8958,12 @@ namespace LibTSforge.Activators
 
             if (SLApi.GetPKeyChannel(SLApi.GetInstalledPkeyID(actId)) != "Volume:GVLK")
             {
-                throw new NotSupportedException("·ÇÅúÁ¿:GVLK ²úÆ·ÃÜÔ¿ÒÑ°²×°¡£");
+                throw new NotSupportedException("Non-Volume:GVLK ²úÆ·ÃÜÔ¿ÒÑ°²×°¡£");
             }
 
             SPPUtils.KillSPP(version);
 
-            Logger.WriteLine("Ğ´ÈëÊÜĞÅÈÎµÄ´æ´¢Êı¾İ...");
+            Logger.WriteLine("Ğ´Èë TrustedStore Êı¾İ...");
 
             using (IPhysicalStore store = SPPUtils.GetStore(version, production))
             {
@@ -9033,7 +9047,7 @@ namespace LibTSforge.Activators
                             kmsResp = Constants.KMSv6Response;
                             break;
                         default:
-                            throw new NotSupportedException("Unsupported PSVersion.");
+                            throw new NotSupportedException("²»ÊÜÖ§³ÖµÄ PSVersion¡£");
                     }
 
                     VariableBag kmsBinding = new VariableBag(version);
@@ -9140,11 +9154,11 @@ namespace LibTSforge.Activators
         private static void Deposit(Guid actId, string instId)
         {
             uint status = SLApi.DepositConfirmationID(actId, instId, Constants.ZeroCID);
-            Logger.WriteLine(string.Format("´æÈëĞé¼ÙµÄ CID ×´Ì¬ {0:X}", status));
+            Logger.WriteLine(string.Format("´æÈëĞé¼ÙµÄCIDÉí·İĞÅÏ¢ {0:X}", status));
 
             if (status != 0)
             {
-                throw new InvalidOperationException("´æÈëĞé¼Ù CID Ê§°Ü¡£");
+                throw new InvalidOperationException("ÎŞ·¨´æÈë¼Ù CID¡£");
             }
         }
 
@@ -9169,7 +9183,7 @@ namespace LibTSforge.Activators
 
             if (!SLApi.IsPhoneActivatable(actId))
             {
-                throw new NotSupportedException("µç»°Ğí¿ÉÖ¤²»ÊÊÓÃÓÚ´Ë²úÆ·¡£");
+                throw new NotSupportedException("´Ë²úÆ·²»Ìá¹©µç»°Ğí¿ÉÖ¤¡£");
             }
 
             string instId = SLApi.GetInstallationID(actId);
@@ -9182,15 +9196,15 @@ namespace LibTSforge.Activators
 
             SPPUtils.KillSPP(version);
 
-            Logger.WriteLine("Ğ´ÈëÊÜĞÅÈÎµÄ´æ´¢Êı¾İ...");
+            Logger.WriteLine("Ğ´Èë TrustedStore Êı¾İ...");
 
             using (IPhysicalStore store = SPPUtils.GetStore(version, production))
             {
                 byte[] hwidBlock = Constants.UniversalHWIDBlock;
 
-                Logger.WriteLine("¼¤»î ID: " + actId);
-                Logger.WriteLine("°²×° ID: " + instId);
-                Logger.WriteLine("²úÆ·ÃÜÔ¿ ID: " + pkeyId);
+                Logger.WriteLine("Activation ID: " + actId);
+                Logger.WriteLine("Installation ID: " + instId);
+                Logger.WriteLine("Product Key ID: " + pkeyId);
 
                 byte[] iidHash;
 
@@ -9212,7 +9226,7 @@ namespace LibTSforge.Activators
 
                 if (keyBlock == null)
                 {
-                    throw new InvalidDataException("ÎŞ·¨»ñÈ¡¼¤»î ID " + actId + "µÄ²úÆ·ÃÜÔ¿Êı¾İ¡£");
+                    throw new InvalidDataException("ÎŞ·¨»ñÈ¡¼¤»î ID µÄ²úÆ·ÃÜÔ¿Êı¾İ " + actId + ".");
                 }
 
                 VariableBag pkb = new VariableBag(keyBlock.Data, version);
@@ -9230,7 +9244,7 @@ namespace LibTSforge.Activators
 
                     if (group == 0)
                     {
-                        throw new FormatException("À©Õ¹ PID ¸ñÊ½ÎŞĞ§¡£");
+                        throw new FormatException("À©Õ¹ PID µÄ¸ñÊ½ÎŞĞ§¡£");
                     }
 
                     ulong shortauth;
@@ -9241,7 +9255,7 @@ namespace LibTSforge.Activators
                     } 
                     catch
                     {
-                        throw new FormatException("ÃÜÔ¿Î¨Ò» ID ¸ñÊ½ÎŞĞ§¡£");
+                        throw new FormatException(" ÃÜÔ¿Î¨Ò» ID µÄ¸ñÊ½ÎŞĞ§¡£");
                     }
 
                     shortauth |= (ulong)group << 41;
@@ -9308,7 +9322,7 @@ namespace LibTSforge.Activators
 
             SPPUtils.RestartSPP(version);
             SLApi.FireStateChangedEvent(appId);
-            Logger.WriteLine("Ê¹ÓÃ ZeroCID ³É¹¦¼¤»î¡£");
+            Logger.WriteLine("ÒÑ³É¹¦Ê¹ÓÃ ZeroCID ¼¤»î¡£");
         }
     }
 }
@@ -9456,7 +9470,7 @@ namespace LibTSforge.TokenStore
 
                         if (dataLength != contentLength)
                         {
-                            throw new FormatException("ÁîÅÆÄÚÈİÊı¾İ³¤¶ÈÓëÌõÄ¿¼ÇÂ¼²»Ò»ÖÂ");
+                            throw new FormatException("Data length in tokens content is inconsistent with entry.");
                         }
 
                         reader.ReadBytes(0x20);
@@ -11061,7 +11075,7 @@ namespace LibTSforge.PhysicalStore
 
             if (CRC() != crc)
             {
-                throw new InvalidDataException("±äÁ¿°üÖĞµÄ CRC ÎŞĞ§¡£");
+                throw new InvalidDataException("Invalid CRC in variable bag.");
             }
         }
 
@@ -11107,7 +11121,7 @@ namespace LibTSforge.PhysicalStore
 
             if (CRC() != crc)
             {
-                throw new InvalidDataException("±äÁ¿°üÖĞµÄ CRC ÎŞĞ§¡£");
+                throw new InvalidDataException("Invalid CRC in variable bag.");
             }
         }
 
@@ -11225,27 +11239,27 @@ namespace LibTSforge.PhysicalStore
 }
 '@
 $ErrorActionPreference = 'Stop'
-$binPath = "$env:_work\BIN\LibTSforge.dll"
 $psMajorVer = (Get-Host).Version.Major
 $build = [System.Environment]::OSVersion.Version.Build
 
-if (Test-Path -LiteralPath $binPath) {
-    Write-Host "ÔÚ BIN ÎÄ¼ş¼ĞÖĞ·¢ÏÖ LibTSforge.dll, ÔØÈë DLL..."
-    Add-Type -Path $binPath
-}
-else {
-    $cp = [CodeDom.Compiler.CompilerParameters] [string[]]@("System.dll", "System.Core.dll", "System.ServiceProcess.dll", "System.Xml.dll", "System.Xml.Linq.dll")
-    if ($psMajorVer -le 2) { $cp.CompilerOptions = "/define:POWERSHELL2 /unsafe" } else { $cp.CompilerOptions = "/unsafe" }
-    $lang = if ($psMajorVer -gt 2) { "CSharp" } else { "CSharpVersion3" }
+$cp = [CodeDom.Compiler.CompilerParameters] [string[]]@("System.dll", "System.Core.dll", "System.ServiceProcess.dll", "System.Xml.dll", "System.Xml.Linq.dll")
+if ($psMajorVer -le 2) { $cp.CompilerOptions = "/define:POWERSHELL2 /unsafe" } else { $cp.CompilerOptions = "/unsafe" }
+$lang = if ($psMajorVer -gt 2) { "CSharp" } else { "CSharpVersion3" }
 
-    $ctemp = "$env:SystemRoot\Temp\"
-    if (-Not (Test-Path -Path $ctemp)) { New-Item -Path $ctemp -ItemType Directory > $null }
-    $env:TMP = $ctemp
-    $env:TEMP = $ctemp
+$ctemp = "$env:SystemRoot\Temp\$([Guid]::NewGuid().Guid)\"
+if (-Not (Test-Path -Path $ctemp)) { New-Item -Path $ctemp -ItemType Directory > $null }
+$env:TMP = $ctemp
+$env:TEMP = $ctemp
 
-    $cp.GenerateInMemory = $true
-    Add-Type -Language $lang -TypeDefinition $src -CompilerParameters $cp
+$cp.GenerateInMemory = $true
+Add-Type -Language $lang -TypeDefinition $src -CompilerParameters $cp
+
+try {
+    $cp.TempFiles.Dispose()
+} catch {
+# Older .NET Framework versions do not have that method, but they also don't create the folder that it removes.
 }
+Remove-Item -Path $ctemp
 
 if ($env:_debug -eq '0') {
     [LibTSforge.Logger]::HideOutput = $true
@@ -11294,8 +11308,8 @@ if (-not $env:resetstuff) {
                 $prodName = if ($nameParts.Count -gt 1) { ($nameParts[1].Trim() -split '[ ,]')[0] } else { $null }
             }
             if (-not $env:_vis -and -not $env:oldks) {
-                [LibTSforge.Modifiers.GenPKeyInstall]::InstallGenPKey($ver, $prod, $tsactid)
-            }
+            [LibTSforge.Modifiers.GenPKeyInstall]::InstallGenPKey($ver, $prod, $tsactid)
+			}
             if ($prodName -match 'Office' -and $prodDes -notmatch 'KMS' -and -not (slGetSkuInfo($tsactid))) {
                 $licenseStatus = Get-WmiInfo -tsactid $tsactid -property "LicenseStatus"
                 if ($licenseStatus -eq 1) {
@@ -11340,21 +11354,21 @@ if (-not $env:resetstuff) {
             if ($activated) {
                 if ($prodDes -match 'KMS' -and $prodDes -notmatch 'CLIENT') {
                     [LibTSforge.Modifiers.KMSHostCharge]::Charge($ver, $prod, $tsactid)
-                    Write-Host "[$prodName] CSVLK ÒÑÊ¹ÓÃ $env:tsmethod ÓÀ¾Ã¼¤»î¡£" -ForegroundColor White -BackgroundColor DarkGreen
-                    Write-Host "[$prodName] CSVLK ÒÑÎª 25 ¿Í»§¶Ë³äÖµ 30 Ìì¡£" -ForegroundColor White -BackgroundColor DarkGreen
+                    Write-Host "[$prodName] CSVLK Í¨¹ı $env:tsmethod ÓÀ¾Ã¼¤»î¡£" -ForegroundColor White -BackgroundColor DarkGreen
+                    Write-Host "[$prodName] CSVLK Ïò 25 Î»¿Í»§ÊÕÈ¡ 30 ÌìµÄ·ÑÓÃ¡£" -ForegroundColor White -BackgroundColor DarkGreen
                 }
                 else {
                     if ($env:tsmethod -eq "KMS4k") {
                         if ($build -ge 26100) {
-                            Write-Host "[$prodName] ÒÑÊ¹ÓÃ KMS4k ¼¤»î³¬¹ı 4,000 Äê¡£" -ForegroundColor White -BackgroundColor DarkGreen
-                            Write-Host "´Ó°æ±¾ 26100.7019 Æğ£¬Èç¹ûÊµ¼ÊÖÜÆÚ¸ü³¤£¬Windows ½«Ê¼ÖÕÏÔÊ¾²¢±£³ÖÊ£Óà 180 Ìì¡£" -ForegroundColor White -BackgroundColor Darkgray
+                            Write-Host "[$prodName] ÒÑÊ¹ÓÃ KMS4k ¼¤»î³¬¹ı 4000 Äê¡£" -ForegroundColor White -BackgroundColor DarkGreen
+                            Write-Host "´ÓÄÚ²¿°æ±¾ 26100.7019 ¿ªÊ¼£¬Windows ½«Ê¼ÖÕÔÚ¡°ÉèÖÃ¡±ÖĞÏÔÊ¾ 180 ÌìµÄÊ£Óà¼¤»îÆÚ¡£" -ForegroundColor White -BackgroundColor Darkgray
                         }
                         else {
-                        Write-Host "[$prodName] ÒÑ¼¤»î£¬Ö±µ½ $([DateTime]::Now.AddMinutes($GracePeriodStatus).ToString('yyyy-MM-dd HH:mm:ss')) with $env:tsmethod." -ForegroundColor White -BackgroundColor DarkGreen
+                            Write-Host "[$prodName] ÒÑÊ¹ÓÃ $env:tsmethod ¼¤»îµ½ $([DateTime]::Now.AddMinutes($GracePeriodStatus).ToString('yyyy-MM-dd HH:mm:ss'))." -ForegroundColor White -BackgroundColor DarkGreen
                         }
                     }
                     else {
-                    Write-Host "[$prodName] ÒÑÊ¹ÓÃ $env:tsmethod ÓÀ¾Ã¼¤»î¡£" -ForegroundColor White -BackgroundColor DarkGreen
+                        Write-Host "[$prodName] ÒÑÊ¹ÓÃ $env:tsmethod ÓÀ¾Ã¼¤»î¡£" -ForegroundColor White -BackgroundColor DarkGreen
                     }
                 }
             }
@@ -12050,7 +12064,7 @@ set _port=
 cls
 color 07
 set KS=K%blank%MS
-title  ÔÚÏß %KS% ¼¤»î %masver%
+title  Online %KS% ¼¤»î %masver%
 
 set _args=
 set _elev=
@@ -12085,7 +12099,7 @@ if not defined _server set _port=
 if %_unattended%==0 (
 cls
 if not defined terminal mode 76, 30
-title  ÔÚÏß %KS% ¼¤»î %masver%
+title  Online %KS% ¼¤»î %masver%
 
 echo:
 echo:
@@ -12153,7 +12167,7 @@ mode 115, 32
 if exist "%SysPath%\spp\store_test\" mode 135, 32
 %psc% "&{$W=$Host.UI.RawUI.WindowSize;$B=$Host.UI.RawUI.BufferSize;$W.Height=32;$B.Height=300;$Host.UI.RawUI.WindowSize=$W;$Host.UI.RawUI.BufferSize=$B;}" %nul%
 )
-title  ÔÚÏß %KS% ¼¤»î %masver%
+title  Online %KS% ¼¤»î %masver%
 
 echo:
 echo ÕıÔÚ³õÊ¼»¯...
@@ -12161,13 +12175,13 @@ call :dk_chkmal
 
 if not exist %SysPath%\%_slexe% (
 %eline%
-echo [%SysPath%\%_slexe%] ÎÄ¼şÈ±Ê§, ÕıÔÚÖĞÖ¹...
+echo [%SysPath%\%_slexe%] ÎÄ¼ş¶ªÊ§£¬ÕıÔÚÖĞÖ¹...
 echo:
 if not defined results (
-call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡Ôñ¹ÊÕÏÅÅ³ı²¢ÔËĞĞ DISM »¹Ô­ºÍ SFC É¨ÃèÑ¡Ïî¡£"
-call :dk_color %Blue% "Ö®ºó£¬ÖØÆôÏµÍ³²¢ÔÙ´Î³¢ÊÔ¼¤»î¡£"
+call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡ÔñÒÉÄÑ½â´ğ²¢ÔËĞĞ DISM »¹Ô­ºÍ SFC É¨ÃèÑ¡Ïî¡£"
+call :dk_color %Blue% "Ö®ºó£¬ÖØĞÂÆô¶¯ÏµÍ³²¢ÔÙ´Î³¢ÊÔ¼¤»î¡£"
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Èç¹ûÈÔÈ»³öÏÖÍ¬ÑùµÄ´íÎó£¬ÇëÖ´ĞĞÒÔÏÂ²Ù×÷ - " %_Yellow% " %mas%in-place_repair_upgrade"
 )
 goto dk_done
 )
@@ -12202,11 +12216,11 @@ for /f "delims=[] tokens=2" %%# in ('ping -n 1 %%a') do (if not "%%#"=="" set _i
 
 if not defined _int (
 %psc% "If([Activator]::CreateInstance([Type]::GetTypeFromCLSID([Guid]'{DCB00C01-570F-4A9B-8D69-199FDBA5723B}')).IsConnectedToInternet){Exit 0}Else{Exit 1}"
-if !errorlevel!==0 (set _int=1&set ping_f= µ« Ping Ê§°Ü)
+if !errorlevel!==0 (set _int=1&set ping_f= But Ping Failed)
 )
 
 if defined _int (
-echo ¼ì²é»¥ÁªÍøÁ¬½Ó                      [ÒÑÁ¬½Ó %ping_f%]
+echo ¼ì²é»¥ÁªÍøÁ¬½Ó                      [ÒÑÁ¬½Ó%ping_f%]
 ) else (
 set error=1
 call :dk_color %Red% "¼ì²é»¥ÁªÍøÁ¬½Ó                      [Î´Á¬½Ó]"
@@ -12236,7 +12250,7 @@ if not %_actwin%==1 goto :ks_office
 ::  Check if system is permanently activated or not
 
 echo:
-echo ÕıÔÚ¼¤»î Windows...
+echo ÕıÔÚ´¦Àí Windows...
 call :dk_checkperm
 if defined _perm (
 call :dk_color %Gray% "¼ì²é²Ù×÷ÏµÍ³¼¤»î                    [Windows ÒÑÓÀ¾Ã¼¤»î]"
@@ -12317,7 +12331,7 @@ call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%troubleshoot"
 )
 
 if defined sppks (
-call :dk_color %Red% "Ö§³Ö %KS% ¼¤»î£¬µ«Î´ÕÒµ½ %KS% ÃÜÔ¿¡£"
+call :dk_color %Red% "Ö§³Ö %KS% ¼¤»î£¬µ«ÕÒ²»µ½ %KS% ÃÜÔ¿¡£"
 set fixes=%fixes% %mas%troubleshoot
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%troubleshoot"
 )
@@ -12447,9 +12461,9 @@ call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ Office                 [Î´ÕÒµ½]"
 
 if defined ohub (
 echo:
-echo ÄúÖ»°²×°ÁË Office Ó¦ÓÃÉÌµêÓ¦ÓÃ³ÌĞò£¬ÄúĞèÒª°²×°ÍêÕûµÄ Office °æ±¾¡£
+echo ÄúÖ»°²×°ÁË Office Dashboard Ó¦ÓÃ³ÌĞò£»ÄúĞèÒª°²×°ÍêÕû°æµÄ Office¡£
 )
-call :dk_color %Blue% "´ÓÒÔÏÂÍøÖ·ÏÂÔØ²¢°²×° Office£¬È»ºóÖØÊÔ¡£"
+call :dk_color %Blue% "´ÓÏÂÃæµÄ URL ÏÂÔØ²¢°²×° Office£¬È»ºóÖØÊÔ¡£"
 set fixes=%fixes% %mas%genuine-installation-media
 call :dk_color %_Yellow% "%mas%genuine-installation-media"
 goto :ks_activate
@@ -12653,8 +12667,8 @@ if defined oemerr if not defined sppoid if not defined osppid (set _deltask=1)
 if not defined _deltask (
 call :ks_renewal
 ) else (
-if exist "%ProgramFiles%\Activation-Renewal\Activation_task.cmd" call :dk_color %Gray% "É¾³ı¼¤»îĞøÆÚÈÎÎñ..."
-call :dk_color %Gray% "Ìø¹ı´´½¨¼¤»îĞøÆÚÈÎÎñ..."
+if exist "%ProgramFiles%\Activation-Renewal\Activation_task.cmd" call :dk_color %Gray% "Deleting activation renewal task..."
+call :dk_color %Gray% "Skipping creation of activation renewal task..."
 call :ks_clearstuff %nul%
 if not defined _server (
 if %winbuild% GEQ 9200 (
@@ -12829,8 +12843,8 @@ if defined _altoffid (
 set _License=!_altoffid!
 echo ½«ÁãÊÛ°æ×ª»»ÎªÅúÁ¿°æ                [!_prod! To !_altoffid!]
 echo %%# | find /i "O365" %nul% && (
-if "%oVer%"=="15" (call :dk_color %Gray% "Mondo 2013 ÔÚ×îĞÂ¹¦ÄÜÉÏÏàµ±ÓÚ O365 [15.0 °æ±¾]¡£")
-if "%oVer%"=="16" (call :dk_color %Gray% "Mondo 2016 ÔÚ×îĞÂ¹¦ÄÜ·½ÃæÏàµ±ÓÚ O365¡£")
+if "%oVer%"=="15" (call :dk_color %Gray% "Mondo 2013 ÔÚ×îĞÂ¹¦ÄÜ·½ÃæÏàµ±ÓÚ O365 [15.0 °æ±¾]¡£")
+if "%oVer%"=="16" (call :dk_color %Gray% "Mondo 2016 ÔÚ×îĞÂ¹¦ÄÜ·½ÃæÓë O365 Ïàµ±¡£")
 )
 set _prod=!_altoffid!
 call :ks_osppready
@@ -12847,7 +12861,7 @@ call :dk_color %Red% "ÔÚ½Å±¾ÖĞ¼ì²é²úÆ·              [Office %oVer%.0 !_prod! ÔÚ½
 call :dk_color %Blue% "È·±£ÄúÊ¹ÓÃµÄÊÇ×îĞÂµÄ MAS ½Å±¾¡£"
 ) else (
 call :dk_color %Red% "ÔÚ½Å±¾ÖĞ¼ì²é²úÆ·              [!_prod! MSI ÁãÊÛ°æ²»Ö§³Ö]"
-call :dk_color %Blue% "Ê¹ÓÃ Ohook Ñ¡ÏîÀ´¼¤»î¡£ÒªÊ¹ÓÃ %KS% ¼¤»î£¬ÄúĞèÒª°²×° Office µÄÅúÁ¿°æ±¾¡£"
+call :dk_color %Blue% "Ê¹ÓÃ Ohook Ñ¡Ïî¼¤»î¡£ÒªÊ¹ÓÃ %KS% ¼¤»î£¬ÄúĞèÒª°²×° Office ÅúÁ¿°æ±¾¡£"
 )
 set fixes=%fixes% %mas%genuine-installation-media
 call :dk_color %_Yellow% "%mas%genuine-installation-media"
@@ -12884,11 +12898,11 @@ if "%osarch%"=="x86" set _oArch=x86
 call :msiofficedata %2
 
 echo:
-echo ÕıÔÚ¼¤»î Office...                  [MSI ^| %_version% ^| %_oArch%]
+echo ´¦Àí Office...                    [MSI ^| %_version% ^| %_oArch%]
 
 if not defined _oIds (
 set error=1
-call :dk_color %Red% "¼ì²éÒÑ°²×°²úÆ·                      [²úÆ· ID Î´·¢ÏÖ, ÕıÔÚÖĞÖ¹¼¤»î...]"
+call :dk_color %Red% "¼ì²éÒÑ°²×°µÄ²úÆ·            [Î´ÕÒµ½²úÆ· ID¡£ÕıÔÚÖĞÖ¹¼¤»î¡­¡­]"
 exit /b
 )
 
@@ -12938,7 +12952,7 @@ if defined error_ (
 if "%error_%"=="1" (
 echo %uline%
 %eline%
-echo ÖØÊÔ / ÖØÆôÏµÍ³
+echo ÖØÊÔ / ÖØĞÂÆô¶¯ÏµÍ³
 echo %uline%
 )
 ) else (
@@ -12946,7 +12960,7 @@ echo %uline%
 echo:
 call :dk_color %Green% "ÔÚÏß %KS% ÒÑ³É¹¦Ğ¶ÔØ¡£"
 echo:
-call :dk_color %Gray% "Èç¹ûÒªÖØÖÃ¼¤»î×´Ì¬,"
+call :dk_color %Gray% "Èç¹ûÄúÏëÖØÖÃ¼¤»î×´Ì¬£¬"
 call :dk_color %Blue% "%_fixmsg%"
 echo:
 echo %uline%
@@ -13174,7 +13188,7 @@ schtasks /delete /tn Activation-Run_Once /f %nul%
 :_taskend
 
 echo:
-echo ÕıÔÚÍË³ö
+echo Exiting
 echo ______________________________________________________________________
 
 if defined _tserror (exit /b 123456789) else (exit /b 0)
@@ -13264,9 +13278,9 @@ exit /b
 
 if %errorcode% EQU -1073418187 if "%1"=="act_win" if %winbuild% LSS 9200 (
 if defined t_name (
-echo ÓÉÓÚ OEM BIOS ²»ºÏ¸ñ [0xC004F035]£¬ÎŞ·¨ÔÚ´Ë¼ÆËã»úÉÏ KMS ¼¤»î %prodname%¡£
+echo %prodname% ÓÉÓÚOEM BIOS²»ºÏ¸ñ£¬ÎŞ·¨ÔÚ´Ë¼ÆËã»úÉÏ KMS ¼¤»î [0xC004F035].
 ) else (
-call :dk_color %Red% "ÓÉÓÚ OEM BIOS ²»ºÏ¸ñ [0xC004F035]£¬ÎŞ·¨ÔÚ´Ë¼ÆËã»úÉÏ KMS ¼¤»î %prodname%¡£"
+call :dk_color %Red% "%prodname% ÓÉÓÚ OEM BIOS [0xC004F035] ²»ºÏ¸ñ£¬ÎŞ·¨ÔÚ´Ë¼ÆËã»úÉÏ¼¤»î KMS¡£"
 call :dk_color %Blue% "Ê¹ÓÃÖ÷²Ëµ¥ÖĞµÄ TSforge ¼¤»îÑ¡Ïî¡£"
 )
 set oemerr=1
@@ -13276,9 +13290,9 @@ exit /b
 
 if %errorcode% EQU -1073418124 (
 if defined t_name (
-echo ÓÉÓÚ»¥ÁªÍøÎÊÌâ¼¤»î %prodname% Ê§°Ü [0xC004F074]¡£
+echo %prodname% ÓÉÓÚ»¥ÁªÍøÎÊÌâ¼¤»îÊ§°Ü [0xC004F074].
 ) else (
-call :dk_color %Red% "ÓÉÓÚ»¥ÁªÍøÎÊÌâ¼¤»î %prodname% Ê§°Ü [0xC004F074]¡£"
+call :dk_color %Red% "%prodname% ÓÉÓÚ»¥ÁªÍøÎÊÌâ¼¤»îÊ§°Ü [0xC004F074]."
 if not defined _tserror (
 call :dk_color %Blue% "È·±£ÏµÍ³ÎÄ¼şÎ´±»·À»ğÇ½×èÖ¹¡£"
 call :dk_color %Blue% "Èç¹ûÎÊÌâÈÔÈ»´æÔÚ£¬Çë³¢ÊÔÆäËû Internet Á¬½Ó»ò VPN£¬ÀıÈç https://1.1.1.1"
@@ -13362,7 +13376,7 @@ set _actid=%sppwid%
 call :_act act_win
 call :_actinfo act_win
 ) else (
-if defined t_name echo ¼ì²é£ºÎ´°²×° Windows ÅúÁ¿Ğí¿É°æ±¾
+if defined t_name echo Checking: Volume version of Windows is not installed
 )
 
 if defined sppoid (
@@ -13385,7 +13399,7 @@ if not defined _taskskip call :_actinfo
 
 if not defined sppoid if not defined osppid if defined t_name (
 echo:
-echo ¼ì²é: Î´°²×° Office ÅúÁ¿Ğí¿É°æ±¾
+echo ¼ì²é: Î´°²×° Office µÄÅúÁ¿Ğí¿É°æ±¾
 )
 
 exit /b
@@ -13558,7 +13572,7 @@ if not defined _int (s%nil%cht%nil%asks /cre%nil%ate /tn "Activation-Run_Once" /
 if exist "%_temp%\.*" rmdir /s /q "%_temp%\" %nul%
 
 call :ks_createInfo.txt
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split \":_extracttask\:.*`r`n\"; [io.file]::WriteAllText('%_dest%\Activation_task.cmd', '@::%randguid%' + [Environment]::NewLine + $f[1].Trim(), [Text.Encoding]::Default)"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split \":_extracttask\:.*`r`n\"; [io.file]::WriteAllText('%_dest%\Activation_task.cmd', '@::%randguid%' + [Environment]::NewLine + $f[1].Trim(), [System.Text.Encoding]::ASCII)"
 
 ::========================================================================================================================================
 
@@ -13588,7 +13602,7 @@ exit /b
 
 :ks_RenExport
 
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split \":%~1\:.*`r`n\"; [io.file]::WriteAllText('%~2',$f[1].Trim(),[System.Text.Encoding]::%~3);"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split \":%~1\:.*`r`n\"; [io.file]::WriteAllText('%~2',$f[1].Trim(),[System.Text.Encoding]::%~3);"
 exit /b
 
 ::========================================================================================================================================
@@ -13613,7 +13627,7 @@ echo ___________________________________________________________________________
 echo:
 echo   ´Ë½Å±¾ÊÇ MAS ÏîÄ¿µÄÒ»²¿·Ö
 echo:   
-echo   Ö÷Ò³: mass%w%grave%w%.dev
+echo   Homepage: mass%w%grave%w%.dev
 )>"%_dest%\Info.txt"
 exit /b
 
@@ -14429,14 +14443,14 @@ exit /b
 :+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 :check_actstatus
-
+chcp 936 >nul
 cls
 if not defined terminal (
 mode 100, 36
 %psc% "&{$W=$Host.UI.RawUI.WindowSize;$B=$Host.UI.RawUI.BufferSize;$W.Height=35;$B.Height=300;$Host.UI.RawUI.WindowSize=$W;$Host.UI.RawUI.BufferSize=$B;}" %nul%
 )
-
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':sppmgr\:.*';. ([scriptblock]::Create($f[1]))"
+::ÔÚReadAllTextº¯ÊıÖĞÌí¼ÓÁË[System.Text.Encoding]::GetEncoding(936)²ÎÊı£¬Ö¸¶¨¸Ã²¿·ÖÊ¹ÓÃ¼òÌåÖĞÎÄ±àÂë£¨GBK£©¶ÁÈ¡ÎÄ¼ş
+%psc% "$f=[IO.File]::ReadAllText('!_batp!', [System.Text.Encoding]::GetEncoding(936)) -split ':sppmgr\:.*';. ([scriptblock]::Create($f[1]))"
 goto dk_done
 
 :sppmgr:
@@ -14467,13 +14481,13 @@ function ExitScript($ExitCode = 0)
 
 if (-Not $PSVersionTable) {
 	"==== ´íÎó ====`r`n"
-	"´Ë½Å±¾²»Ö§³Ö Windows PowerShell 1.0¡£"
+	"±¾½Å±¾²»Ö§³Ö Windows PowerShell 1.0¡£"
 	ExitScript 1
 }
 
 if ($ExecutionContext.SessionState.LanguageMode.value__ -NE 0) {
-	"==== ´íÎó ====`r`n"
-	"Windows PowerShell Î´ÔÚÍêÕûÓïÑÔÄ£Ê½ÏÂÔËĞĞ¡£"
+	"==== ´íÎóR ====`r`n"
+	"Windows PowerShell Î´ÔÚÈ«ÓïÑÔÄ£Ê½ÏÂÔËĞĞ¡£"
 	ExitScript 1
 }
 
@@ -14486,13 +14500,13 @@ try {
 
 if ($winbuild -EQ 1) {
 	"==== ´íÎó ====`r`n"
-	"ÎŞ·¨¼ì²âµ½ Windows ÄÚ²¿°æ±¾¡£"
+	"ÎŞ·¨¼ì²â Windows °æ±¾¡£"
 	ExitScript 1
 }
 
 if ($winbuild -LT 2600) {
 	"==== ´íÎó ====`r`n"
-	"´Ë½Å±¾²»Ö§³Ö´Ë Windows °æ±¾¡£"
+	"±¾½Å±¾²»Ö§³Ö´Ë Windows °æ±¾¡£"
 	ExitScript 1
 }
 
@@ -14522,7 +14536,7 @@ $line3 = "____________________________________________________________"
 function echoWindows
 {
 	CONOUT "$line2"
-	CONOUT "===                     Windows ×´Ì¬                     ==="
+	CONOUT "===                   Windows ×´Ì¬                     ==="
 	CONOUT "$line2"
 	& $noAll
 }
@@ -14535,7 +14549,7 @@ function echoOffice
 
 	& $isAll
 	CONOUT "$line2"
-	CONOUT "===                     Office ×´Ì¬                      ==="
+	CONOUT "===                   Office ×´Ì¬                      ==="
 	CONOUT "$line2"
 	& $noAll
 
@@ -14583,7 +14597,7 @@ function CheckOhook
 	CONOUT "$line2"
 	CONOUT "===                Office Ohook ×´Ì¬                   ==="
 	CONOUT "$line2"
-	$host.UI.WriteLine('Yellow', 'Black', "`r`nÒÑ°²×°ÓÃÓÚÓÀ¾Ã¼¤»î Office µÄ Ohook¡£`r`nÄú¿ÉÒÔºöÂÔÏÂÃæµÄ Office ¼¤»î×´Ì¬¡£")
+	$host.UI.WriteLine('Yellow', 'Black', "`r`nÒÑ°²×°ÓÃÓÚÓÀ¾Ã¼¤»î Office µÄ Ohook¡£`r`nÄú¿ÉÒÔºöÂÔÏÂÃæÌáµ½µÄ Office ¼¤»î×´Ì¬¡£")
 	& $noAll
 }
 
@@ -14875,44 +14889,44 @@ function DetectSubscription {
 	}
 
 	if ($objSvc.SubscriptionType -EQ 1) {
-		$SubMsgType = "»ùÓÚÉè±¸"
+		$SubMsgType = "Device based"
 	} else {
-		$SubMsgType = "»ùÓÚÓÃ»§"
+		$SubMsgType = "User based"
 	}
 
 	if ($objSvc.SubscriptionStatus -EQ 120) {
-		$SubMsgStatus = "¹ıÆÚ"
+		$SubMsgStatus = "Expired"
 	} elseif ($objSvc.SubscriptionStatus -EQ 100) {
-		$SubMsgStatus = "½ûÓÃ"
+		$SubMsgStatus = "Disabled"
 	} elseif ($objSvc.SubscriptionStatus -EQ 1) {
-		$SubMsgStatus = "¼¤»î"
+		$SubMsgStatus = "Active"
 	} else {
-		$SubMsgStatus = "Î´¼¤»î"
+		$SubMsgStatus = "Not active"
 	}
 
-	$SubMsgExpiry = "Î´Öª"
+	$SubMsgExpiry = "Unknown"
 	if ($objSvc.SubscriptionExpiry) {
 		if ($objSvc.SubscriptionExpiry.Contains("unspecified") -EQ $false) {$SubMsgExpiry = $objSvc.SubscriptionExpiry}
 	}
 
-	$SubMsgEdition = "Î´Öª"
+	$SubMsgEdition = "Unknown"
 	if ($objSvc.SubscriptionEdition) {
 		if ($objSvc.SubscriptionEdition.Contains("UNKNOWN") -EQ $false) {$SubMsgEdition = $objSvc.SubscriptionEdition}
 	}
 
-	CONOUT "`n¶©ÔÄĞÅÏ¢:"
+	CONOUT "¶©ÔÄĞÅÏ¢:"
 	CONOUT "    ÀàĞÍ : $SubMsgType"
 	CONOUT "    ×´Ì¬ : $SubMsgStatus"
-	CONOUT "    °æ±¾ : $SubMsgEdition"
+    CONOUT "    °æ±¾ : $SubMsgEdition"
 	CONOUT "    µ½ÆÚ : $SubMsgExpiry"
 }
 
 function DetectAdbaClient
 {
-	$propADBA | foreach { set $_ (SlGetInfoSku $licID $_) }
+    $propADBA | foreach { set $_ (SlGetInfoSku $licID $_) }
 	DetectActType
-	CONOUT "`nAD ¼¤»î¿Í»§¶ËĞÅÏ¢:"
-	CONOUT "    ¶ÔÏóÃû³Æ: $ADActivationObjectName"
+	CONOUT "`nAD ¼¤»î client information:"
+	CONOUT "    ¶ÔÏóÃû: $ADActivationObjectName"
 	CONOUT "    ÓòÃû: $ADActivationObjectDN"
 	CONOUT "    CSVLK À©Õ¹ PID: $ADActivationCsvlkPID"
 	CONOUT "    CSVLK ¼¤»î ID: $ADActivationCsvlkSkuID"
@@ -14920,8 +14934,8 @@ function DetectAdbaClient
 
 function DetectAvmClient
 {
-	$propAVMA | foreach { set $_ (SlGetInfoSku $licID $_) }
-	CONOUT "`n×Ô¶¯ VM ¼¤»î¿Í»§¶ËĞÅÏ¢:"
+    $propAVMA | foreach { set $_ (SlGetInfoSku $licID $_) }
+    CONOUT "×Ô¶¯ VM ¼¤»î¿Í»§¶ËĞÅÏ¢:"
 	if (-Not [String]::IsNullOrEmpty($InheritedActivationId)) {
 		CONOUT "    À´±ö IAID: $InheritedActivationId"
 	} else {
@@ -14941,7 +14955,7 @@ function DetectAvmClient
 		$IAAT = [DateTime]::FromFileTime($InheritedActivationActivationTime).ToString('yyyy-MM-dd hh:mm:ss tt')
 		CONOUT "    ¼¤»îÊ±¼ä: $IAAT"
 	} else {
-		CONOUT "    ¼¤»îÊ±¼ä: ²»¿ÉÓÃ"
+		CONOUT "    ¼¤»îÊ±¼ä£º²»¿ÉÓÃ"
 	}
 }
 
@@ -14967,8 +14981,8 @@ function DetectKmsHost
 	if (-Not $KMSPublishing) {$KMSPublishing = "TRUE"} else {$KMSPublishing = BoolToWStr (!$KMSPublishing)}
 	if (-Not $KMSPriority) {$KMSPriority = "FALSE"} else {$KMSPriority = BoolToWStr $KMSPriority}
 
-	if ($KMSPublishing -EQ "TRUE") {$KMSPublishing = "ÆôÓÃ"} else {$KMSPublishing = "½ûÓÃ"}
-	if ($KMSPriority -EQ "TRUE") {$KMSPriority = "µÍ"} else {$KMSPriority = "Õı³£"}
+	if ($KMSPublishing -EQ "TRUE") {$KMSPublishing = "Enabled"} else {$KMSPublishing = "Disabled"}
+	if ($KMSPriority -EQ "TRUE") {$KMSPriority = "Low"} else {$KMSPriority = "Normal"}
 
 	if ($SLApp)
 	{
@@ -14991,14 +15005,14 @@ function DetectKmsHost
 		return
 	}
 	CONOUT "`n´Ó¿Í»§¶ËÊÕµ½µÄÃÜÔ¿¹ÜÀí·şÎñÀÛ»ıÇëÇóÊı:"
-		CONOUT "    ×Ü¼Æ: $KeyManagementServiceTotalRequests"
-		CONOUT "    Ê§°Ü: $KeyManagementServiceFailedRequests"
-		CONOUT "    Î´ÊÚÈ¨: $KeyManagementServiceUnlicensedRequests"
-		CONOUT "    ÒÑÊÚÈ¨: $KeyManagementServiceLicensedRequests"
-		CONOUT "    ³õÊ¼¿íÏŞÆÚ: $KeyManagementServiceOOBGraceRequests"
-		CONOUT "    ÒÑ¹ıÆÚ»òÓ²¼ş³¬³öÈİ²î·¶Î§: $KeyManagementServiceOOTGraceRequests"
-		CONOUT "    ·ÇÕı°æ¿íÏŞÆÚ: $KeyManagementServiceNonGenuineGraceRequests"
-		if ($null -NE $KeyManagementServiceNotificationRequests) {CONOUT "    Í¨Öª: $KeyManagementServiceNotificationRequests"}
+	CONOUT "    ×Ü¼Æ: $KeyManagementServiceTotalRequests"
+	CONOUT "    Ê§°Ü: $KeyManagementServiceFailedRequests"
+	CONOUT "    Î´ÊÚÈ¨: $KeyManagementServiceUnlicensedRequests"
+	CONOUT "    ÒÑÊÚÈ¨: $KeyManagementServiceLicensedRequests"
+	CONOUT "    ³õÊ¼¿íÏŞÆÚ: $KeyManagementServiceOOBGraceRequests"
+	CONOUT "    ÒÑ¹ıÆÚ»òÓ²¼ş³¬³öÈİ²î·¶Î§: $KeyManagementServiceOOTGraceRequests"
+	CONOUT "    ·ÇÕı°æ¿íÏŞÆÚ: $KeyManagementServiceNonGenuineGraceRequests"
+	if ($null -NE $KeyManagementServiceNotificationRequests) {CONOUT "    Í¨Öª: $KeyManagementServiceNotificationRequests"}
 }
 
 function DetectActType
@@ -15007,7 +15021,7 @@ function DetectActType
 	if ($null -EQ $VLType) {$VLType = strGetRegistry ($SPKeyPath + '\' + $strApp) "VLActivationType"}
 	if ($null -EQ $VLType) {$VLType = strGetRegistry ($SPKeyPath) "VLActivationType"}
 	if ($null -EQ $VLType -Or $VLType -GT 3) {$VLType = 0}
-	if ($null -NE $VLType) {CONOUT "ÅäÖÃµÄ¼¤»îÀàĞÍ: $($VLActTypes[$VLType])"}
+	if ($null -NE $VLType) {CONOUT "Configured Activation Type: $($VLActTypes[$VLType])"}
 }
 
 function DetectKmsClient
@@ -15039,39 +15053,39 @@ function DetectKmsClient
 		$KmsReg = $null
 	} else {
 		if (-Not $KeyManagementServicePort) {$KeyManagementServicePort = 1688}
-		$KmsReg = "ÒÑ×¢²á KMS ¼ÆËã»úÃû³Æ: ${KeyManagementServiceName}:${KeyManagementServicePort}"
+		$KmsReg = "ÒÑ×¢²áµÄ KMS ¼ÆËã»úÃû³Æ: ${KeyManagementServiceName}:${KeyManagementServicePort}"
 	}
 
 	if ([String]::IsNullOrEmpty($DiscoveredKeyManagementServiceName)) {
-		$KmsDns = "DNS ×Ô¶¯·¢ÏÖ£ºKMS Ãû³Æ ²»¿ÉÓÃ"
-		if ($Vista -And -Not $Admin) {$KmsDns = "DNS ×Ô¶¯·¢ÏÖ£ºÒÔ¹ÜÀíÔ±Éí·İÔËĞĞ½Å±¾ÒÔ¼ìË÷ĞÅÏ¢"}
+		$KmsDns = "DNS ×Ô¶¯·¢ÏÖ: KMS Ãû³Æ²»¿ÉÓÃ"
+		if ($Vista -And -Not $Admin) {$KmsDns = "DNS ×Ô¶¯·¢ÏÖ: ÒÔ¹ÜÀíÔ±Éí·İÔËĞĞ½Å±¾À´¼ìË÷ĞÅÏ¢"}
 	} else {
 		if (-Not $DiscoveredKeyManagementServicePort) {$DiscoveredKeyManagementServicePort = 1688}
-		$KmsDns = "À´×Ô DNS µÄ KMS »úÆ÷Ãû³Æ: ${DiscoveredKeyManagementServiceName}:${DiscoveredKeyManagementServicePort}"
+		$KmsDns = "À´×Ô DNS µÄ KMS ¼ÆËã»úÃû³Æ£º ${DiscoveredKeyManagementServiceName}:${DiscoveredKeyManagementServicePort}"
 	}
 
 	if ($null -NE $KMSCaching) {
-		if ($KMSCaching -EQ "TRUE") {$KMSCaching = "ÆôÓÃ"} else {$KMSCaching = "½ûÓÃ"}
+		if ($KMSCaching -EQ "TRUE") {$KMSCaching = "Enabled"} else {$KMSCaching = "Disabled"}
 	}
 
 	if ($strSLP -EQ $wslp -And $NT9) {
 		if ([String]::IsNullOrEmpty($DiscoveredKeyManagementServiceIpAddress)) {
-			$DiscoveredKeyManagementServiceIpAddress = "²»¿ÉÓÃ"
+			$DiscoveredKeyManagementServiceIpAddress = "not available"
 		}
 	}
 
-	CONOUT "ÃÜÔ¿¹ÜÀí·şÎñ¿Í»§¶ËĞÅÏ¢:"
-	CONOUT "    ¿Í»§¶Ë¼ÆËã»ú ID (CMID): $ClientMachineID"
+	CONOUT "ÃÜÔ¿¹ÜÀí·şÎñ¿Í»§¶ËĞÅÏ¢£º"
+	CONOUT "    ¿Í»§¶Ë»úÆ÷ ID (CMID): $ClientMachineID"
 	if ($null -EQ $KmsReg) {
 		CONOUT "    $KmsDns"
-		CONOUT "    ÒÑ×¢²áµÄ KMS »úÆ÷Ãû³Æ£ºKMS Ãû³Æ ²»¿ÉÓÃ"
+		CONOUT "    ÒÑ×¢²áµÄ KMS ¼ÆËã»úÃû³Æ: KMS name not available"
 	} else {
 		CONOUT "    $KmsReg"
 	}
 	if ($null -NE $DiscoveredKeyManagementServiceIpAddress) {CONOUT "    KMS ¼ÆËã»ú IP µØÖ·: $DiscoveredKeyManagementServiceIpAddress"}
-	CONOUT "    KMS ¼ÆËã»úÀ©Õ¹ PID: $CustomerPID"
-	CONOUT "    ¼¤»î¼ä¸ô: $VLActivationInterval ·ÖÖÓ"
-	CONOUT "    ĞøÆÚ¼ä¸ô: $VLRenewalInterval ·ÖÖÓ"
+	CONOUT "    KMS»úÆ÷À©Õ¹PID: $CustomerPID"
+	CONOUT "    ¼¤»î¼ä¸ô: $VLActivationInterval minutes"
+	CONOUT "    Ğø¶©¼ä¸ô: $VLRenewalInterval minutes"
 	if ($null -NE $KMSCaching) {CONOUT "    KMS Ö÷»ú»º´æ: $KMSCaching"}
 	if (-Not [String]::IsNullOrEmpty($KeyManagementServiceLookupDomain)) {CONOUT "    KMS SRV ¼ÇÂ¼²éÕÒÓò: $KeyManagementServiceLookupDomain"}
 }
@@ -15103,11 +15117,11 @@ function GetResult($strSLP, $strApp, $entry)
 		& $isAll
 		CONOUT "Ãû³Æ: $Name"
 		CONOUT "ÃèÊö: $Description"
-		CONOUT "¼¤»î ID: $licID"
-		CONOUT "Ğí¿É×´Ì¬: Î´Ğí¿É"
+		CONOUT "¼¤»îID: $licID"
+		CONOUT "Ğí¿ÉÖ¤×´Ì¬: Unlicensed"
 		if ($licPHN -NE "empty") {
 			$gPHN = [String]::IsNullOrEmpty($licPHN) -NE $true
-			CONOUT "µç»°¼¤»î: $($gPHN.ToString())"
+			CONOUT "ÊÖ»ú¿É¼¤»î: $($gPHN.ToString())"
 		}
 		return
 	}
@@ -15118,11 +15132,11 @@ function GetResult($strSLP, $strApp, $entry)
 	$NT5 = ($strSLP -EQ $wslp -And $winbuild -LT 6001)
 	$win8 = ($strSLP -EQ $wslp -And $NT8)
 	$reapp = ("Windows", "App")[!$winID]
-	$prmnt = ("¼ÆËã»ú", "²úÆ·")[!$winPR]
+	$prmnt = ("machine", "product")[!$winPR]
 
-	if ($Description.Contains("VOLUME_KMSCLIENT")) {$cKmsClient = 1; $actTag = "ÅúÁ¿"}
-	if ($Description.Contains("TIMEBASED_")) {$cTblClient = 1; $actTag = "»ùÓÚÊ±¼ä"}
-	if ($Description.Contains("VIRTUAL_MACHINE_ACTIVATION")) {$cAvmClient = 1; $actTag = "×Ô¶¯ VM"}
+	if ($Description.Contains("VOLUME_KMSCLIENT")) {$cKmsClient = 1; $actTag = "Volume"}
+	if ($Description.Contains("TIMEBASED_")) {$cTblClient = 1; $actTag = "Timebased"}
+	if ($Description.Contains("VIRTUAL_MACHINE_ACTIVATION")) {$cAvmClient = 1; $actTag = "Automatic VM"}
 	if ($null -EQ $cKmsClient -And $Description.Contains("VOLUME_KMS")) {$cKmsServer = 1}
 
 	$gprDay = [Math]::Round($gprMnt/1440)
@@ -15133,47 +15147,47 @@ function GetResult($strSLP, $strApp, $entry)
 		$inGrace = $true
 	}
 
-	$LicenseMsg = "Ê£ÓàÊ±¼ä: $gprMnt ·ÖÖÓ ($gprDay Ìì)"
+	$LicenseMsg = "Ê£ÓàÊ±¼ä: $gprMnt minute(s) ($gprDay day(s))"
 	if ($LicenseStatus -EQ 0) {
-		$LicenseInf = "Î´Ğí¿É"
+		$LicenseInf = "Unlicensed"
 		$LicenseMsg = $null
 	}
 	if ($LicenseStatus -EQ 1) {
-		$LicenseInf = "ÒÑĞí¿É"
+		$LicenseInf = "Licensed"
 		if ($gprMnt -EQ 0) {
 			$LicenseMsg = $null
-			$ExpireMsg = "$prmnt ÒÑÓÀ¾Ã¼¤»î¡£"
+			$ExpireMsg = "$prmnt ±»ÓÀ¾Ã¼¤»î¡£"
 		} else {
-			$LicenseMsg = "$actTag ¼¤»îÆÚÏŞ: $gprMnt ·ÖÖÓ ($gprDay Ìì)"
+			$LicenseMsg = "$actTag ¼¤»îµ½ÆÚ: $gprMnt minute(s) ($gprDay day(s))"
 			if ($inGrace) {$ExpireMsg = "$actTag ¼¤»î½«¹ıÆÚ $_xpr"}
 		}
 	}
 	if ($LicenseStatus -EQ 2) {
-		$LicenseInf = "³õÊ¼¿íÏŞÆÚ"
+		$LicenseInf = "Initial grace period"
 		if ($inGrace) {$ExpireMsg = "$LicenseInf ½áÊø $_xpr"}
 	}
 	if ($LicenseStatus -EQ 3) {
-		$LicenseInf = "¶îÍâ¿íÏŞÆÚ (KMS Ğí¿ÉÖ¤¹ıÆÚ»òÓ²¼ş³¬³öÈİ²î·¶Î§)"
-		if ($inGrace) {$ExpireMsg = "¶îÍâ¿íÏŞÆÚ½áÊø $_xpr"}
+		$LicenseInf = "Additional grace period (KMS license expired or hardware out of tolerance)"
+		if ($inGrace) {$ExpireMsg = "¶îÍâ¿íÏŞÆÚ½áÊø$_xpr"}
 	}
 	if ($LicenseStatus -EQ 4) {
-		$LicenseInf = "·ÇÕı°æ¿íÏŞÆÚ"
+		$LicenseInf = "Non-genuine grace period"
 		if ($inGrace) {$ExpireMsg = "$LicenseInf ½áÊø $_xpr"}
 	}
 	if ($LicenseStatus -EQ 5 -And -Not $NT5) {
 		$LicenseReason = '0x{0:X}' -f $LicReason
-		$LicenseInf = "Í¨Öª"
+		$LicenseInf = "Notification"
 		$LicenseMsg = "Í¨ÖªÔ­Òò: $LicenseReason"
-		if ($LicenseReason -EQ "0xC004F00F") {if ($null -NE $cKmsClient) {$LicenseMsg = $LicenseMsg + " (KMS Ğí¿ÉÖ¤ÒÑ¹ıÆÚ)¡£"} else {$LicenseMsg = $LicenseMsg + " (Ó²¼ş³¬³öÈİ²î)¡£"}}
-		if ($LicenseReason -EQ "0xC004F200") {$LicenseMsg = $LicenseMsg + " (·ÇÕı°æ)¡£"}
-		if ($LicenseReason -EQ "0xC004F009" -Or $LicenseReason -EQ "0xC004F064") {$LicenseMsg = $LicenseMsg + " (¿íÏŞÆÚÒÑ¹ıÆÚ)¡£"}
+		if ($LicenseReason -EQ "0xC004F00F") {if ($null -NE $cKmsClient) {$LicenseMsg = $LicenseMsg + " (KMS license expired)."} else {$LicenseMsg = $LicenseMsg + " (hardware out of tolerance)."}}
+		if ($LicenseReason -EQ "0xC004F200") {$LicenseMsg = $LicenseMsg + " (non-genuine)."}
+		if ($LicenseReason -EQ "0xC004F009" -Or $LicenseReason -EQ "0xC004F064") {$LicenseMsg = $LicenseMsg + " (grace time expired)."}
 	}
 	if ($LicenseStatus -GT 5 -Or ($LicenseStatus -GT 4 -And $NT5)) {
-		$LicenseInf = "Î´Öª"
+		$LicenseInf = "Unknown"
 		$LicenseMsg = $null
 	}
 	if ($LicenseStatus -EQ 6 -And -Not $Vista -And -Not $NT5) {
-		$LicenseInf = "ÑÓ³¤¿íÏŞÆÚ"
+		$LicenseInf = "Extended grace period"
 		if ($inGrace) {$ExpireMsg = "$LicenseInf ½áÊø $_xpr"}
 	}
 
@@ -15225,33 +15239,33 @@ function GetResult($strSLP, $strApp, $entry)
 	& $isAll
 	CONOUT "Ãû³Æ: $Name"
 	CONOUT "ÃèÊö: $Description"
-	CONOUT "¼¤»î ID: $licID"
-	if ($null -NE $DigitalPID) {CONOUT "À©Õ¹ PID: $DigitalPID"}
+	CONOUT "¼¤»îID: $licID"
+	if ($null -NE $DigitalPID) {CONOUT "À©Õ¹PID: $DigitalPID"}
 	if ($null -NE $DigitalPID2 -And $Dlv) {CONOUT "²úÆ· ID: $DigitalPID2"}
 	if ($null -NE $OfflineInstallationId -And $IID) {CONOUT "°²×° ID: $OfflineInstallationId"}
 	if ($null -NE $Channel) {CONOUT "²úÆ·ÃÜÔ¿Í¨µÀ: $Channel"}
 	if ($null -NE $PartialProductKey) {CONOUT "²¿·Ö²úÆ·ÃÜÔ¿: $PartialProductKey"}
-	CONOUT "Ğí¿É×´Ì¬: $LicenseInf"
+	CONOUT "Ğí¿ÉÖ¤×´Ì¬: $LicenseInf"
 	if ($null -NE $LicenseMsg) {CONOUT "$LicenseMsg"}
 	if ($LicenseStatus -NE 0 -And $EvaluationEndDate) {
 		$EED = [DateTime]::FromFileTimeUtc($EvaluationEndDate).ToString('yyyy-MM-dd hh:mm:ss tt')
-		CONOUT "ÆÀ¹À½áÊøÈÕÆÚ: $EED UTC"
+		CONOUT "ÆÀ¹À½áÊøÈÕÆÚ£º$EED UTC"
 	}
 	if ($LicenseStatus -NE 1 -And $licPHN -NE "empty") {
 		$gPHN = [String]::IsNullOrEmpty($licPHN) -NE $true
-		CONOUT "µç»°¼¤»î: $($gPHN.ToString())"
+		CONOUT "ÊÖ»ú¿É¼¤»î: $($gPHN.ToString())"
 	}
 	if ($Dlv) {
 		if ($null -NE $RemainingSLReArmCount) {
-			CONOUT "Ê£Óà $reapp ÖØÖÃ¼ÆÊı: $RemainingSLReArmCount"
+			CONOUT "Ê£ÓàµÄ $reapp ÖØ×°´ÎÊı: $RemainingSLReArmCount"
 		}
 		if ($null -NE $RemainingSkuReArmCount) {
-			CONOUT "Ê£Óà $reapp ÖØÖÃ¼ÆÊı: $RemainingAppReArmCount"
-			CONOUT "Ê£Óà SKU ÖØÖÃ¼ÆÊı: $RemainingSkuReArmCount"
+			CONOUT "Ê£ÓàµÄ $reapp ÖØ×°´ÎÊı: $RemainingAppReArmCount"
+			CONOUT "Ê£Óà SKU ÖØĞÂ×°±¸ÊıÁ¿: $RemainingSkuReArmCount"
 		}
 		if ($LicenseStatus -NE 0 -And $TrustedTime) {
 			$TTD = [DateTime]::FromFileTime($TrustedTime).ToString('yyyy-MM-dd hh:mm:ss tt')
-			CONOUT "¿ÉĞÅÊ±¼ä: $TTD"
+			CONOUT "ĞÅÈÎÊ±¼ä: $TTD"
 		}
 	}
 	if (!$isPPK) {
@@ -15335,7 +15349,7 @@ function PrintModePerPridFromRegistry
 	$vNextPrids = Get-Item -Path $vNextRegkey -ErrorAction SilentlyContinue | Select-Object -ExpandProperty 'property' -ErrorAction SilentlyContinue | Where-Object -FilterScript {$_.ToLower() -like "*retail" -or $_.ToLower() -like "*volume"}
 	If ($null -Eq $vNextPrids)
 	{
-		CONOUT "`nÎ´ÕÒµ½×¢²á±íÏî¡£"
+		CONOUT "`nÎ´ÕÒµ½×¢²á±í¡£"
 		Return
 	}
 	CONOUT "`r"
@@ -15368,11 +15382,11 @@ function PrintSharedComputerLicensing
 	$scaModeValue = $scaValue -Or $scaValue2 -Or $scaPolicyValue
 	If ($scaModeValue -Eq 0)
 	{
-		$scaMode = "½ûÓÃ"
+		$scaMode = "Disabled"
 	}
 	If ($scaModeValue -Eq 1)
 	{
-		$scaMode = "ÆôÓÃ"
+		$scaMode = "Enabled"
 	}
 	CONOUT "`n×´Ì¬: $scaMode"
 	CONOUT "`r"
@@ -15418,9 +15432,9 @@ function PrintLicensesInformation
 	{
 		$licenseFiles = Get-ChildItem -Path $licensePath -Recurse | Where-Object { !$_.PSIsContainer }
 	}
-	If ($null -Eq $licenseFiles -Or $licenseFiles.Length -Eq 0)
+		If ($null -Eq $licenseFiles -Or $licenseFiles.Length -Eq 0)
 	{
-		CONOUT "`nÎ´ÕÒµ½Ğí¿ÉÖ¤¡£"
+		CONOUT "`nÎ´ÕÒµ½ÁîÅÆ¡£"
 		Return
 	}
 	$licenseFiles | ForEach `
@@ -15436,14 +15450,14 @@ function PrintLicensesInformation
 		{
 			$expiry = New-Object System.DateTime
 		}
-		$licenseState = "¿íÏŞÆÚ"
+		$licenseState = "Grace"
 		If ((Get-Date) -Gt (Get-Date $decodedLicense.Metadata.NotAfter))
 		{
 			$licenseState = "RFM"
 		}
 		ElseIf ((Get-Date) -Lt (Get-Date $expiry))
 		{
-			$licenseState = "Ğí¿É"
+			$licenseState = "Licensed"
 		}
 		$output = New-Object PSObject
 		$output | Add-Member 8 'File' $_.PSChildName;
@@ -15481,14 +15495,14 @@ function vNextDiagRun
 	CONOUT "$line2"
 	CONOUT "===                  Office vNext ×´Ì¬                 ==="
 	CONOUT "$line2"
-	CONOUT "`n========== Ã¿²úÆ··¢²¼ ID Ä£Ê½ =========="
-	PrintModePerPridFromRegistry
+	CONOUT
+	CONOUT "`n========== Ã¿¸ö ProductReleaseId µÄÄ£Ê½ =========="
+	CONOUT
 	CONOUT "`n========== ¹²Ïí¼ÆËã»úĞí¿É =========="
-	PrintSharedComputerLicensing
+	CONOUT
 	CONOUT "`n========== vNext Ğí¿ÉÖ¤ ==========="
-	PrintLicensesInformation -Mode "NUL"
+	CONOUT
 	CONOUT "`n========== Éè±¸Ğí¿ÉÖ¤ =========="
-	PrintLicensesInformation -Mode "Device"
 	CONOUT "$line3"
 	CONOUT "`r"
 }
@@ -15794,7 +15808,7 @@ function ClcRun
 	}
 
 	& $isAll
-	CONOUT "¿Í»§¶ËĞí¿É¼ì²éĞÅÏ¢:"
+	CONOUT "Client Licensing Check information:"
 
 	CONOUT ("    AppId={0}" -f $winApp)
 	if ($prs.ged) { CONOUT ("    GraceEndDate={0}" -f ([DateTime]::UtcNow.AddMinutes($prs.ged).ToString('yyyy/MM/dd:HH:mm:ss'))) }
@@ -15834,7 +15848,7 @@ $o15App = "0ff1ce15-a989-479d-af46-f275c6370663"
 $isSub = ($winbuild -GE 26000) -And (Select-String -Path "$SysPath\wbem\sppwmi.mof" -Encoding unicode -Pattern "SubscriptionType")
 $DllDigital = ($winbuild -GE 14393) -And (Test-Path "$SysPath\EditionUpgradeManagerObj.dll")
 $DllSubscription = ($winbuild -GE 14393) -And (Test-Path "$SysPath\Clipc.dll")
-$VLActTypes = @("È«²¿", "AD", "KMS", "ÁîÅÆ")
+$VLActTypes = @("All", "AD", "KMS", "Token")
 $OPKeyPath = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\OfficeSoftwareProtectionPlatform"
 $SPKeyPath = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform"
 $SLKeyPath = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SL"
@@ -15885,7 +15899,7 @@ if ($OsppHook -NE 0) {
 
 if ($WsppHook -NE 0) {
 	if ($NT6 -And -Not $NT7 -And -Not $Admin) {
-		if ($null -EQ [Diagnostics.Process]::GetProcessesByName("$winsvc")[0].ProcessName) {$WsppHook = 0; CONOUT "`nError: failed to start $winsvc Service.`n"}
+		if ($null -EQ [Diagnostics.Process]::GetProcessesByName("$winsvc")[0].ProcessName) {$WsppHook = 0; CONOUT "`n´íÎó: Æô¶¯ $winsvc ·şÎñÊ§°Ü¡£`n"}
 	} else {
 		try {sasv $winsvc -EA 1} catch {$WsppHook = 0; CONOUT "`n´íÎó: Æô¶¯ $winsvc ·şÎñÊ§°Ü¡£`n"}
 	}
@@ -15909,7 +15923,7 @@ if ($cW1nd0ws.Count -GT 0)
 elseif ($NT6)
 {
 	echoWindows
-	CONOUT "`n´íÎó: Î´ÕÒµ½²úÆ·ÃÜÔ¿¡£"
+	CONOUT "´íÎó£ºÎ´ÕÒµ½²úÆ·ÃÜÔ¿¡£`n"
 }
 
 if ($NT6 -And -Not $NT8) {
@@ -15940,7 +15954,7 @@ if ($hSLC) {
 }
 
 if ($OsppHook -NE 0) {
-	try {sasv $offsvc -EA 1} catch {$OsppHook = 0; CONOUT "`n´íÎó: Æô¶¯ $offsvc ·şÎñÊ§°Ü¡£`n"}
+	try {sasv $offsvc -EA 1} catch {$OsppHook = 0; CONOUT "`n´íÎó: ÎŞ·¨Æô¶¯ $offsvc ·şÎñ¡£`n"}
 }
 
 if ($OsppHook -NE 0) {
@@ -16076,7 +16090,7 @@ del /f /q "%SystemRoot%\logs\cbs\cbs.log" %nul%
 del /f /q "%SystemRoot%\logs\DISM\dism.log" %nul%
 
 echo:
-echo ÕıÔÚÖ´ĞĞÃüÁî...
+echo ÕıÔÚÓ¦ÓÃÃüÁî...
 echo dism /english /online /cleanup-image /restorehealth
 dism /english /online /cleanup-image /restorehealth
 
@@ -16133,7 +16147,7 @@ copy /y /b "%SystemRoot%\logs\cbs\cbs.log" "%SystemRoot%\logs\cbs\backup_cbs_%_t
 del /f /q "%SystemRoot%\logs\cbs\cbs.log" %nul%
 
 echo:
-echo ÕıÔÚÖ´ĞĞÃüÁî...
+echo Applying the command...
 echo sfc /scannow
 sfc /scannow
 
@@ -16160,12 +16174,12 @@ if not defined terminal (
 mode 125, 32
 %psc% "&{$W=$Host.UI.RawUI.WindowSize;$B=$Host.UI.RawUI.BufferSize;$W.Height=31;$B.Height=200;$Host.UI.RawUI.WindowSize=$W;$Host.UI.RawUI.BufferSize=$B;}" %nul%
 )
-title  ĞŞ¸´Ğí¿É·şÎñ ^(ClipSVC ^+ SPP ^+ OSPP^)
+title  Fix Licensing ^(ClipSVC ^+ SPP ^+ OSPP^)
 
 if %winbuild% EQU 6001 (
 %eline%
 echo Windows Vista SP1 ²»Ö§³Ö´ËÑ¡Ïî¡£
-echo ÇëÉı¼¶µ½ Windows Vista SP2¡£
+echo Éı¼¶µ½ Windows Vista SP2¡£
 goto :at_back
 )
 
@@ -16206,7 +16220,7 @@ call :dk_color %Blue% "ÕıÔÚÖØ½¨ ClipSVC Ğí¿ÉÖ¤..."
 echo:
 
 if %winbuild% LSS 10240 (
-echo ClipSVC Ğí¿ÉÖ¤ÖØ½¨½öÔÚ Windows 10/11 ¼°ÆäÏàÓ¦·şÎñÆ÷°æ±¾ÖĞÊÜÖ§³Ö¡£
+echo ClipSVC Ğí¿ÉÖ¤ÖØ½¨½öÔÚ Windows 10/11 ÉÏÊÜÖ§³Ö¡£
 echo ÕıÔÚÌø¹ı...
 goto :rebuildspptok
 )
@@ -16223,14 +16237,14 @@ for /f "tokens=2 delims==" %%# in ('%psc% "(([WMISEARCHER]'SELECT PartialProduct
 for %%# in (8HV2C QPFCT 3V66T PKCKT WXCHW 8TYMD 6F4BT 8HVX7 KD72Y 7CFBY DRR8H P39PB DYJWX MDWWW 9HKR4 M7V2X 2YV77 WT2RQ MHBPB QPF8P 2YV66 VMJ2C DJ4F6 CKFFD YY74H J8JXD BHDCD T6R4W D32MH RRK69 3PJBP) do if /i "%_partial%"=="%%#" set _keymatch=1
 
 if not defined _keymatch (
-echo HWID ¼¤»îÃÜÔ¿Î´°²×°¡£
+echo Ó²¼şID¼¤»îÃÜÔ¿Î´°²×°¡£
 echo ÕıÔÚÌø¹ı...
 goto :rebuildspptok
 )
 
 %psc% "If([Activator]::CreateInstance([Type]::GetTypeFromCLSID([Guid]'{DCB00C01-570F-4A9B-8D69-199FDBA5723B}')).IsConnectedToInternet){Exit 0}Else{Exit 1}"
 if errorlevel 1 (
-echo »¥ÁªÍøÎ´Á¬½Ó¡£
+echo ÍøÂçÁ¬½ÓÊ§°Ü¡£
 echo ÕıÔÚÌø¹ı...
 goto :rebuildspptok
 )
@@ -16246,7 +16260,7 @@ if !errorlevel!==3 set resfail=1
 )
 
 if defined resfail (
-echo ÎŞ·¨Á¬½Óµ½ÊÚÈ¨·şÎñÆ÷¡£
+echo Á¬½ÓÊÚÈ¨·şÎñÆ÷Ê§°Ü¡£
 echo ÕıÔÚÌø¹ı...
 goto :rebuildspptok
 )
@@ -16350,17 +16364,17 @@ echo:
 call :_taskclear-cache
 
 %nul% reg query "HKLM\%SPPk%\%_wApp%" && (
-echo ÒÆ³ı KMS38 ±£»¤...
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':regdel\:.*';. ([scriptblock]::Create($f[1]))"
+echo Removing KMS38 protection...
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':regdel\:.*';. ([scriptblock]::Create($f[1]))"
 %nul% reg delete "HKLM\%SPPk%\%_wApp%" /f
 %nul% reg query "HKLM\%SPPk%\%_wApp%" && (
-call :dk_color %Red% "ÒÆ³ı KMS38 ±£»¤Ê§°Ü¡£"
+call :dk_color %Red% "ÎŞ·¨É¾³ı KMS38 ±£»¤¡£"
 ) || (
-echo ³É¹¦ÒÆ³ı KMS38 ±£»¤¡£
-echo ³É¹¦Çå³ı KMS »º´æ¡£
+echo ³É¹¦É¾³ı KMS38 ±£»¤¡£
+echo ÒÑ³É¹¦Çå³ı KMS »º´æ¡£
 )
 ) || (
-echo ³É¹¦Çå³ı KMS »º´æ¡£
+echo ÒÑ³É¹¦Çå³ı KMS »º´æ¡£
 )
 echo:
 
@@ -16378,7 +16392,7 @@ for /f "skip=2 tokens=2*" %%a in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT
 if %winbuild% GEQ 9200 if /i not "%tokenstore%"=="%SysPath%\spp\store" if /i not "%tokenstore%"=="%SysPath%\spp\store\2.0" if /i not "%tokenstore%"=="%SysPath%\spp\store_test\2.0" (
 set badregistry=1
 echo:
-call :dk_color %Red% "ÔÚ ÁîÅÆ´æ´¢ ×¢²á±íÖĞÎ´ÕÒµ½ÕıÈ·µÄÂ·¾¶ [%tokenstore%]"
+call :dk_color %Red% "ÔÚ TokenStore ×¢²á±íÖĞÕÒ²»µ½ÕıÈ·µÄÂ·¾¶ [%tokenstore%]"
 )
 
 ::  Check sppsvc permissions and apply fixes
@@ -16389,7 +16403,7 @@ echo ÕıÔÚ¼ì²é SPP È¨ÏŞÏà¹ØÎÊÌâ...
 call :checkperms
 if defined permerror (
 call :dk_color %Red% "[!permerror!]"
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':fixsppperms\:.*';. ([scriptblock]::Create($f[1]))" %nul%
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':fixsppperms\:.*';. ([scriptblock]::Create($f[1]))" %nul%
 call :checkperms
 if defined permerror (
 call :dk_color %Red% "[!permerror!] [ĞŞ¸´Ê§°Ü]"
@@ -16402,7 +16416,7 @@ echo [Î´·¢ÏÖ´íÎó]
 )
 
 echo:
-echo Í£Ö¹ %_slser% ·şÎñ...
+echo ÕıÔÚÍ£Ö¹ %_slser% ·şÎñ...
 %psc% Stop-Service %_slser% -force %nul%
 
 set w=
@@ -16410,7 +16424,7 @@ set _sppint=
 for %%# in (SppEx%w%tComObj.exe %_slexe%) do (reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Ima%w%ge File Execu%w%tion Options\%%#" %nul% && (set _sppint=1))
 if defined _sppint (
 echo:
-echo ÒÆ³ı SPP IFEO ×¢²á±íÏî...
+echo ÕıÔÚÉ¾³ı SPP IFEO ×¢²á±íÏî...
 for %%# in (SppE%w%xtComObj.exe %_slexe%) do (reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Ima%w%ge File Execu%w%tion Options\%%#" /f %nul%)
 )
 
@@ -16418,13 +16432,13 @@ if %winbuild% LSS 9200 if not defined _vis (
 REM Fix issues caused by Update KB971033 in Windows 7
 REM https://support.microsoft.com/en-us/help/4487266
 echo:
-echo ¼ì²é¸üĞÂ KB971033...
+echo ÕıÔÚ¼ì²é¸üĞÂ KB971033...
 %psc% "if (Get-Hotfix -Id KB971033 -ErrorAction SilentlyContinue) {Exit 3}" %nul%
 if !errorlevel!==3 (
-echo ÕÒµ½£¬ÕıÔÚĞ¶ÔØ...
+echo ÕÒµ½ÁË£¬ÕıÔÚĞ¶ÔØ...
 wusa /uninstall /quiet /norestart /kb:971033
 ) else (
-echo [Î´ÕÒµ½]
+echo [Î´·¢ÏÖ]
 )
 %psc% Stop-Service sppuinotify -force %nul%
 sc config sppuinotify start= disabled
@@ -16459,8 +16473,8 @@ if defined _vis (
 
 echo:
 echo ÕıÔÚÖØ×°ÏµÍ³Ğí¿ÉÖ¤...
-%psc% "$sls = Get-WmiObject SoftwareLicensingService; $f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
-if %errorlevel% NEQ 0 %psc% "$sls = Get-WmiObject SoftwareLicensingService; $f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
+%psc% "$sls = Get-WmiObject SoftwareLicensingService; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
+if %errorlevel% NEQ 0 %psc% "$sls = Get-WmiObject SoftwareLicensingService; $f=[IO.File]::ReadAllText('!_batp!') -split ':xrm\:.*';. ([scriptblock]::Create($f[1])); ReinstallLicenses" %nul%
 if %errorlevel% EQU 0 (
 echo [³É¹¦]
 ) else (
@@ -16501,7 +16515,7 @@ call :scandatospp check
 if not defined token (
 call :dk_color %Red% "tokens.dat ÎÄ¼şÎ´·¢ÏÖ¡£"
 ) else (
-echo tokens.dat ÎÄ¼ş: [%token%]
+echo tokens.dat file: [%token%]
 )
 
 echo:
@@ -16575,7 +16589,7 @@ if %winbuild% GEQ 10240 (
 )
 
 set /a counter=0
-echo ¼ì²éÒÑ°²×°µÄ Office °æ±¾...
+echo ²éÒÑ°²×°µÄ Office °æ±¾...
 echo:
 
 for %%# in (
@@ -16626,7 +16640,7 @@ pause %nul1%
 
 if defined uwp16 (
 echo:
-echo ÕıÔÚÌø¹ıĞŞ¸´ Office 16.0 UWP... 
+echo ÕıÔÚÌø¹ı Office 16.0 UWP µÄĞŞ¸´... 
 echo:
 )
 
@@ -16636,20 +16650,20 @@ if defined c2r14_86 set c2r14=1
 
 if defined c2r14 (
 echo:
-echo ÕıÔÚÌø¹ıĞŞ¸´ Office 14.0 C2R...
+echo ÕıÔÚÌø¹ı Office 14.0 C2R µÄĞŞ¸´...
 echo:
 )
 
-if defined msi14_68 if exist "%msi14repair68%" echo ÔËĞĞ - "%msi14repair68%"                    & "%msi14repair68%"
-if defined msi14_86 if exist "%msi14repair86%" echo ÔËĞĞ - "%msi14repair86%"                    & "%msi14repair86%"
-if defined msi15_68 if exist "%msi15repair68%" echo ÔËĞĞ - "%msi15repair68%"                    & "%msi15repair68%"
-if defined msi15_86 if exist "%msi15repair86%" echo ÔËĞĞ - "%msi15repair86%"                    & "%msi15repair86%"
-if defined msi16_68 if exist "%msi16repair68%" echo ÔËĞĞ - "%msi16repair68%"                    & "%msi16repair68%"
-if defined msi16_86 if exist "%msi16repair86%" echo ÔËĞĞ - "%msi16repair86%"                    & "%msi16repair86%"
-if defined c2r15_68 if exist "%c2r15repair68%" echo ÔËĞĞ - "%c2r15repair68%" REPAIRUI RERUNMODE                     & "%c2r15repair68%" REPAIRUI RERUNMODE
-if defined c2r15_86 if exist "%c2r15repair86%" echo ÔËĞĞ - "%c2r15repair86%" REPAIRUI RERUNMODE                     & "%c2r15repair86%" REPAIRUI RERUNMODE
-if defined c2r16_68 if exist "%c2r16repair68%" echo ÔËĞĞ - "%c2r16repair68%" Scenario=Repair RepairType=QuickRepair & "%c2r16repair68%" Scenario=Repair RepairType=QuickRepair
-if defined c2r16_86 if exist "%c2r16repair86%" echo ÔËĞĞ - "%c2r16repair86%" Scenario=Repair RepairType=QuickRepair & "%c2r16repair86%" Scenario=Repair RepairType=QuickRepair
+if defined msi14_68 if exist "%msi14repair68%" echo Running - "%msi14repair68%"                                        & "%msi14repair68%"
+if defined msi14_86 if exist "%msi14repair86%" echo Running - "%msi14repair86%"                                        & "%msi14repair86%"
+if defined msi15_68 if exist "%msi15repair68%" echo Running - "%msi15repair68%"                                        & "%msi15repair68%"
+if defined msi15_86 if exist "%msi15repair86%" echo Running - "%msi15repair86%"                                        & "%msi15repair86%"
+if defined msi16_68 if exist "%msi16repair68%" echo Running - "%msi16repair68%"                                        & "%msi16repair68%"
+if defined msi16_86 if exist "%msi16repair86%" echo Running - "%msi16repair86%"                                        & "%msi16repair86%"
+if defined c2r15_68 if exist "%c2r15repair68%" echo Running - "%c2r15repair68%" REPAIRUI RERUNMODE                     & "%c2r15repair68%" REPAIRUI RERUNMODE
+if defined c2r15_86 if exist "%c2r15repair86%" echo Running - "%c2r15repair86%" REPAIRUI RERUNMODE                     & "%c2r15repair86%" REPAIRUI RERUNMODE
+if defined c2r16_68 if exist "%c2r16repair68%" echo Running - "%c2r16repair68%" Scenario=Repair RepairType=QuickRepair & "%c2r16repair68%" Scenario=Repair RepairType=QuickRepair
+if defined c2r16_86 if exist "%c2r16repair86%" echo Running - "%c2r16repair86%" Scenario=Repair RepairType=QuickRepair & "%c2r16repair86%" Scenario=Repair RepairType=QuickRepair
 
 :repairend
 
@@ -16734,7 +16748,7 @@ echo Winmgmt ·şÎñ±ÀÀ££¬ÕıÔÚÖĞÖ¹...
 goto :at_back
 )
 
-echo ½ûÓÃ Winmgmt ·şÎñ
+echo Disabling Winmgmt service
 sc config Winmgmt start= disabled %nul%
 if %errorlevel% EQU 0 (
 echo [³É¹¦]
@@ -16791,11 +16805,11 @@ goto :at_back
 )
 
 echo:
-echo ×¢²á .dll ÎÄ¼ş²¢±àÒë .mof ºÍ .mfl ÎÄ¼ş
+echo ×¢²á .dll's ÎÄ¼ş²¢±àÒë .mof ºÍ .mfl ÎÄ¼ş
 call :registerobj %nul%
 
 echo:
-echo ¼ì²é WMI
+echo Checking WMI
 call :checkwmi
 if defined error (
 call :dk_color %Red% "[Î´ÏìÓ¦]"
@@ -16865,8 +16879,8 @@ goto :at_menu
 
 ::  https://stackoverflow.com/a/46268232
 
-set "ddf="%SystemRoot%\Temp\%Random%%Random%%Random%%Random%""
-%nul% del /q /f %ddf%
+for /f %%G in ('%psc% "[Guid]::NewGuid().Guid"') do set "randguid=%%G"
+set "ddf="%SystemRoot%\Temp\%Random%%randguid%""
 echo/.New Cabinet>%ddf%
 echo/.set Cabinet=ON>>%ddf%
 echo/.set CabinetFileCountThreshold=0;>>%ddf%
@@ -16888,7 +16902,6 @@ for /f "tokens=* delims=" %%D in ('dir /a:-D/b/s "%SystemRoot%\logs\%1"') do (
  echo/"%%~fD"  /inf=no;>>%ddf%
 )
 makecab /F %ddf% /D DiskDirectory1="" /D CabinetNameTemplate="!desktop!\%2_%_time%.cab"
-del /q /f %ddf%
 exit /b
 
 ::========================================================================================================================================
@@ -16898,7 +16911,7 @@ exit /b
 ::  This code checks if SPP has permission access to tokens folder and required registry keys. Incorrect permissions are often set by gaming spoofers.
 
 set permerror=
-if not exist "%tokenstore%\" set "permerror=ÔÚ ÁîÅÆ ÎÄ¼ş¼ĞÖĞ·¢ÏÖ´íÎó"
+if not exist "%tokenstore%\" set "permerror=ÔÚ Token ÎÄ¼ş¼ĞÖĞ·¢ÏÖ´íÎó"
 
 if defined ps32onArm exit /b
 
@@ -16910,7 +16923,7 @@ for %%# in (
 %psc% "$acl = (Get-Acl '%%A' | fl | Out-String); if (-not ($acl -match 'NT SERVICE\\sppsvc Allow  %%B') -or ($acl -match 'NT SERVICE\\sppsvc Deny')) {Exit 2}" %nul%
 if !errorlevel!==2 (
 if "%%A"=="%tokenstore%" (
-set "permerror=ÔÚ ÁîÅÆ ÎÄ¼ş¼ĞÖĞ·¢ÏÖ´íÎó"
+set "permerror=ÔÚ Token ÎÄ¼ş¼ĞÖĞ·¢ÏÖ´íÎó"
 ) else (
 set "permerror=ÔÚ SPP ×¢²á±íÖĞ·¢ÏÖ´íÎó"
 )
@@ -16965,7 +16978,7 @@ if ($env:permerror -eq 'Error Found In SPP Registries') {
 # Fix perms for SPP in HKU\S-1-5-20
 # https://learn.microsoft.com/en-us/office/troubleshoot/activation/license-issue-when-start-office-application
 
-if ($env:permerror -ne 'ÔÚ S-1-5-20 SPP ÖĞ·¢ÏÖ´íÎó') {
+if ($env:permerror -ne 'Error Found In S-1-5-20 SPP') {
     exit
 }
 if (-not (Test-Path 'Registry::HKU\S-1-5-20\Software\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform')) {
@@ -17083,7 +17096,7 @@ exit /b
 
 :regownstart
 
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':regown\:.*';. ([scriptblock]::Create($f[1]));"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':regown\:.*';. ([scriptblock]::Create($f[1]));"
 exit /b
 
 ::  Below code takes ownership of a volatile registry key and deletes it
@@ -17158,8 +17171,8 @@ title  ¸ü¸Ä Windows °æ±¾ %masver%
 
 if %winbuild% LSS 7600 (
 %eline%
-echo ¼ì²âµ½ [%winbuild%] µÄ²Ù×÷ÏµÍ³°æ±¾²»ÊÜÖ§³Ö¡£
-echo ½ö Windows 7/8/8.1/10/11 ¼°ÆäÏàÓ¦µÄ·şÎñÆ÷°æ±¾Ö§³Ö´ËÑ¡Ïî¡£
+echo ¼ì²âµ½²»ÊÜÖ§³ÖµÄ²Ù×÷ÏµÍ³°æ±¾ [%winbuild%].
+echo ´ËÑ¡Ïî½öÖ§³Ö Windows 7/8/8.1/10/11 ¼°Æä·şÎñÆ÷µÈĞ§°æ±¾¡£
 goto dk_done
 )
 
@@ -17174,10 +17187,10 @@ dism.exe
 if not exist %SysPath%\%%# (
 %eline%
 echo [%SysPath%\%%#] ÎÄ¼şÈ±Ê§, ÕıÔÚÖĞÖ¹...
-call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡Ôñ¹ÊÕÏÅÅ³ı²¢ÔËĞĞ DISM »¹Ô­ºÍ SFC É¨ÃèÑ¡Ïî¡£"
-call :dk_color %Blue% "Ö®ºó£¬ÖØÆôÏµÍ³²¢ÔÙ´Î³¢ÊÔ¼¤»î¡£"
+call :dk_color %Blue% "·µ»ØÖ÷²Ëµ¥£¬Ñ¡ÔñÒÉÄÑ½â´ğ²¢ÔËĞĞ DISM »¹Ô­ºÍ SFC É¨ÃèÑ¡Ïî¡£"
+call :dk_color %Blue% "Ö®ºó£¬ÖØĞÂÆô¶¯ÏµÍ³²¢ÔÙ´Î³¢ÊÔ¼¤»î¡£"
 set fixes=%fixes% %mas%in-place_repair_upgrade
-call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%in-place_repair_upgrade"
+call :dk_color2 %Blue% "Èç¹ûÈÔÈ»³öÏÖÍ¬ÑùµÄ´íÎó£¬ÇëÖ´ĞĞÒÔÏÂ²Ù×÷ - " %_Yellow% " %mas%in-place_repair_upgrade"
 goto dk_done
 )
 )
@@ -17207,8 +17220,8 @@ if defined UBR (set "fullbuild=%%G.!UBR!") else (set "fullbuild=%%G.%%H")
 call :dk_actids 55c92734-d682-4d71-983e-d6ec3f16059f
 if not defined allapps (
 %eline%
-echo Î´ÕÒµ½¼¤»î ID£¬ÖĞÖ¹...
-call :dk_color %Blue% "Òª½â¾ö´ËÎÊÌâ£¬Çë´ÓÖ÷²Ëµ¥ÖĞ¼¤»î Windows¡£"
+echo ÎŞ·¨ÕÒµ½¼¤»î ID¡£ÕıÔÚÖĞÖ¹...
+call :dk_color %Blue% "Òª½â¾ö´ËÎÊÌâ£¬Çë´ÓÖ÷²Ëµ¥¼¤»î Windows¡£"
 goto dk_done
 )
 
@@ -17229,7 +17242,7 @@ if not defined osedition %chkedi% do if not errorlevel 1 (call set "osedition=%%
 if not defined osedition (
 %eline%
 echo ¼ì²â²Ù×÷ÏµÍ³°æ±¾Ê§°Ü, ÕıÔÚÖĞÖ¹...
-call :dk_color %Blue% "Òª½â¾ö´ËÎÊÌâ£¬Çë´ÓÖ÷²Ëµ¥ÖĞ¼¤»î Windows¡£"
+call :dk_color %Blue% "Òª½â¾ö´ËÎÊÌâ£¬Çë´ÓÖ÷²Ëµ¥¼¤»î Windows¡£"
 goto dk_done
 )
 
@@ -17252,7 +17265,7 @@ set _ntarget=
 set _wtarget=
 
 if %winbuild% GEQ 10240 for /f "tokens=4" %%a in ('dism /online /english /Get-TargetEditions ^| findstr /i /c:"Target Edition : "') do (if defined _dtarget (set "_dtarget= !_dtarget! %%a ") else (set "_dtarget= %%a "))
-if %winbuild% LSS 10240 for /f "tokens=4" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':cbsxml\:.*';. ([scriptblock]::Create($f[1])) -GetTargetEditions;" ^| findstr /i /c:"Target Edition : "') do (if defined _ptarget (set "_ptarget= !_ptarget! %%a ") else (set "_ptarget= %%a "))
+if %winbuild% LSS 10240 for /f "tokens=4" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':cbsxml\:.*';. ([scriptblock]::Create($f[1])) -GetTargetEditions;" ^| findstr /i /c:"Target Edition : "') do (if defined _ptarget (set "_ptarget= !_ptarget! %%a ") else (set "_ptarget= %%a "))
 
 if %winbuild% GEQ 10240 if not exist "%SystemRoot%\Servicing\Packages\Microsoft-Windows-Server*Edition~*.mum" (
 if %winbuild% GEQ 17063 call :ced_edilist
@@ -17268,7 +17281,7 @@ cls
 echo:
 call :dk_color %Red% "==== ×¢Òâ ===="
 echo:
-echo [°æ±¾ ID:%osedition% ^| %fullbuild%]
+echo [EditionID:%osedition% ^| %fullbuild%]
 echo:
 echo ¸ü¸Ä´Ë°æ±¾¿ÉÄÜ²»»áÉ¾³ı "%osedition%" µÄÌØ¶¨¹¦ÄÜ¡£
 echo:
@@ -17283,7 +17296,7 @@ echo "!_target!" | find /i " %%# " %nul1% || set "_target= !_target! %%# "
 
 if defined _target (
 for %%# in (%_target%) do (
-echo %%# | findstr /i "CountrySpecific CloudEdition" %nul% || (set "_ntarget=!_ntarget! %%#")
+echo %%# | findstr /i "ÌØ¶¨¹ú¼ÒÔÆ°æ±¾" %nul% || (set "_ntarget=!_ntarget! %%#")
 )
 )
 
@@ -17322,7 +17335,7 @@ echo:
 for %%A in (%_ntarget%) do (
 set /a counter+=1
 if /i %%A==IoTEnterprise (
-echo [!counter!]  %%A [GAC, ·Ç LTSC]
+echo [!counter!]  %%A [GAC, not LTSC]
 ) else (
 echo [!counter!]  %%A
 )
@@ -17351,7 +17364,7 @@ if not defined terminal mode con cols=105 lines=32
 
 if /i "%targetedition%"=="ServerRdsh" (
 echo:
-call :dk_color %Red% "==== ×¢Òâ ===="
+call :dk_color %Red% "==== Note ===="
 echo:
 echo µ±°æ±¾¸ü¸ÄÎª "%targetedition%" ºó, 
 echo ÏµÍ³¿ÉÄÜÎŞ·¨ÔÚÒÔºóÕıÈ·¸ü¸Ä°æ±¾¡£
@@ -17413,7 +17426,7 @@ cls
 %line%
 echo:
 %showeditionerror%
-if defined dismnotworking call :dk_color %_Yellow% "DISM.exe ²»¹¤×÷¡£"
+if defined dismnotworking call :dk_color %_Yellow% "DISM.exe is not working."
 echo ½«µ±Ç°°æ±¾ [%osedition%] %fullbuild% ¸ü¸ÄÎª [%targetedition%]...
 echo:
 
@@ -17460,7 +17473,7 @@ echo:
 call :ced_prep
 if defined preperror goto dk_done
 
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':dismapi\:.*';. ([scriptblock]::Create($f[1])) %targetedition% %key%"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':dismapi\:.*';. ([scriptblock]::Create($f[1])) %targetedition% %key%"
 call :ced_postprep
 )
 %line%
@@ -17498,7 +17511,7 @@ call :ced_prep
 if defined preperror goto dk_done
 
 if %_stg%==0 (set stage=) else (set stage=-StageCurrent)
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':cbsxml\:.*';. ([scriptblock]::Create($f[1])) -SetEdition %targetedition% %stage%"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':cbsxml\:.*';. ([scriptblock]::Create($f[1])) -SetEdition %targetedition% %stage%"
 call :ced_postprep
 %line%
 
@@ -17545,7 +17558,7 @@ echo:
 call :ced_prep
 if defined preperror goto dk_done
 
-echo Ê¹ÓÃ %_chan% ÃÜÔ¿Ó¦ÓÃÃüÁî...
+echo Ê¹ÓÃ %_chan% ¼üÓ¦ÓÃÃüÁî...
 echo DISM /online /Set-Edition:%targetedition% /ProductKey:%key% /AcceptEula
 DISM /online /Set-Edition:%targetedition% /ProductKey:%key% /AcceptEula
 
@@ -17599,7 +17612,7 @@ call :compresslog DISM\dism_%_time%.log ChangeEdition_Logs\DISM %nul%
 
 echo:
 if %winbuild% GEQ 9200 %psc% "if ((Get-WindowsOptionalFeature -Online -FeatureName NetFx3).State -eq 'Enabled') {Write-Host '¼ì²é .NET Framework 3.5 ×´Ì¬ - ÒÑÆôÓÃ'}"
-echo ½«ÈÕÖ¾ÎÄ¼ş¸´ÖÆµ½×ÀÃæÉÏµÄ ChangeEdition_Logs ÎÄ¼ş¼ĞÖĞ¡£
+echo ÈÕÖ¾ÎÄ¼ş½«¸´ÖÆµ½×ÀÃæÉÏµÄ ChangeEdition_Logs ÎÄ¼ş¼ĞÖĞ¡£
 echo:
 call :dk_color %Blue% "Èç¹û³öÏÖ´íÎó£¬ÄúÓ¦¸ÃÖØĞÂÆô¶¯ÏµÍ³£¬È»ºóÔÙ³¢ÊÔ¡£"
 echo:
@@ -17764,14 +17777,14 @@ function Write-UpgradeCandidates {
     )
 
     $editionCount = 0
-    Write-Host '¿ÉÉı¼¶µ½µÄ°æ±¾:'
+    Write-Host 'Editions that can be upgraded to:'
     foreach($candidate in $InstallCandidates.Keys) {
-        Write-Host "Ä¿±ê°æ±¾ : $candidate"
+        Write-Host "Target Edition : $candidate"
         $editionCount++
     }
 
     if($editionCount -eq 0) {
-        Write-Host '(ÎŞ¿ÉÓÃ°æ±¾)'
+        Write-Host '(no editions are available)'
     }
 }
 
@@ -17854,7 +17867,7 @@ if($false -eq ($installCandidates.Keys -contains $SetEdition)) {
     Exit 1
 }
 
-$xmlPath = $Env:SystemRoot + '\Temp' + '\CbsUpgrade.xml'
+$xmlPath = $Env:SystemRoot + '\Temp' + "\$([Guid]::NewGuid().Guid)CbsUpgrade.xml"
 
 Write-UpgradeXml -RemovalCandidates $removalCandidates `
     -InstallCandidates $installCandidates[$SetEdition] `
@@ -17862,7 +17875,7 @@ Write-UpgradeXml -RemovalCandidates $removalCandidates `
 
 $editionXml = Find-EditionXml -Edition $SetEdition
 if($null -eq $editionXml) {
-    Write-Warning 'ÎŞ·¨ÕÒµ½°æ±¾µÄÌØ¶¨ÉèÖÃ XML¡£ÔÚÃ»ÓĞËüµÄÇé¿öÏÂ¼ÌĞø...'
+    Write-Warning 'Unable to find edition specific settings XML. Proceeding without it...'
 }
 
 Write-Host '¿ªÊ¼Éı¼¶¹ı³Ì¡£Õâ¿ÉÄÜĞèÒªÒ»¶ÎÊ±¼ä...'
@@ -18020,8 +18033,8 @@ title  ¸ü¸Ä Office °æ±¾ %masver%
 
 if %winbuild% LSS 7600 (
 %eline%
-echo ¼ì²âµ½ [%winbuild%] µÄ²Ù×÷ÏµÍ³°æ±¾²»ÊÜÖ§³Ö¡£
-echo ½ö Windows Vista/7/8/8.1/10/11 ¼°ÆäÏàÓ¦µÄ·şÎñÆ÷°æ±¾Ö§³Ö´ËÑ¡Ïî¡£
+echo ¼ì²âµ½²»ÊÜÖ§³ÖµÄ²Ù×÷ÏµÍ³°æ±¾ [%winbuild%].
+echo ´ËÑ¡Ïî½öÖ§³Ö Windows 7/8/8.1/10/11 ¼°Æä·şÎñÆ÷µÈĞ§°æ±¾¡£
 goto dk_done
 )
 
@@ -18061,7 +18074,7 @@ if %_wmic% EQU 0 set "chkedi=for /f "tokens=2 delims==" %%a in ('%psc% "(([WMISE
 if %osedition%==0 (
 %eline%
 echo Î´ÄÜ¼ì²âµ½²Ù×÷ÏµÍ³°æ±¾, ÕıÔÚÖĞÖ¹...
-call :dk_color %Blue% "Òª½â¾ö´ËÎÊÌâ£¬Çë´ÓÖ÷²Ëµ¥ÖĞ¼¤»î Windows¡£"
+call :dk_color %Blue% "Òª½â¾ö´ËÎÊÌâ£¬Çë´ÓÖ÷²Ëµ¥¼¤»î Windows¡£"
 goto dk_done
 )
 
@@ -18093,7 +18106,7 @@ call :ch_getinfo
 
 if %verchk% LSS 9029 (
 %eline%
-echo ÒÑ°²×°µÄ Office °æ±¾Îª %_version%.
+echo °²×°µÄ Office °æ±¾Îª %_version%¡£
 echo ×îµÍÒªÇó°æ±¾Îª 16.0.9029.2167
 echo ÕıÔÚÖĞÖ¹...
 call :dk_color %Blue% "´ÓÒÔÏÂÍøÖ·ÏÂÔØ²¢°²×°×îĞÂ°æµÄ Office£¬È»ºóÖØÊÔ¡£"
@@ -18147,6 +18160,18 @@ set fixes=%fixes% %mas%troubleshoot
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%troubleshoot"
 goto dk_done
 )
+
+set "o_randguid="
+for /f %%G in ('%psc% "[Guid]::NewGuid().Guid" ^| findstr /r "^[0123456789abcdef]*-[0123456789abcdef]*-[0123456789abcdef]*-[0123456789abcdef]*-[0123456789abcdef]*$"') do set "o_randguid=%%G"
+if not defined o_randguid (
+%eline%
+echo Unable to generate GUID with PowerShell.
+echo Aborting...
+set fixes=%fixes% %mas%troubleshoot
+call :dk_color2 %Blue% "Check this webpage for help - " %_Yellow% " %mas%troubleshoot"
+goto dk_done
+)
+md "%SystemRoot%\Temp\%o_randguid%\"
 
 ::========================================================================================================================================
 
@@ -18236,7 +18261,7 @@ cls
 set editedition=
 call :ch_getinfo
 call :oe_tempcleanup
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':getlist\:.*';. ([scriptblock]::Create($f[1]))"
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':getlist\:.*';. ([scriptblock]::Create($f[1]))"
 
 :oe_editionchange
 
@@ -18246,7 +18271,7 @@ mode 98, 45
 %psc% "&{$W=$Host.UI.RawUI.WindowSize;$B=$Host.UI.RawUI.BufferSize;$W.Height=44;$B.Height=100;$Host.UI.RawUI.WindowSize=$W;$Host.UI.RawUI.BufferSize=$B;}" %nul%
 )
 
-if not exist %SystemRoot%\Temp\%list%.txt (
+if not exist %SystemRoot%\Temp\%o_randguid%\%list%.txt (
 %eline%
 echo ÎŞ·¨Éú³É¿ÉÓÃ°æ±¾ÁĞ±í¡£
 set fixes=%fixes% %mas%troubleshoot
@@ -18268,7 +18293,7 @@ if %winbuild% LSS 10240 (
 echo ´ËÁĞ±íÖĞ²»°üÀ¨ 2019/2021/2024 µÈ²»ÊÜÖ§³ÖµÄ²úÆ·¡£
 ) else (
 for %%# in (2019 2021 2024) do (
-find /i "%%#" "%SystemRoot%\Temp\%list%.txt" %nul1% || (
+find /i "%%#" "%SystemRoot%\Temp\%o_randguid%\%list%.txt" %nul1% || (
 if defined _notfound (set _notfound=%%#, !_notfound!) else (set _notfound=%%#)
 )
 )
@@ -18277,7 +18302,7 @@ if defined _notfound call :dk_color %Gray% "Office !_notfound! ²»ÔÚ´ËÁĞ±íÖĞ£¬ÒòÎ
 %line%
 echo:
 
-for /f "usebackq delims=" %%A in (%SystemRoot%\Temp\%list%.txt) do (
+for /f "usebackq delims=" %%A in (%SystemRoot%\Temp\%o_randguid%\%list%.txt) do (
 set /a counter+=1
 if !counter! LSS 10 (
 echo [!counter!]  %%A
@@ -18309,8 +18334,8 @@ cls
 set suites=
 echo %list% | find /i "Suites" %nul1% && (
 set suites=1
-%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':getappnames\:.*';. ([scriptblock]::Create($f[1]))"
-if not exist %SystemRoot%\Temp\getAppIds.txt (
+%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':getappnames\:.*';. ([scriptblock]::Create($f[1]))"
+if not exist %SystemRoot%\Temp\%o_randguid%\getAppIds.txt (
 %eline%
 echo ÎŞ·¨Éú³É¿ÉÓÃÓ¦ÓÃ³ÌĞòÁĞ±í¡£
 set fixes=%fixes% %mas%troubleshoot
@@ -18332,7 +18357,7 @@ Visio
 Word
 ) do (
 if defined suites (
-find /i "%%#" "%SystemRoot%\Temp\getAppIds.txt" %nul1% && (set %%#_st=On) || (set %%#_st=)
+find /i "%%#" "%SystemRoot%\Temp\%o_randguid%\getAppIds.txt" %nul1% && (set %%#_st=On) || (set %%#_st=)
 ) else (
 set %%#_st=
 )
@@ -18355,8 +18380,8 @@ if not defined terminal mode 98, 32
 %line%
 echo:
 call :dk_color %Gray% "Ä¿±ê°æ±¾: %targetedition%"
-call :dk_color %Gray% "Òª´Ó°²×°ÖĞÅÅ³ıÏÂÃæÁĞ³öµÄÓ¦ÓÃ³ÌĞò£¬Çë½«ËüÃÇ´Ó¡°´ò¿ª¡±ÇĞ»»µ½¡°¹Ø±Õ¡±¡£"
-if defined editedition call :dk_color %Gray% "×¢Òâ: ÏÂÃæµÄ ¿ª/¹Ø ×´Ì¬²»·´Ó³ÒÑ°²×°Ó¦ÓÃ³ÌĞòµÄµ±Ç°×´Ì¬¡£"
+call :dk_color %Gray% "Òª´Ó°²×°ÖĞÅÅ³ıÏÂÃæÁĞ³öµÄÓ¦ÓÃ³ÌĞò£¬Çë½«Æä´Ó¡°¿ª¡±ÇĞ»»µ½¡°¹Ø¡±¡£"
+if defined editedition call :dk_color %Gray% "×¢Òâ£ºÏÂÃæµÄ¿ª/¹Ø×´Ì¬²¢²»·´Ó³ÒÑ°²×°Ó¦ÓÃ³ÌĞòµÄµ±Ç°×´Ì¬¡£"
 %line%
 if defined suites echo:
 if defined Access_st            echo [A] Access              : %Access_st%
@@ -18530,8 +18555,8 @@ echo %_AudienceData% | find /i "LTSC" %nul% && set suggestchannel=Production::CC
 )
 
 if defined suggestchannel (
-call :dk_color %Gray% "ÔÚ¸üĞÂÍ¨µÀºÍÒÑ°²×°µÄ²úÆ·ÖĞ·¢ÏÖ²»Æ¥Åä¡£"
-call :dk_color %Blue% "½¨Òé½«¸üĞÂÍ¨µÀ´ÓÉÏÒ»¸ö²Ëµ¥¸ü¸ÄÎª [!suggestchannel!]¡£"
+call :dk_color %Gray% "·¢ÏÖ¸üĞÂÍ¨µÀºÍÒÑ°²×°²úÆ·²»Æ¥Åä¡£"
+call :dk_color %Blue% "½¨Òé´ÓÉÏÒ»¸ö²Ëµ¥½«¸üĞÂÍ¨µÀ¸ü¸ÄÎª[!suggestchannel!]¡£"
 )
 echo:
 )
@@ -18669,7 +18694,7 @@ call :oe_getlangs %targetedition%
 set "c2rcommand="%_c2rExe%" platform=%_oArch% productstoremove=%targetedition%.16_%_allLangs%"
 
 echo:
-echo ÕıÔÚÖ´ĞĞÒÔÏÂÃüÁî£¬ÇëÉÔºò...
+echo ÕıÔÚÔËĞĞÒÔÏÂÃüÁî£¬ÇëÉÔºò...
 echo:
 echo %c2rcommand%
 %c2rcommand%
@@ -18710,8 +18735,8 @@ goto :oe_goback
 )
 if defined ltscfound (
 %eline%
-echo ÒÑ°²×°µÄ Office ¸üĞÂÆµµÀ: %ltsc19%%ltsc21%%ltsc24%
-echo ÄúµÄ Windows ÄÚ²¿°æ±¾Îª %winbuild% ÉÏ°²×°ÁË²»ÊÜÖ§³ÖµÄ Office ¸üĞÂÍ¨µÀ¡£
+echo ÒÑ°²×°µÄ Office ¸üĞÂÍ¨µÀ: %ltsc19%%ltsc21%%ltsc24%
+echo ÄúµÄ Windows ÄÚ²¿°æ±¾ %winbuild% ÉÏ°²×°ÁË²»ÊÜÖ§³ÖµÄ Office ¸üĞÂÍ¨µÀ¡£
 goto :oe_goback
 )
 )
@@ -18760,9 +18785,9 @@ if not defined ltscfound echo %%B | find /i "LTSC" %nul% && set bypass=1
 if defined supported (
 set /a counter+=1
 if !counter! LSS 10 (
-if defined bypass (echo [!counter!]  %%B ½«Ê¹ÓÃ·Ç¹Ù·½µÄ¸ü¸Ä·½·¨) else (echo [!counter!]  %%B)
+if defined bypass (echo [!counter!]  %%B  ½«Ê¹ÓÃ·ÇÕıÊ½µÄ¸ü¸Ä·½·¨) else (echo [!counter!]  %%B)
 ) else (
-if defined bypass (echo [!counter!] %%B ½«Ê¹ÓÃ·Ç¹Ù·½µÄ¸ü¸Ä·½·¨) else (echo [!counter!] %%B)
+if defined bypass (echo [!counter!] %%B  ½«Ê¹ÓÃ·ÇÕıÊ½µÄ¸ü¸Ä·½·¨) else (echo [!counter!] %%B)
 )
 set targetFFN!counter!=%%A
 set targetchannel!counter!=%%B
@@ -18794,12 +18819,12 @@ if not defined terminal mode 105, 32
 ::  Get build number for the target FFN, using build number with OfficeC2RClient.exe command to trigger updates provides accurate results
 
 set build=
-for /f "delims=" %%a in ('%psc% "$f=[System.IO.File]::ReadAllText('!_batp!', [Text.Encoding]::Default) -split ':getbuild\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (set build=%%a)
+for /f "delims=" %%a in ('%psc% "$f=[IO.File]::ReadAllText('!_batp!') -split ':getbuild\:.*';. ([scriptblock]::Create($f[1]))" %nul6%') do (set build=%%a)
 echo "%build%" | find /i "16." %nul% || set build=
 
 echo:
 for /f "tokens=1 delims=-" %%A in ("%targetchannel%") do (echo Ä¿±ê¸üĞÂÍ¨µÀ: %%A)
-echo Ä¿±êÄÚ²¿°æ±¾ºÅ: %build%
+echo Ä¿±ê°æ±¾ºÅ: %build%
 echo: %bypassFFN% | find /i "%targetFFN%" %nul% && goto :oe_changeunoff
 
 call :oe_cleanupreg
@@ -18831,14 +18856,14 @@ echo %targetchannel% | find /i "2024 VL" %nul% && (for %%A in (%_oIds%) do (echo
 
 if defined abortchange (
 %eline%
-echo ÔÚÒÑ°²×°µÄ Office ²úÆ·ºÍÄ¿±ê¸üĞÂÇşµÀÖĞ·¢ÏÖ²»Æ¥Åä. ÖĞÖ¹...
-echo ·ÇÓÀ¾Ã Office ²úÆ·²»Ö§³ÖÓÀ¾ÃÅúÁ¿¸üĞÂÍ¨µÀ¡£
+echo ÒÑ°²×°µÄ Office ²úÆ·ÓëÄ¿±ê¸üĞÂÍ¨µÀ²»Æ¥Åä¡£ÕıÔÚÖĞÖ¹...
+echo ·ÇÓÀ¾Ã Office ²úÆ·²»ÊÜÓÀ¾Ã VL ¸üĞÂÍ¨µÀÖ§³Ö¡£
 goto :oe_goback
 )
 
 if not defined build (
 %eline%
-call :dk_color %Red% "ÎŞ·¨¼ì²âµ½Ä¿±ê FFN µÄÄÚ²¿°æ±¾ºÅ¡£"
+call :dk_color %Red% "ÎŞ·¨¼ì²âÄ¿±ê FFN µÄ°æ±¾ºÅ¡£"
 set fixes=%fixes% %mas%troubleshoot
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%troubleshoot"
 goto :oe_goback
@@ -18853,7 +18878,7 @@ echo %targetchannel% | find /i "2019 VL" %nul% && (
 for %%A in (en-gb es-mx fr-ca) do (
 echo %_allLangs% | find /i "%%A" %nul% && (
 %eline%
-echo Office 2019 ÓÀ¾Ã VL ¸üĞÂÍ¨µÀ²»Ö§³ÖÓïÑÔ [%%A] , ÖĞÖ¹...
+echo [%%A] Office 2019 ÓÀ¾Ã VL ¸üĞÂÆµµÀ²»Ö§³Ö¸ÃÓïÑÔ¡£ÕıÔÚÖĞÖ¹¡­¡­
 goto :oe_goback
 )
 )
@@ -18864,9 +18889,9 @@ set "c2rclientupdate=!c2rcommand! scenario=CLIENTUPDATE"
 
 if %clverchk% LSS %buildchk% (
 echo:
-call :dk_color %Blue% "ÔÚ²Ù×÷Íê³ÉÖ®Ç°²»ÒªÖÕÖ¹²Ù×÷..."
+call :dk_color %Blue% "²Ù×÷Íê³ÉÖ®Ç°ÇëÎğÖÕÖ¹¸Ã²Ù×÷..."
 echo:
-echo Ê¹ÓÃÒÔÏÂÃüÁî¸üĞÂ Office C2R ¿Í»§¶Ë£¬ÇëÉÔºò...
+echo ÕıÔÚÊ¹ÓÃÒÔÏÂÃüÁî¸üĞÂ Office C2R ¿Í»§¶Ë£¬ÇëµÈ´ı...
 echo:
 echo %c2rclientupdate%
 %c2rclientupdate%
@@ -18875,7 +18900,7 @@ for /l %%i in (1,1,30) do (if !clverchk! LSS %buildchk% (call :ch_getinfo&timeou
 
 if %clverchk% LSS %buildchk% (
 echo:
-call :dk_color %Red% "ÎŞ·¨¸üĞÂ Office C2R ¿Í»§¶Ë¡£ÖĞÖ¹..."
+call :dk_color %Red% "ÎŞ·¨¸üĞÂ Office C2R ¿Í»§¶Ë¡£ÕıÔÚÖĞÖ¹..."
 set fixes=%fixes% %mas%troubleshoot
 call :dk_color2 %Blue% "²é¿´´ËÍøÒ³ÒÔ»ñÈ¡°ïÖú - " %_Yellow% " %mas%troubleshoot"
 goto :oe_goback
@@ -18883,7 +18908,7 @@ goto :oe_goback
 
 call :oe_cleanupreg
 
-echo ÕıÔÚÔËĞĞÒÔÏÂÃüÁîÒÔ¸ü¸Ä¸üĞÂÍ¨µÀ£¬ÇëÉÔºò...
+echo ÔËĞĞÒÔÏÂÃüÁî¸ü¸Ä¸üĞÂÍ¨µÀ£¬ÇëµÈ´ı...
 echo:
 echo %c2rcommand%
 %c2rcommand%
@@ -18907,7 +18932,7 @@ call :oe_tempcleanup
 echo:
 if defined fixes (
 call :dk_color %White% "×ñÑ­ÉÏÊöËùÓĞÀ¶ĞĞÎÄ×Ö¡£ "
-call :dk_color2 %Blue% "°´ [1] ´ò¿ªÖ§³ÖÍøÒ³ " %Gray% " °´ [0] ºöÂÔ"
+call :dk_color2 %Blue% "°´ [1] ´ò¿ª¹ÊÕÏÅÅ³ıÒ³Ãæ " %Gray% " °´ [0] ºöÂÔ"
 choice /C:10 /N
 if !errorlevel!==2 goto :oemenu
 if !errorlevel!==1 (start %selfgit% & start %github% & for %%# in (%fixes%) do (start %%#))
@@ -18956,11 +18981,11 @@ exit /b
 
 :oe_tempcleanup
 
-del /f /q %SystemRoot%\Temp\SingleApps_Volume.txt %nul%
-del /f /q %SystemRoot%\Temp\SingleApps_Retail.txt %nul%
-del /f /q %SystemRoot%\Temp\Suites_Volume.txt %nul%
-del /f /q %SystemRoot%\Temp\Suites_Retail.txt %nul%
-del /f /q %SystemRoot%\Temp\getAppIds.txt %nul%
+del %SystemRoot%\Temp\%o_randguid%\SingleApps_Volume.txt %nul%
+del %SystemRoot%\Temp\%o_randguid%\SingleApps_Retail.txt %nul%
+del %SystemRoot%\Temp\%o_randguid%\Suites_Volume.txt %nul%
+del %SystemRoot%\Temp\%o_randguid%\Suites_Retail.txt %nul%
+del %SystemRoot%\Temp\%o_randguid%\getAppIds.txt %nul%
 exit /b
 
 ::========================================================================================================================================
@@ -19114,7 +19139,7 @@ if ($windowsBuild -lt 9200) {
 :getlist:
 $xmlPath1 = $env:_c2rXml
 $xmlPath2 = $env:_masterxml
-$outputDir = $env:SystemRoot + "\Temp\"
+$outputDir = $env:SystemRoot + "\Temp\$env:o_randguid\"
 $buildNumber = [System.Environment]::OSVersion.Version.Build
 $excludedKeywords = @("2019", "2021", "2024")
 $productReleaseIds = @()
@@ -19174,7 +19199,7 @@ foreach ($section in $categories.Keys) {
 :getappnames:
 $xmlPath = $env:_masterxml
 $targetSkuId = $env:targetedition
-$outputDir = $env:SystemRoot + "\Temp\"
+$outputDir = $env:SystemRoot + "\Temp\$env:o_randguid\"
 $outputFile = Join-Path -Path $outputDir -ChildPath "getAppIds.txt"
 $excludeIds = @("shared", "PowerPivot", "PowerView", "MondoOnly", "OSM", "OSMUX", "Groove", "DCF")
 
@@ -19199,5 +19224,5 @@ if ($appIdsList.Count -gt 0) {
 :getappnames:
 
 ::========================================================================================================================================
-::
+:: 7rans1a1ed 6y cm0n1age
 :: Leave empty line below
