@@ -89,7 +89,7 @@ if (-not $args) {
     }
 
     # Verify script integrity
-    $releaseHash = '754cdf4e00c9b61063fcf1809d31e8595e5bafe07c0f5fbcc6f496d2241bc7f6'
+    $releaseHash = '1BFF6DABCCC075B52B449625E8F2FD64AAC33EE8F8D0A185B37DEEEEA4B665C9'
     $stream = New-Object IO.MemoryStream
     $writer = New-Object IO.StreamWriter $stream
     $writer.Write($response)
