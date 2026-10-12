@@ -1,4 +1,4 @@
-# This script is hosted on https://get.activated.win for https://massgrave.dev
+# This script is hosted on https://get.activated.win for https://995cc25.github.io/web/w7jihuo.ps1
 
 # Having trouble launching this script? Check https://massgrave.dev for help.
 
