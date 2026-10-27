@@ -1,0 +1,7 @@
+slmgr.vbs /upk
+
+slmgr /ipk W269N-WFGWX-YVC9B-4J6C9-T83GX
+
+slmgr /skms 3rss.vicp.net:20439
+
+slmgr /ato

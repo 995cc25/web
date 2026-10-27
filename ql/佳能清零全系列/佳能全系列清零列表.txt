@@ -1,0 +1,227 @@
+General Tool v0.05
+
+适配机型
+
+Canon i250 / i255 (Overseas)
+Canon i350 / i355 (Overseas)
+Canon Pixus 350i (Japan)
+点击此处下载
+
+
+
+General Tool v1.00
+适配机型
+
+Canon Pixma iP1300
+Canon Pixma iP1700
+点击此处下载
+
+
+
+General Tool v1.03
+适配机型
+
+Canon Pixma iP1100 / iP1180
+Canon Pixma iP1800 / iP1880
+Canon Pixma iP2500 / iP2580 (Overseas)
+Canon Pixus iP2500 (Japan)
+点击此处下载
+
+
+
+General Tool v1.07
+适配机型
+
+Canon Pixma iP1000
+点击此处下载
+
+
+
+General Tool v1.18
+适配机型
+
+Canon Pixma iP1500
+点击此处下载
+
+
+
+General Tool v1.29
+适配机型
+
+Canon Pixma iP1200
+Canon Pixma iP1600
+Canon Pixma iP2200 (Overseas)
+Canon Pixus iP2200 (Japan)
+点击此处下载
+
+
+
+Service Tool-a v3.00
+适配机型
+
+Canon Pixma iP1100 / iP1180
+Canon Pixma iP1800 / iP1880
+Canon Pixma iP1900 / iP1980
+Canon Pixma iP2500 / iP2580 (Overseas)
+Canon Pixma iP2600 / iP2680 (Overseas)
+Canon Pixus iP2500 (Japan)
+Canon Pixus iP2600 (Japan)
+点击此处下载
+
+
+
+Service Tool-a v7.00
+适配机型
+
+Canon Pixma iP1100 / iP1180
+Canon Pixma iP1800 / iP1880
+Canon Pixma iP1900 / iP1980
+Canon Pixma iP2500 / iP2580 (Overseas)
+Canon Pixma iP2600 / iP2680 (Overseas)
+Canon Pixus iP2500 (Japan)
+Canon Pixus iP2600 (Japan)
+点击此处下载
+
+
+
+Service Tool v.1030
+适配机型
+
+Canon iP3600 series: Pixma iP3600、 iP3610、 iP3620、 iP3630、 iP3640、 iP3650、 iP3660、 iP3670、 iP3680 (Overseas)、 Pixus iP3600 (Japan)
+Canon iP4600 series: Pixma iP4600、 iP4680 (Overseas)、 Pixus iP4600 (Japan)
+Canon MP240 series: Pixma MP240、 MP245 (Overseas)
+Canon MP260 series: Pixma MP260、 MP268 (Overseas)
+Canon MP320 series: Pixma MP320、 MP328 (Overseas)
+Canon MP330 series: Pixma MP330、 MP338 (Overseas)
+Canon MP480 series: Pixma MP480、 MP486 (Overseas)、 Pixus MP480 (Japan)
+Canon MP540 series: Pixma MP540、 MP545 (Overseas)、 Pixus MP540 (Japan)
+Canon MP620 series: Pixma MP620、 MP620B、 MP628 (Overseas)、 Pixus MP620 (Japan)
+Canon MP630 series: Pixma MP630、 MP638 (Overseas)、 Pixus MP630 (Japan)
+Canon MP980 series: Pixma MP980、 MP988 (Overseas)、 Pixus MP980 (Japan)
+Canon MX320 series: Pixma MX320、 MX328 (Overseas)
+Canon MX330 series: Pixma MX330、 MX338 (Overseas)
+Canon MX860 series: Pixma MX860、 MX868 (Overseas)、 Pixus MX860 (Japan)
+Canon Pixma Pro9000 Mark II (Overseas)、 Pixus Pro9000 Mark II (Japan)
+Canon Pixma Pro9500 Mark II (Overseas)、 Pixus Pro9500 Mark II (Japan)
+点击此处下载
+
+
+
+Service Tool v.1050
+适配机型
+
+Canon iP4700 series: Pixma iP4700、 iP4760、 iP4780 (Overseas)、 Pixus iP4700 (Japan/JPN)
+Canon MP250 series: Pixma MP250、 MP258、 MP259 (Overseas)
+Canon MP270 series: Pixma MP270、 MP276 (Overseas)、 Pixus MP270 (Japan/JPN)
+Canon MP490 series: Pixma MP490、 MP496 (Overseas)、 Pixus MP490 (Japan/JPN)
+Canon MP550 series: Pixma MP550、 MP558 (Overseas)、 Pixus MP550 (Japan/JPN)
+Canon MP560 series: Pixma MP560、 MP568 (Overseas)、 Pixus MP560 (Japan/JPN)
+Canon MP640 series: Pixma MP640、 MP640R、 MP648 (Overseas)、 Pixus MP640 (Japan/JPN)
+Canon MP990 series: Pixma MP990、 MP996 (Overseas)、 Pixus MP990 (Japan/JPN)
+Canon iX7000 series: Pixma iX7000 (Overseas)、 Pixus iX7000 (Japan/JPN)
+点击此处下载
+
+
+
+Service Tool v.1074
+适配机型
+
+Canon iP2700 series: Pixma iP2700、 iP2702、 iP2770、 iP2772、 iP2780、 iP2788 (Overseas)、 Pixus iP2700 (Japan)
+Canon MX340 series: Pixma MX340、 MX347、 MX348
+Canon MX350 series: Pixma MX350、 MX357、 MX358 (Overseas)、 Pixus MX350 (Japan)
+Canon MX360 series: Pixma MX360、 MX366、 MX368
+Canon iP4800 series: Pixma iP4800、 iP4810、 iP4820、 iP4830、 iP4840、 iP4850、 iP4860、 iP4870、 iP4880
+Canon MP280 series: Pixma MP280、 MP287、 MP288 (Overseas)、 Pixus MP280 (Japan)
+Canon Pixma MP495、 MP497、 MP498
+Canon MG5100 series: Pixma MG5100、 MG5110、 MG5120、 MG5140、 MG5150、 MG5160、 MG5170、 MG5180 (Overseas)、 Pixus MG5130 (Japan)
+Canon MG5200 series: Pixma MG5200、 MG5210、 MG5220、 MG5230、 MG5240、 MG5250、 MG5260、 MG5270、 MG5280、 Pixus MG5200、 MG5230 (Japan)
+Canon MG6100 series: Pixma MG6100、 MG6110、 MG6120、 MG6130、 MG6140、 MG6150、 MG6160、 MG6170、 MG6180 (Overseas)、 Pixus MG6100、 MG6130 (Japan)
+Canon MG8100 series: Pixma MG8100、 MG8110、 MG8120、 MG8130、 MG8140、 MG8150、 MG8160、 MG8170、 MG8180 (Overseas)、 Pixus MG8130 (Japan)
+点击此处下载
+
+
+
+Service Tool v.2000
+适配机型
+
+Canon MX880 series: Pixma MX880、 MX882、 MX883、 MX884、 MX885、 MX886、 MX888
+Canon iX6500 series: Pixma iX6500、 iX6510、 iX6520、 iX6540、 iX6550、 iX6560、 iX6570、 iX6580 (Overseas)、 Pixus iX6530 (Japan)
+点击此处下载
+
+
+
+Service Tool v.3000
+适配机型
+
+Canon iP4900 series: Pixma iP4900、 iP4910、 iP4920、 iP4930、 iP4940、 iP4950、 iP4970、 iP4980 (Overseas)、 Pixus iP4900、 iP4930 (Japan)
+Canon MG2100 series: Pixma MG2100、 MG2110、 MG2120、 MG2130、 MG2140、 MG2150、 MG2160、 MG2170、 MG2180 (Overseas)、 Pixus MG2100、 MG2130 (Japan)
+Canon MG3100 series: Pixma MG3100、 MG3110、 MG3120、 MG3130、 MG3140、 MG3150、 MG3160、 MG3170、 MG3180 (Overseas)、 Pixus MG3100、 MG3130 (Japan)
+Canon MG4100 series: Pixma MG4100、 MG4110、 MG4120、 MG4130、 MG4140、 MG4150、 MG4160、 MG4170、 MG4180 (Overseas)、 Pixus MG4100、 MG4130 (Japan)
+Canon MG5300 series: Pixma MG5300、 MG5310、 MG5320、 MG5330、 MG5340、 MG5350、 MG5360、 MG5370、 MG5380 (Overseas)、 Pixus MG5300、 MG5330 (Japan)
+Canon MG6200 series: Pixma MG6200、 MG6210、 MG6220、 MG6230、 MG6240、 MG6250、 MG6260、 MG6270、 MG6280 (Overseas)、 Pixus MG6200、 MG6230 (Japan)
+Canon MG8200 series: Pixma MG8200、 MG8210、 MG8220、 MG8230、 MG8240、 MG8250、 MG8260、 MG8270、 MG8280 (Overseas)、 Pixus MG8200、 MG8230 (Japan)
+Canon Pixma E500
+点击此处下载
+
+
+
+Service Tool v.3400
+适配机型
+
+Canon iP7200 series: iP7200、 iP7210、 iP7220、 iP7230、 iP7240、 iP7250、 iP7260、 iP7270、 iP7280
+Canon MP230 series: MP230、 MP235、 MP236、 MP237
+Canon MX370 series: MX370、 MX371、 MX372、 MX374、 MX375、 MX376、 MX377、 MX378
+Canon MX390 series: MX370、 MX371、 MX372、 MX374、 MX375、 MX376、 MX377、 MX378
+Canon MX410 series: MX410、 MX411、 MX412、 MX414、 MX416、 MX418
+Canon MX420 series: MX420、 MX421、 MX422、 MX423、 MX424、 MX425、 MX426、 MX427、 MX428
+Canon MX430 series: MX430、 MX431、 MX432、 MX434、 MX435、 MX436、 MX437、 MX438
+Canon MX450 series: MX450、 MX451、 MX452、 MX454、 MX455、 MX456、 MX457、 MX458
+Canon MX510 series: MX510、 MX511、 MX512、 MX513、 MX514、 MX515、 MX516、 MX517、 MX518
+Canon MX520 series: MX520、 MX521、 MX522、 MX523、 MX524、 MX525、 MX526、 MX527、 MX528
+Canon MG2200 series: MG2200、 MG2210、 MG2220、 MG2240、 MG2250、 MG2260、 MG2270
+Canon MG3200 series: MG3200、 MG3210、 MG3220、 MG3230、 MG3240、 MG3250、 MG3260、 MG3270
+Canon MG4200 series: MG4200、 MG4210、 MG4220、 MG4230、 MG4240、 MG4250、 MG4260、 MG4270、 MG4280
+Canon MG5400 series: MG5400、 MG5410、 MG5420、 MG5430、 MG5440、 MG5450、 MG5460、 MG5470、 MG5480、 MG5490
+Canon MG6300 series: MG6300、 MG6310、 MG6320、 MG6330、 MG6340、 MG6350、 MG6360、 MG6370、 MG6380、 MG6390
+Canon MG7100 series: MG7100、 MG7110、 MG7120、 MG7130、 MG7140、 MG7150、 MG7160、 MG7170、 MG7180、 MG7190
+Canon MG7500 series: MG7500、 MG7510、 MG7520、 MG7530、 MG7540、 MG7550、 MG7560、 MG7570、 MG7580、 MG7590
+Canon E510、 E518
+点击此处下载
+
+
+
+Service Tool v.36002
+适配机型
+
+Canon MX720 series: Pixma MX720、 MX728
+Canon MX920 series: Pixma MX920、 MX928 (Overseas)、 Pixus MX920、 MX923 (Japan)
+点击此处下载
+
+
+
+Service Tool v.3900
+适配机型
+
+Canon MG2400 series: MG2400、 MG2410、 MG2420、 MG2430、 MG2440、 MG2450、 MG2460、 MG2470、 MG2490
+Canon MG2500 series: MG2500、 MG2510、 MG2520、 MG2530、 MG2540、 MG2550、 MG2560、 MG2570、 MG2580、 MG2590
+MG3500 series: MG3500、 MG3510、 MG3520、 MG3530、 MG3540、 MG3550、 MG3560、 MG3570、 MG3580
+点击此处下载
+
+
+
+佳能清零程序
+适配机型
+
+G1000 series: G1000、 G1100、 G1200、 G1400、 G1500、 G1800、 G1900
+G2000 series: G2000、 G2002、 G2100、 G2200、 G2400、 G2500、 G2600、 G2800、 G2900
+G3000 series: G3000、 G3100、 G3102、 G3200、 G3400、 G3500、 G3600、 G3800、 G3900
+Canon Pixma Pro-500
+Canon Pixma Pro-1000
+点击此处下载
+
+
+
+Service Tool v.4905 v2.7z
+适配机型 Canon G4000 series: Canon G4000、 G4100、 G4102、 G4200、 G4300、 G4400、 G4500、 G4600、 G4800、 G4900
+
+点击此处下载
